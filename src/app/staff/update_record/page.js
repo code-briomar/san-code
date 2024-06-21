@@ -99,7 +99,9 @@ export default function NewRecordStudents() {
       // Update student data with the provided details
       const response = await updateStaffData(
         Number(id_number),
-        Number(values.tempReading)
+        Number(values.tempReading),
+        values.complain,
+        values.ailment
       );
 
       if (response == null) {
@@ -190,7 +192,6 @@ export default function NewRecordStudents() {
                     onChange={formik.handleChange}
                     placeholder={"e.g PCM"}
                     type={"text"}
-                    disabled
                     className="my-5 outline outline-gray-200 outline-[1px] focus:outline-red-500"
                   />
                 </div>

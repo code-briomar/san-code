@@ -7,11 +7,18 @@ import { updateReport } from "@/app/services";
 import { base_api } from "@/lib/base_api";
 import { devMode } from "@/lib/dev_mode";
 
-export const updateStudentDetails = async (studentAdmNo, tempReading) => {
+export const updateStudentDetails = async (
+  studentAdmNo,
+  tempReading,
+  complain,
+  ailment
+) => {
   try {
     const response = base_api.post("/student-quick-update", {
       studentAdmNo,
       tempReading,
+      complain,
+      ailment,
     });
 
     const updateReportResponse = await updateReport();
