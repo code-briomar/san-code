@@ -187,7 +187,7 @@ const ViewSummary = () => {
         </Button>
       </div>
       {pageLoading && <Loader className={"w-5 h-5 animate-spin"} />}
-      {summaryStudents.length > 0 && !pageLoading && (
+      {summaryStudents?.length > 0 && !pageLoading && (
         <>
           <h4
             className={"mt-8 scroll-m-20 text-2xl font-semibold tracking-tight"}
@@ -209,7 +209,7 @@ const ViewSummary = () => {
           </div>
         </>
       )}
-      {summaryStaff.length > 0 && !pageLoading && (
+      {summaryStaff?.length > 0 && !pageLoading && (
         <>
           <h4
             className={"mt-8 scroll-m-20 text-2xl font-semibold tracking-tight"}
