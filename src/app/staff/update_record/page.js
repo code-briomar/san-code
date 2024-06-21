@@ -172,7 +172,6 @@ export default function NewRecordStudents() {
                     defaultValue={formik.values.complain}
                     onChange={formik.handleChange}
                     placeholder={"e.g Headache"}
-                    disabled
                     name={"complain"}
                   />
                 </div>
