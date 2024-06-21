@@ -46,33 +46,12 @@ export function DataTable({ columns, data }) {
   return (
     <div>
       <div className="flex items-center py-4">
-        {table.getColumn("admNo") && (
-          <Input
-            placeholder="Filter by Adm. No..."
-            value={table.getColumn("admNo")?.getFilterValue()}
-            onChange={(event) => {
-              const value = event.target.value;
-              const admNoColumn = table.getColumn("admNo");
-
-              if (admNoColumn) admNoColumn.setFilterValue(value);
-            }}
-            className="max-w-sm"
-          />
-        )}
-
-        {table?.getColumn("idNo") && (
-          <Input
-            placeholder="Filter by Id No..."
-            value={table.getColumn("idNo")?.getFilterValue()}
-            onChange={(event) => {
-              const value = event.target.value;
-              const idNoColumn = table.getColumn("idNo");
-
-              if (idNoColumn) idNoColumn.setFilterValue(value);
-            }}
-            className="max-w-sm max-w-md"
-          />
-        )}
+        <Input
+          placeholder={`Search by ${
+            columns && columns.length ? columns[0].header : ""
+          }`}
+          onChange={(e) => table.setGlobalFilter(e.target.value)}
+        />
       </div>
 
       <div className="rounded-md border">
