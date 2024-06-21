@@ -45,7 +45,7 @@ export function DataTable({ columns, data }) {
 
   return (
     <div>
-      <div className={"flex items-center py-4"}>
+      <div className="flex items-center py-4">
         {table.getColumn("admNo") && (
           <Input
             placeholder="Filter by Adm. No..."
@@ -60,7 +60,7 @@ export function DataTable({ columns, data }) {
           />
         )}
 
-        {/* {table?.getColumn("idNo") && (
+        {table?.getColumn("idNo") && (
           <Input
             placeholder="Filter by Id No..."
             value={table.getColumn("idNo")?.getFilterValue()}
@@ -72,7 +72,7 @@ export function DataTable({ columns, data }) {
             }}
             className="max-w-sm max-w-md"
           />
-        )} */}
+        )}
       </div>
 
       <div className="rounded-md border">

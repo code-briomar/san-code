@@ -88,15 +88,82 @@ const ViewSummary = () => {
         );
       },
     },
+    {
+      accessorKey: "class",
+      header: "Class",
+    },
+    {
+      accessorKey: "ailment",
+      header: "Ailment",
+    },
+    {
+      accessorKey: "medication",
+      header: "Medication",
+    },
   ];
 
-  const summary_columns_staff = [];
+  const summary_columns_staff = [
+    {
+      accessorKey: "idNo",
+      header: "ID No",
+    },
+    {
+      accessorKey: "fName",
+      header: "First Name",
+      cell: ({ row }) => {
+        const fName = row?.original?.fName;
+        const sName = row?.original?.sName;
 
-  const summary_columns_large_screen_staff = [];
+        return (
+          <div className="flex space-x-1">
+            <span>{fName}</span>
+            <span>{sName}</span>
+          </div>
+        );
+      },
+    },
+  ];
+
+  const summary_columns_large_screen_staff = [
+    {
+      accessorKey: "idNo",
+      header: "ID No",
+    },
+    {
+      accessorKey: "fName",
+      header: "First Name",
+      cell: ({ row }) => {
+        const fName = row?.original?.fName;
+        const sName = row?.original?.sName;
+
+        return (
+          <div className="flex space-x-1">
+            <span>{fName}</span>
+            <span>{sName}</span>
+          </div>
+        );
+      },
+    },
+    {
+      accessorKey: "tempReading",
+      header: "Temperature",
+    },
+    {
+      accessorKey: "complain",
+      header: "Complain",
+    },
+    {
+      accessorKey: "ailment",
+      header: "Ailment",
+    },
+    {
+      accessorKey: "medication",
+      header: "Medication",
+    },
+  ];
 
   return (
     <div className={"md:mx-20 md:mt-20"}>
-      {pageLoading && <Loader className={"w-5 h-5"} />}
       <div className={"flex justify-between items-center"}>
         <h3
           className={"mt-8 scroll-m-20 text-2xl font-semibold tracking-tight"}
@@ -119,6 +186,7 @@ const ViewSummary = () => {
           <ArrowLeft className="w-5 h-5" />
         </Button>
       </div>
+      {pageLoading && <Loader className={"w-5 h-5 animate-spin"} />}
       {summaryStudents.length > 0 && !pageLoading && (
         <>
           <h4
