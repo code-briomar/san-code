@@ -11,7 +11,8 @@ export const updateStudentDetails = async (
   studentAdmNo,
   tempReading,
   complain,
-  ailment
+  ailment,
+  going_to_hospital
 ) => {
   try {
     const response = base_api.post("/student-quick-update", {
@@ -19,6 +20,7 @@ export const updateStudentDetails = async (
       tempReading,
       complain,
       ailment,
+      going_to_hospital,
     });
 
     const updateReportResponse = await updateReport();

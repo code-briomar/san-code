@@ -16,6 +16,7 @@ export const createNewStudentRecord = async ({
   complain,
   ailment,
   medication,
+  going_to_hospital,
 }) => {
   try {
     const response = base_api.post("/student-full-entry", {
@@ -24,6 +25,7 @@ export const createNewStudentRecord = async ({
       complain,
       ailment,
       medication,
+      going_to_hospital,
     });
 
     const updateReportResponse = await updateReport();

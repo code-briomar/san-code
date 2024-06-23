@@ -34,6 +34,8 @@ import {
 } from "@/components/ui/command";
 import { Popover } from "@/components/ui/popover";
 import { fetchStudentData } from "../services";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
 
 export default function NewRecordStudents() {
   const router = useRouter();
@@ -77,6 +79,7 @@ export default function NewRecordStudents() {
       complain: studentData?.complain,
       ailment: studentData?.ailment,
       medication: studentData?.medication,
+      going_to_hospital: studentData?.going_to_hospital,
     },
     validationSchema: Yup.object({
       tempReading: Yup.string().required(
@@ -94,7 +97,8 @@ export default function NewRecordStudents() {
         Number(admission_number),
         Number(values.tempReading),
         values.complain,
-        values.ailment
+        values.ailment,
+        values.going_to_hospital
       );
 
       if (response == null) {
@@ -188,6 +192,22 @@ export default function NewRecordStudents() {
                     className="my-5 outline outline-gray-200 outline-[1px] focus:outline-red-500"
                   />
                 </div>
+              </div>
+              <div className="flex items-center space-x-2 my-2">
+                <Checkbox
+                  name={"going_to_hospital"}
+                  checked={formik.values.going_to_hospital == 1 ? true : false}
+                  onCheckedChange={(value) => {
+                    formik.setFieldValue("going_to_hospital", value);
+                    if (devMode) console.log(formik.values.going_to_hospital);
+                  }}
+                />
+                <Label
+                  htmlFor={"going_to_hospital"}
+                  className={"text-sm font-medium leading-none"}
+                >
+                  Is the student being taken to the hospital?
+                </Label>
               </div>
               <Button
                 variant="outline"

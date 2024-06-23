@@ -33,30 +33,8 @@ import {
   CommandList,
 } from "@/components/ui/command";
 import { Popover } from "@/components/ui/popover";
-import { fetchStudentData } from "../services";
-
-const frameworks = [
-  {
-    value: "next.js",
-    label: "Next.js",
-  },
-  {
-    value: "sveltekit",
-    label: "SvelteKit",
-  },
-  {
-    value: "nuxt.js",
-    label: "Nuxt.js",
-  },
-  {
-    value: "remix",
-    label: "Remix",
-  },
-  {
-    value: "astro",
-    label: "Astro",
-  },
-];
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
 
 export default function NewRecordStudents() {
   const router = useRouter();
@@ -83,12 +61,14 @@ export default function NewRecordStudents() {
     }, 1000);
   }, []);
   const formik = useFormik({
+    enableReinitialize: true,
     initialValues: {
       studentAdmNo: admNo,
       tempReading: "",
       complain: "",
       ailment: "",
       medication: "",
+      going_to_hospital: false,
     },
     validationSchema: Yup.object({
       tempReading: Yup.string().required(
@@ -99,15 +79,19 @@ export default function NewRecordStudents() {
       medication: Yup.string().required("Medication administered is required"),
     }),
     onSubmit: async (values, formikHelpers) => {
+      if (devMode) {
+        console.log(values);
+      }
       setLoading(true);
 
       // Fetch student data with the provided admission number
       const response = await createNewStudentRecord({
-        studentAdmNo: admission_number,
+        studentAdmNo: admNo,
         tempReading: values.tempReading,
         complain: values.complain,
         ailment: values.ailment,
         medication: values.medication,
+        going_to_hospital: values.going_to_hospital,
       });
 
       if (response == null) {
@@ -253,6 +237,21 @@ export default function NewRecordStudents() {
                     type={"text"}
                     className="my-5 outline outline-gray-200 outline-[1px] focus:outline-red-500"
                   />
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Checkbox
+                    name={"going_to_hospital"}
+                    checked={
+                      formik.values.going_to_hospital == 1 ? true : false
+                    }
+                    onCheckedChange={(value) => {
+                      formik.setFieldValue("going_to_hospital", value);
+                      if (devMode) console.log(formik.values.going_to_hospital);
+                    }}
+                  />
+                  <Label className={"text-sm font-medium leading-none"}>
+                    Is the student being taken to the hospital?
+                  </Label>
                 </div>
               </div>
               <Button
