@@ -29,6 +29,7 @@ export const createNewStudentRecord = async ({
     });
 
     const updateReportResponse = await updateReport();
+    devMode && console.log(updateReportResponse);
     if (updateReportResponse.data.status === 200) {
       devMode && console.log("Update report sent successfully");
       return response;

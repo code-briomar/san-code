@@ -12,6 +12,7 @@ import Link from "next/link";
 import { fetchReportData } from "./services";
 import { useEffect, useState } from "react";
 import { devMode } from "@/lib/dev_mode";
+import { updateReport } from "../services";
 
 const Report = () => {
   const data = [
@@ -59,6 +60,7 @@ const Report = () => {
     setIsLoading(true);
 
     try {
+      // const updateReport = await updateReport();
       const response = await fetchReportData();
 
       if (devMode) console.log(response);

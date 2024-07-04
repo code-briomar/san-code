@@ -100,6 +100,26 @@ const ViewSummary = () => {
       accessorKey: "medication",
       header: "Medication",
     },
+    {
+      accessorKey: "timestamp",
+      header: "Date & Time",
+      cell: ({ row }) => {
+        // Format timestamp
+        const timestamp = new Date(row?.original?.timestamp).toLocaleString();
+
+        // Apply color to timestamp to indicate how recent the record is
+        const timestampColor =
+          new Date(row?.original?.timestamp) > new Date() - 60000
+            ? "text-green-500"
+            : "text-gray-500";
+
+        return (
+          <div className="flex space-x-1">
+            <span className={timestampColor}>{timestamp}</span>
+          </div>
+        );
+      },
+    },
   ];
 
   const summary_columns_staff = [
@@ -160,15 +180,34 @@ const ViewSummary = () => {
       accessorKey: "medication",
       header: "Medication",
     },
+    {
+      accessorKey: "timestamp",
+      header: "Date & Time",
+      cell: ({ row }) => {
+        // Format timestamp
+        const timestamp = new Date(row?.original?.timestamp).toLocaleString();
+
+        // Apply color to timestamp to indicate how recent the record is - 3 days
+        const timestampColor =
+          new Date(row?.original?.timestamp) > new Date() - 259200000
+            ? "text-green-500"
+            : "text-gray-500";
+
+        return (
+          <div className="flex space-x-1">
+            <span className={timestampColor}>{timestamp}</span>
+          </div>
+        );
+      },
+    },
   ];
 
   return (
     <div className={"md:mx-20 md:mt-20"}>
       <div className={"flex justify-between items-center"}>
-        <h3
-          className={"mt-8 scroll-m-20 text-2xl font-semibold tracking-tight"}
-        >
-          Today's summary
+        <h3 className={"mt-8 scroll-m-20 text-2xl tracking-tight"}>
+          {/* Records for the last 7 days */}
+          Records for the last 7 days
         </h3>
 
         <Link

@@ -10,7 +10,9 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { Loader, X } from "lucide-react";
+import { useRouter } from "next/navigation";
 export default function App() {
+  const router = useRouter();
   const [excelInfo, setExcelInfo] = useState([]);
   const [admNos, setAdmNos] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -27,6 +29,8 @@ export default function App() {
       const modifiedRows = rows
         .slice(1)
         .map((row) => [row[0], row[1], ...row.slice(4)]);
+
+      if (devMode) console.log(rows);
       setExcelInfo(rows);
     });
   };
@@ -39,6 +43,20 @@ export default function App() {
       if (response.status === 201) {
         if (devMode) console.log(response?.data);
         toast.success(response?.data?.message);
+
+        // // Reset
+        // setAdmNos([]);
+        // setExcelInfo([]);
+
+        // // Clear the input field
+        // document.getElementById("picture").value = "";
+
+        // // Clear the table
+        // const table = document.querySelector("table");
+        // table.innerHTML = "";
+
+        // // Redirect
+        // router.push("/students");
       } else {
         if (devMode)
           console.error("An error occurred while fetching data:", response);
@@ -132,8 +150,16 @@ export default function App() {
               className="bg-red-500 text-white px-4 py-2 rounded mt-4"
               variant={"outline"}
               onClick={() => {
+                // Reset
                 setAdmNos([]);
                 setExcelInfo([]);
+
+                // Clear the input field
+                document.getElementById("picture").value = "";
+
+                // Clear the table
+                const table = document.querySelector("table");
+                table.innerHTML = "";
               }}
             >
               <X className="mr-2" size={20} />

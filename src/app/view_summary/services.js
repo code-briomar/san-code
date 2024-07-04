@@ -1,4 +1,4 @@
-// Function : Fetch data from students in the last 24 hours
+// Function : Fetch data from students in the last 7 days
 // Route : /student-data
 
 import { base_api } from "@/lib/base_api";
@@ -14,7 +14,7 @@ export const fetchStudentData = async () => {
   }
 };
 
-// Function : Fetch data from staff in the last 24 hours
+// Function : Fetch data from staff in the last 7 days
 // Route : /staff-data
 
 export const fetchStaffData = async () => {
