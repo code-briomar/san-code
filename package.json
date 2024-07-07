@@ -1,7 +1,25 @@
 {
   "name": "san-code",
   "version": "0.1.0",
+  "author": {
+    "name": "Briane Lomoni",
+    "alias": "Briomar",
+    "url": "https://github.com/code-briomar",
+    "email": "kapolonbraine@gmail.com"
+  },
+  "description": "A health records management system called sanCode",
   "private": true,
+  "license": "MIT",
+  "licenseText": "MIT License\n\nCopyright (c) 2024 Briomar",
+  "keywords": [
+    "Briane",
+    "Lomoni",
+    "briomar",
+    "sanCode",
+    "health",
+    "records",
+    "management"
+  ],
   "scripts": {
     "dev": "next dev",
     "build": "next build",

@@ -239,19 +239,31 @@ export default function Students() {
                 <div className={"font-mono my-3"}>
                   <div className="flex flex-col space-y-2">
                     <span className="underline">Complains</span>
-                    <span>{studentData?.complain}</span>
+                    <span
+                      className={"text-blue-500 font-semibold  tracking-tight"}
+                    >
+                      {studentData?.complain}
+                    </span>
                   </div>
                 </div>
                 <div className={"font-mono my-3"}>
                   <div className="flex flex-col space-y-2">
                     <span className="underline">Ailment</span>
-                    <span>{studentData?.ailment}</span>
+                    <span
+                      className={"text-blue-500 font-semibold  tracking-tight"}
+                    >
+                      {studentData?.ailment}
+                    </span>
                   </div>
                 </div>
                 <div className={"font-mono my-3"}>
                   <div className="flex flex-col space-y-2">
                     <span className="underline">Medication(s)</span>
-                    <span>{studentData?.medication}</span>
+                    <span
+                      className={"text-blue-500 font-semibold  tracking-tight"}
+                    >
+                      {studentData?.medication}
+                    </span>
                   </div>
                 </div>
                 <div className={"font-mono my-3 w-full"}>
