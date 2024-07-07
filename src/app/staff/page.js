@@ -107,7 +107,7 @@ export default function Students() {
   const formik_new_staff_record = useFormik({
     enableReinitialize: true,
     initialValues: {
-      id_number: "",
+      id_number: idNo,
       fName: "",
       sName: "",
     },

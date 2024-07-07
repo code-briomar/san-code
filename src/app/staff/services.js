@@ -18,6 +18,31 @@ export const createNewStaffRecord = async (idNo, fName, sName) => {
   }
 };
 
+// Function : Create new entry for staff
+export const createNewStaffEntry = async ({
+  idNo,
+  tempReading,
+  complain,
+  ailment,
+  medication,
+}) => {
+  try {
+    const response = await base_api.post(`/staff-full-entry`, {
+      idNo: idNo,
+      tempReading: tempReading,
+      complain: complain,
+      ailment: ailment,
+      medication: medication,
+    });
+    return response.data;
+  } catch (error) {
+    if (devMode) {
+      console.error(error);
+    }
+    return null;
+  }
+};
+
 // Function : Fetch record for staff member
 export const fetchStaffMemberData = async (idNo) => {
   try {

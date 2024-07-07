@@ -84,7 +84,7 @@ export default function NewRecordStudents() {
       }
       setLoading(true);
 
-      // Fetch student data with the provided admission number
+      // // Fetch student data with the provided admission number
       const response = await createNewStudentRecord({
         studentAdmNo: admNo,
         tempReading: values.tempReading,

@@ -33,7 +33,7 @@ import {
   CommandList,
 } from "@/components/ui/command";
 import { Popover } from "@/components/ui/popover";
-import { createNewStaffRecord } from "../services";
+import { createNewStaffEntry, createNewStaffRecord } from "../services";
 export default function NewRecordStaff() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -79,7 +79,7 @@ export default function NewRecordStaff() {
       setLoading(true);
 
       // Fetch student data with the provided admission number
-      const response = await createNewStaffRecord({
+      const response = await createNewStaffEntry({
         idNo: id_number,
         tempReading: values.tempReading,
         complain: values.complain,

@@ -25,6 +25,8 @@ const ViewSummary = () => {
 
       const response_student_fetch = await fetchStudentData();
 
+      console.log(response_staff_fetch, response_student_fetch);
+
       setSummaryStudents(response_student_fetch?.data);
 
       setSummaryStaff(response_staff_fetch?.data);
@@ -107,9 +109,9 @@ const ViewSummary = () => {
         // Format timestamp
         const timestamp = new Date(row?.original?.timestamp).toLocaleString();
 
-        // Apply color to timestamp to indicate how recent the record is
+        // Apply color to timestamp to indicate how recent the record is - 2 days
         const timestampColor =
-          new Date(row?.original?.timestamp) > new Date() - 60000
+          new Date(row?.original?.timestamp) > new Date() - 172800000
             ? "text-green-500"
             : "text-gray-500";
 
@@ -151,7 +153,7 @@ const ViewSummary = () => {
     },
     {
       accessorKey: "fName",
-      header: "First Name",
+      header: "Name",
       cell: ({ row }) => {
         const fName = row?.original?.fName;
         const sName = row?.original?.sName;
@@ -163,14 +165,6 @@ const ViewSummary = () => {
           </div>
         );
       },
-    },
-    {
-      accessorKey: "tempReading",
-      header: "Temperature",
-    },
-    {
-      accessorKey: "complain",
-      header: "Complain",
     },
     {
       accessorKey: "ailment",
@@ -201,6 +195,8 @@ const ViewSummary = () => {
       },
     },
   ];
+
+  // console.log(summaryStaff, summaryStudents);
 
   return (
     <div className={"md:mx-20 md:mt-20"}>

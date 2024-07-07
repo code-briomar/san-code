@@ -91,17 +91,19 @@ const DiseaseChart = ({ data, pageSize = 1 }) => {
           color: "#6e7079",
         },
       },
-      series: seriesData.map((diseaseData) => ({
-        name: diseaseData.disease,
-        type: "bar",
-        colorBy: "series",
-        data: diseaseData.data,
-        itemStyle: {
-          borderRadius: [5, 5, 0, 0], // Rounded top corners for a modern look
-          shadowBlur: 5,
-          shadowColor: "rgba(0, 0, 0, 0.3)",
-        },
-      })),
+      series: seriesData
+        .filter((diseaseData) => diseaseData.data.some((value) => value > 0)) // Filter series data with values > 0
+        .map((diseaseData) => ({
+          name: diseaseData.disease,
+          type: "bar",
+          colorBy: "series",
+          data: diseaseData.data,
+          itemStyle: {
+            borderRadius: [5, 5, 0, 0], // Rounded top corners for a modern look
+            shadowBlur: 5,
+            shadowColor: "rgba(0, 0, 0, 0.3)",
+          },
+        })),
     };
 
     chartInstance.setOption(option);
@@ -118,6 +120,11 @@ const DiseaseChart = ({ data, pageSize = 1 }) => {
   const handleNextPage = () => {
     setCurrentPage((prevPage) => Math.min(prevPage + 1, totalPages - 1));
   };
+
+  // Set the current page to today's date as a number to be default
+  useEffect(() => {
+    setCurrentPage(new Date().getDate() - 1);
+  }, []);
 
   return (
     <div>
