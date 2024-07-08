@@ -101,7 +101,7 @@ export default function NewRecordStudents() {
         Number(id_number),
         Number(values.tempReading),
         values.complain,
-        values.ailment
+        values.medication
       );
 
       if (response == null) {

@@ -11,7 +11,7 @@ export const updateStudentDetails = async (
   studentAdmNo,
   tempReading,
   complain,
-  ailment,
+  medication,
   going_to_hospital
 ) => {
   try {
@@ -19,7 +19,7 @@ export const updateStudentDetails = async (
       studentAdmNo,
       tempReading,
       complain,
-      ailment,
+      medication,
       going_to_hospital,
     });
 

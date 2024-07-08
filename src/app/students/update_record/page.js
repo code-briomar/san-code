@@ -92,12 +92,13 @@ export default function NewRecordStudents() {
     onSubmit: async (values, formikHelpers) => {
       setLoading(true);
 
+      console.log(values.medication);
       // Update student data with the provided details
       const response = await updateStudentDetails(
         Number(admission_number),
         Number(values.tempReading),
         values.complain,
-        values.ailment,
+        values.medication,
         values.going_to_hospital
       );
 

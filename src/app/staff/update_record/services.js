@@ -5,11 +5,18 @@ import { updateReport } from "@/app/services";
 import { base_api } from "@/lib/base_api";
 import { devMode } from "@/lib/dev_mode";
 
-export const updateStaffData = async (idNo, tempReading) => {
+export const updateStaffData = async (
+  idNo,
+  tempReading,
+  complain,
+  medication
+) => {
   try {
     const response = base_api.post("/staff-quick-update", {
       idNo,
       tempReading,
+      complain,
+      medication,
     });
 
     const updateReportResponse = await updateReport();
