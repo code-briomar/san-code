@@ -203,7 +203,8 @@ const ViewSummary = () => {
       <div className={"flex justify-between items-center"}>
         <h3 className={"mt-8 scroll-m-20 text-2xl tracking-tight"}>
           {/* Records for the last 7 days */}
-          Records for the last 7 days
+          {/* TEMPOARY */}
+          Records.
         </h3>
 
         <Link
