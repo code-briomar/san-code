@@ -195,14 +195,30 @@ export default function Students() {
                     )}
                   </Button>
                 </div>
-                <Link
-                  href={"/view_summary"}
-                  target="_blank"
-                  className={"text-[#039be5] underline flex gap-2 items-center"}
-                >
-                  {"View Summary"}
-                  <ArrowUpRightFromSquare className={"w-5 h-5"} />
-                </Link>
+                <div className="flex space-x-10 mt-10">
+                  <Link
+                    href={"/view_summary"}
+                    target="_blank"
+                    className={
+                      "text-[#039be5] underline flex gap-2 items-center"
+                    }
+                  >
+                    {"View Summary"}
+                    <ArrowUpRightFromSquare className={"w-5 h-5"} />
+                  </Link>
+
+                  <Link
+                    href={"/students/non_busherian"}
+                    target="_blank"
+                    className={
+                      "text-[#039be5] underline flex gap-2 items-center"
+                    }
+                  >
+                    {/* Entry for student who isn't a busherian */}
+                    {"Non-Busherian"}
+                    <ArrowUpRightFromSquare className={"w-5 h-5"} />
+                  </Link>
+                </div>
               </>
             )}
 
