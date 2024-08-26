@@ -102,7 +102,7 @@ export const ailments = [
     disease: "Mental Disorders",
   },
   {
-    disease: "Dental Disroders",
+    disease: "Dental Disorders",
   },
   {
     disease: "Jiggers Infestation",

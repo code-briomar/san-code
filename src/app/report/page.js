@@ -60,7 +60,8 @@ const Report = () => {
     setIsLoading(true);
 
     try {
-      // const updateReport = await updateReport();
+      const updateReportResponse = await updateReport();
+      console.log(updateReportResponse);
       const response = await fetchReportData();
 
       if (devMode) console.log(response);
@@ -91,6 +92,34 @@ const Report = () => {
     return lookup;
   }, {});
 
+  // Download the report in csv
+  const downloadReport = () => {
+    // Construct the header row
+    const miscellaneousInfo = `${
+      new Date().toLocaleString("default", { month: "long" }) +
+      " " +
+      new Date().getFullYear()
+    }.\n`;
+    const headerRow = ["Disease (First Cases Only)", ...days].join(",");
+
+    // Construct data rows
+    const dataRows = ailments.map(({ disease }) => {
+      const rowData = days.map((day) => diseaseDataLookup[disease]?.[day] || 0);
+      return [`"${disease}"`, ...rowData].join(",");
+    });
+
+    // Combine header and data rows
+    const csv = [miscellaneousInfo, headerRow, ...dataRows].join("\n");
+
+    const blob = new Blob([csv], { type: "text/csv" });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    const today = new Date().toISOString().split("T")[0];
+    a.download = `report-${today}.csv`;
+    a.click();
+  };
+
   return (
     <>
       <div className="m-10">
@@ -99,9 +128,18 @@ const Report = () => {
             Official Report
           </h3>
 
-          <Link href={"/"} className="text-blue-500 underline">
-            Home
-          </Link>
+          <div className="mt-8 flex items-center space-x-2">
+            <Link href={"/"} className="text-blue-500 underline">
+              Home
+            </Link>
+            <Link
+              href={"javascript:void(0)"}
+              className="text-blue-500 underline"
+              onClick={downloadReport}
+            >
+              Download
+            </Link>
+          </div>
         </div>
         <Table className="table-auto border-collapse border">
           <TableHeader className="bg-gray-200">
