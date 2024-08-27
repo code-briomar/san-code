@@ -43,6 +43,13 @@ export default function Students() {
     validationSchema: Yup.object({
       admission_number: Yup.string().required("Required"),
     }),
+    onChange: (values) => {
+      if (values.admission_number.length > 0) {
+        setIsTyping(true);
+      } else {
+        setIsTyping(false);
+      }
+    },
     onSubmit: async (values, formikHelpers) => {
       setLoading(true);
       // Fetch student data with the provided admission number
@@ -142,6 +149,16 @@ export default function Students() {
       },
     },
   ];
+
+  // Enter key pressed to submit form.
+  const handleKeyPressed = (e) => {
+    if (e.key === "Enter") {
+      formik.handleSubmit();
+    }
+  };
+
+  // Over-engineering at it's finest lol.
+  const [isTyping, setIsTyping] = useState(false);
   return (
     <>
       <main className="flex min-h-screen flex-col items-center p-24">
@@ -175,6 +192,7 @@ export default function Students() {
                     placeholder="e.g 13256"
                     className="my-5 outline outline-gray-200 outline-[1px] focus:outline-red-500"
                     onChange={formik.handleChange}
+                    onKeyDown={handleKeyPressed}
                   />
                   <Button
                     variant="outline"
@@ -195,6 +213,15 @@ export default function Students() {
                     )}
                   </Button>
                 </div>
+                {formik.values.admission_number.length > 0 && (
+                  <div className="text-gray-500 text-xs">
+                    Press{" "}
+                    <kbd className="px-1 border border-gray-300 rounded">
+                      Enter
+                    </kbd>{" "}
+                    to search
+                  </div>
+                )}
                 <div className="flex space-x-10 mt-10">
                   <Link
                     href={"/view_summary"}
@@ -282,6 +309,39 @@ export default function Students() {
                     </span>
                   </div>
                 </div>
+
+                <div className={"font-mono my-3"}>
+                  <div className="flex flex-col space-y-2">
+                    <span className="underline">Days on Medication</span>
+                    <span
+                      className={"text-blue-500 font-semibold  tracking-tight"}
+                    >
+                      {
+                        // studentData?.timestamp
+                        new Date().getDate() -
+                          new Date(studentData?.timestamp).getDate()
+                      }
+                    </span>
+                  </div>
+                </div>
+
+                <div className={"font-mono my-3"}>
+                  <div className="flex flex-col space-y-2">
+                    <span className="underline">Last took meds</span>
+                    <span
+                      className={"text-blue-500 font-semibold  tracking-tight"}
+                    >
+                      {
+                        // e.g lunchtime, morning or evening
+                        new Date(studentData?.timestamp).getHours() >= 12
+                          ? "at lunchtime"
+                          : new Date(studentData?.timestamp).getHours() >= 6
+                          ? "in the morning"
+                          : "in the evening"
+                      }
+                    </span>
+                  </div>
+                </div>
                 <div className={"font-mono my-3 w-full"}>
                   <div className="flex md:space-x-2 flex-col md:flex-row space-y-2 md:space-y-0">
                     <Button
@@ -328,24 +388,26 @@ export default function Students() {
             )}
           </div>
         </div>
-        <div className="hidden md:block">
-          <span className="font-mono text-base underline">
-            Students going to the hospital today
-          </span>
-          <div>
-            {studentsGoingToHospital && (
-              <DataTable
-                data={studentsGoingToHospital}
-                columns={studentsGoingToHospitalColumns}
-              />
-            )}
-            {!studentsGoingToHospital && (
-              <p className="font-mono text-base">
-                No Students Going To The Hospital Today.
-              </p>
-            )}
+        {!studentData && (
+          <div className="hidden md:block">
+            <span className="font-mono text-base underline">
+              Students going to the hospital today
+            </span>
+            <div>
+              {studentsGoingToHospital && (
+                <DataTable
+                  data={studentsGoingToHospital}
+                  columns={studentsGoingToHospitalColumns}
+                />
+              )}
+              {!studentsGoingToHospital && (
+                <p className="font-mono text-base">
+                  No Students Going To The Hospital Today.
+                </p>
+              )}
+            </div>
           </div>
-        </div>
+        )}
       </main>
     </>
   );

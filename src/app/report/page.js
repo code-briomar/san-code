@@ -13,6 +13,7 @@ import { fetchReportData } from "./services";
 import { useEffect, useState } from "react";
 import { devMode } from "@/lib/dev_mode";
 import { updateReport } from "../services";
+import { Loader } from "lucide-react";
 
 const Report = () => {
   const data = [
@@ -141,36 +142,43 @@ const Report = () => {
             </Link>
           </div>
         </div>
-        <Table className="table-auto border-collapse border">
-          <TableHeader className="bg-gray-200">
-            <TableRow>
-              <TableCell className="border border-gray-300">
-                Diseases (First Cases Only)
-              </TableCell>
-              {days.map((day) => (
-                <TableCell key={day} className="border border-gray-300">
-                  {day}
-                </TableCell>
-              ))}
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {ailments.map((ailment) => (
-              <TableRow key={ailment.disease}>
-                <TableCell className="border border-gray-300 p-1 min-w-[300px]">
-                  {ailment.disease}
+        {isLoading && (
+          <div className="absolute flex items-center justify-center h-dvh w-dvw">
+            <Loader className="w-6 h-6 animate-spin" />
+          </div>
+        )}
+        {!isLoading && (
+          <Table className="table-auto border-collapse border">
+            <TableHeader className="bg-gray-200">
+              <TableRow>
+                <TableCell className="border border-gray-300">
+                  Diseases (First Cases Only)
                 </TableCell>
                 {days.map((day) => (
                   <TableCell key={day} className="border border-gray-300">
-                    {diseaseDataLookup[ailment.disease]
-                      ? diseaseDataLookup[ailment.disease][day] || 0
-                      : 0}
+                    {day}
                   </TableCell>
                 ))}
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+            </TableHeader>
+            <TableBody>
+              {ailments.map((ailment) => (
+                <TableRow key={ailment.disease}>
+                  <TableCell className="border border-gray-300 p-1 min-w-[300px]">
+                    {ailment.disease}
+                  </TableCell>
+                  {days.map((day) => (
+                    <TableCell key={day} className="border border-gray-300">
+                      {diseaseDataLookup[ailment.disease]
+                        ? diseaseDataLookup[ailment.disease][day] || 0
+                        : 0}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        )}
       </div>
     </>
   );

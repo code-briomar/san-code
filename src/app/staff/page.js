@@ -207,6 +207,16 @@ export default function Students() {
                   )}
                 </Button>
               </div>
+              {formik?.values?.id_number?.length > 0 && (
+                <div className="text-gray-500 text-xs">
+                  Press{" "}
+                  <kbd className="px-1 border border-gray-300 rounded">
+                    Enter
+                  </kbd>{" "}
+                  to search
+                </div>
+              )}
+              <div className="flex items-center space-x-2 mt-10">
               <Link
                 href={"/view_summary"}
                 target="_blank"
@@ -215,6 +225,7 @@ export default function Students() {
                 {"View Summary"}
                 <ArrowUpRightFromSquare className={"w-5 h-5"} />
               </Link>
+              </div>
             </>
           )}
 
