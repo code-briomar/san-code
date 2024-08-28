@@ -138,7 +138,7 @@ export default function Students() {
                 tempReading,
                 complain,
                 ailment,
-                false
+                false,
               );
               goingToHospital();
             }}
@@ -319,7 +319,8 @@ export default function Students() {
                       {
                         // studentData?.timestamp
                         new Date().getDate() -
-                          new Date(studentData?.timestamp).getDate()
+                          new Date(studentData?.timestamp).getDate() +
+                          1
                       }
                     </span>
                   </div>
@@ -336,8 +337,8 @@ export default function Students() {
                         new Date(studentData?.timestamp).getHours() >= 12
                           ? "at lunchtime"
                           : new Date(studentData?.timestamp).getHours() >= 6
-                          ? "in the morning"
-                          : "in the evening"
+                            ? "in the morning"
+                            : "in the evening"
                       }
                     </span>
                   </div>
