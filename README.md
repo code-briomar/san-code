@@ -31,5 +31,13 @@ Logic : Check date when lastly here and get if it's morning, afternoon or evenin
 </ul>
 </s>
 
+3. <span>Form to add new students to the system.</span>
+
+4. <span>Form to edit student records in the system.</span>
+
+5. <span>Form to add non-busherian students records to the system.</span>
+
+
+
 ### Low Priority
 <input type="checkbox"/> <span>Non busherian students </span> 
