@@ -121,6 +121,14 @@ export default function Students() {
       header: "Ailment",
     },
     {
+      accessorKey: "timestamp",
+      header: "Date",
+      cell: ({ row }) => {
+        const timestamp = row.original?.timestamp;
+        return new Date(timestamp).toDateString();
+      },
+    },
+    {
       id: "actions",
       cell: ({ row }) => {
         const admNo = row.original?.admNo;
@@ -389,10 +397,10 @@ export default function Students() {
             )}
           </div>
         </div>
-        {!studentData && (
-          <div className="hidden md:block">
-            <span className="font-mono text-base underline">
-              Students going to the hospital today
+        {!studentData && studentsGoingToHospital && (
+          <div className="hidden md:block w-full">
+            <span className="self-center font-mono text-base underline">
+              Students going to the hospital
             </span>
             <div>
               {studentsGoingToHospital && (
