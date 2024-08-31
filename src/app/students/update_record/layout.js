@@ -11,10 +11,8 @@ export const metadata = {
 
 export default function StudentsNewRecordLayout({ children }) {
   return (
-    <Suspense>
-      <html lang="en">
-        <body className={inter.className}>{children}</body>
-      </html>
-    </Suspense>
+    <div className={inter.className}>
+      <Suspense fallback={<div>Loading...</div>}>{children}</Suspense>
+    </div>
   );
 }

@@ -185,7 +185,7 @@ export default function Students() {
                   name={"id_number"}
                   value={formik.values.id_number}
                   type="text"
-                  autoComplete={false}
+                  autoComplete="false"
                   placeholder="e.g 42073535"
                   className="my-5 outline outline-gray-200 outline-[1px] focus:outline-red-500"
                   onChange={formik.handleChange}
@@ -364,7 +364,7 @@ export default function Students() {
                     name={"tempReading"}
                     value={formik_new_staff_record.values.tempReading}
                     type="text"
-                    autoComplete={false}
+                    autoComplete="false"
                     placeholder="e.g 35.6"
                     className="my-5 outline outline-gray-200 outline-[1px] focus:outline-red-500"
                     onChange={formik_new_staff_record.handleChange}
@@ -457,7 +457,7 @@ export default function Students() {
                     name={"medication"}
                     value={formik_new_staff_record.values.medication}
                     type="text"
-                    autoComplete={false}
+                    autoComplete="false"
                     placeholder="e.g PCM"
                     className="my-5 outline outline-gray-200 outline-[1px] focus:outline-red-500"
                     onChange={formik_new_staff_record.handleChange}

@@ -146,7 +146,7 @@ export default function Students() {
                 tempReading,
                 complain,
                 ailment,
-                false,
+                false
               );
               goingToHospital();
             }}
@@ -175,12 +175,21 @@ export default function Students() {
           <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
             <code className="font-mono font-bold">&nbsp;Students</code>
           </p>
-          <Link
-            href={"/"}
-            className="text-blue-500 underline font-semibold text-lg"
-          >
-            Home
-          </Link>
+
+          <div className="hidden lg:flex lg:space-x-5 lg:ml-10 lg:mt-2">
+            <Link
+              href={"/"}
+              className="text-blue-500 underline font-semibold text-base"
+            >
+              Home
+            </Link>
+            <Link
+              href={"/students/student-create-entry"}
+              className="text-blue-500 underline font-semibold text-base"
+            >
+              Add New Student To Database
+            </Link>
+          </div>
         </div>
 
         {/* Form : 1. Get record by admission number 2. Enter new record. 3. Update record. */}
@@ -196,7 +205,7 @@ export default function Students() {
                     name={"admission_number"}
                     value={formik.values.admission_number}
                     type="text"
-                    autoComplete={false}
+                    autoComplete="false"
                     placeholder="e.g 13256"
                     className="my-5 outline outline-gray-200 outline-[1px] focus:outline-red-500"
                     onChange={formik.handleChange}
@@ -267,11 +276,23 @@ export default function Students() {
                     {studentData?.sName}
                   </span>
                 </div>
-                <span>
-                  <code>Class</code>
-                  &nbsp;:&nbsp;
-                  <code>{studentData?.class}</code>
-                </span>
+                <div
+                className="flex items-center space-x-2 font-mono my-3 justify-between"
+                >
+                  <span>
+                    <code>Class</code>
+                    &nbsp;:&nbsp;
+                    <code>{studentData?.class}</code>
+                  </span>
+
+                  <Link
+                    href={`/students/student-update-entry/?admission_number=${studentData?.admNo}`}
+                    className="text-blue-500 underline font-semibold text-sm flex items-center space-x-2"
+                  >
+                    <span>Edit</span>
+                    <PenSquare className="w-4 h-4" />
+                  </Link>
+                </div>
                 <Separator className={"my-2"} />
                 <div className={"font-mono my-3"}>
                   <div className="flex flex-col space-y-2">
@@ -345,8 +366,8 @@ export default function Students() {
                         new Date(studentData?.timestamp).getHours() >= 12
                           ? "at lunchtime"
                           : new Date(studentData?.timestamp).getHours() >= 6
-                            ? "in the morning"
-                            : "in the evening"
+                          ? "in the morning"
+                          : "in the evening"
                       }
                     </span>
                   </div>

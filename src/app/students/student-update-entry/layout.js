@@ -9,7 +9,7 @@ export const metadata = {
   description: "Manage student health records",
 };
 
-export default function StudentsNewRecordLayout({ children }) {
+export default function StudentUpdateEntryLayout({ children }) {
   return (
     <div className={inter.className}>
       <Suspense fallback={<div>Loading...</div>}>{children}</Suspense>
