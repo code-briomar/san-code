@@ -11,6 +11,7 @@ import { devMode } from "@/lib/dev_mode";
 import { Separator } from "@/components/ui/separator";
 import { useRouter, useSearchParams } from "next/navigation";
 import { fetchStudentData } from "../services";
+import Link from "next/link";
 
 export default function StudentUpdateEntry() {
   const router = useRouter();
@@ -110,7 +111,7 @@ export default function StudentUpdateEntry() {
 
   return (
     <main className="flex min-h-screen flex-col items-center p-24">
-      <div className="z-10 max-w-5xl w-full items-center font-mono text-sm lg:flex">
+      <div className="z-10 max-w-5xl w-full items-center font-mono text-sm lg:flex lg:justify-between">
         <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
           <code className="font-mono font-bold">
             &nbsp;Update Student Entry
@@ -132,7 +133,7 @@ export default function StudentUpdateEntry() {
             Students
           </Link>
         </div>
-        
+
       </div>
 
       <div className="sm:mb-32 ">
