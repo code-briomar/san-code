@@ -198,6 +198,24 @@ export const ailments = [
     disease: "Fractures",
   },
   {
-    disease: "All Other Diseases",
+    disease: "ALL OTHER DISEASES",
+  },
+  {
+    disease: "NO. OF FIRST ATTENDANCES",
+  },
+  {
+    disease: "RE-ATTENDANCES",
+  },
+  {
+    disease: "Referrals from other health facility",
+  },
+  {
+    disease: "Referrals to other health facility",
+  },
+  {
+    disease: "Referrals from community unit",
+  },
+  {
+    disease: "Referrals to community unit",
   },
 ];

@@ -198,6 +198,6 @@ export const ailments = [
     disease: "Fractures",
   },
   {
-    disease: "All Other Diseases",
+    disease: "ALL OTHER DISEASES",
   },
 ];

@@ -1,0 +1,64 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:130.0) Gecko/20100101 Firefox/130.0" version="24.7.15">
+  <diagram name="Page-1" id="2YBvvXClWsGukQMizWep">
+    <mxGraphModel dx="1434" dy="790" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="9KY_mXELvDp4CPKF6xgy-1" value="&lt;font style=&quot;font-size: 20px;&quot;&gt;No. of first attendances.&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="75" y="10" width="235" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="9KY_mXELvDp4CPKF6xgy-2" value="&lt;font style=&quot;font-size: 23px;&quot;&gt;Re-attendances&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="330" y="10" width="190" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="9KY_mXELvDp4CPKF6xgy-3" value="&lt;div&gt;Referrals from other health facility&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="75" y="540" width="185" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="9KY_mXELvDp4CPKF6xgy-4" value="Referrals to other health facility" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="75" y="770" width="185" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="9KY_mXELvDp4CPKF6xgy-5" value="Referrals from community unit" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="75" y="1050" width="185" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="9KY_mXELvDp4CPKF6xgy-6" value="Referrals to community unit" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="75" y="1350" width="185" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="9KY_mXELvDp4CPKF6xgy-14" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="9KY_mXELvDp4CPKF6xgy-12" target="9KY_mXELvDp4CPKF6xgy-13">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="9KY_mXELvDp4CPKF6xgy-18" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="9KY_mXELvDp4CPKF6xgy-12" target="9KY_mXELvDp4CPKF6xgy-17">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="9KY_mXELvDp4CPKF6xgy-12" value="" style="rhombus;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="81.25" y="90" width="172.5" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="9KY_mXELvDp4CPKF6xgy-11" value="check if student was there earlier in the day" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="110" y="140" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="9KY_mXELvDp4CPKF6xgy-13" value="" style="whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="360" y="140" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="9KY_mXELvDp4CPKF6xgy-15" value="NO" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="270" y="130" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="9KY_mXELvDp4CPKF6xgy-16" value="count as first attendance" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="360" y="140" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="9KY_mXELvDp4CPKF6xgy-17" value="" style="whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="107.5" y="380" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="9KY_mXELvDp4CPKF6xgy-19" value="YES" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="100" y="290" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="9KY_mXELvDp4CPKF6xgy-20" value="count as re-attendance" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="110" y="380" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="9KY_mXELvDp4CPKF6xgy-22" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;Pseudocode&lt;/h1&gt;&lt;p style=&quot;font-size: 21px;&quot;&gt;fn handleAttendance(studentID, timestamp):&lt;br&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;let today = new Date();&lt;/p&gt;&lt;p style=&quot;font-size: 21px;&quot;&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;// Check if student was at the nurse today&lt;br&gt;&lt;/p&gt;&lt;p style=&quot;font-size: 21px;&quot;&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;if(timestamp == today){&lt;/p&gt;&lt;p style=&quot;font-size: 21px;&quot;&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;// Student was here today.&lt;/p&gt;&lt;p style=&quot;font-size: 21px;&quot;&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;// count as re-attendance.&lt;br&gt;&lt;/p&gt;&lt;p style=&quot;font-size: 21px;&quot;&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;} else {&lt;/p&gt;&lt;p style=&quot;font-size: 21px;&quot;&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;// Student was not here today.&lt;/p&gt;&lt;p style=&quot;font-size: 21px;&quot;&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;// count as first attendance.&lt;br&gt;&lt;/p&gt;&lt;p style=&quot;font-size: 21px;&quot;&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;}&lt;br&gt;&lt;/p&gt;" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="590" y="30" width="480" height="500" as="geometry" />
+        </mxCell>
+        <mxCell id="9KY_mXELvDp4CPKF6xgy-23" value="&lt;p style=&quot;line-height: 220%;&quot;&gt;&lt;/p&gt;&lt;li style=&quot;font-size: 20px;&quot;&gt;&lt;font style=&quot;font-size: 20px;&quot;&gt;&lt;strong&gt;Referral To Hospital&lt;/strong&gt;: When a patient is referred to another hospital for specialized care.&lt;/font&gt;&lt;/li&gt;&lt;li style=&quot;font-size: 20px;&quot;&gt;&lt;font style=&quot;font-size: 20px;&quot;&gt;&lt;br&gt;&lt;/font&gt;&lt;/li&gt;&lt;li style=&quot;font-size: 20px;&quot;&gt;&lt;font style=&quot;font-size: 20px;&quot;&gt;&lt;strong&gt;Referral From Hospital&lt;/strong&gt;: When a patient is referred to your facility from another hospital.&lt;/font&gt;&lt;/li&gt;&lt;li style=&quot;font-size: 20px;&quot;&gt;&lt;font style=&quot;font-size: 20px;&quot;&gt;&lt;br&gt;&lt;/font&gt;&lt;/li&gt;&lt;li style=&quot;font-size: 20px;&quot;&gt;&lt;font style=&quot;font-size: 20px;&quot;&gt;&lt;strong&gt;Referral To Community Unit&lt;/strong&gt;: When a patient is referred from your facility to a community unit (e.g., for follow-up or routine care).&lt;/font&gt;&lt;/li&gt;&lt;li style=&quot;font-size: 20px;&quot;&gt;&lt;font style=&quot;font-size: 20px;&quot;&gt;&lt;br&gt;&lt;/font&gt;&lt;/li&gt;&lt;li style=&quot;font-size: 20px;&quot;&gt;&lt;font style=&quot;font-size: 20px;&quot;&gt;&lt;strong&gt;Referral From Community Unit&lt;/strong&gt;: When a patient is referred to your facility from a community health unit.&lt;/font&gt;&lt;/li&gt;&lt;p&gt;&lt;/p&gt;" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="590" y="620" width="540" height="360" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
