@@ -128,13 +128,15 @@ const Report = () => {
     });
 
     // Construct the header row
-    const headerRow = ["Disease (First Cases Only)", ...days];
+    const headerRow = [{ content: "Disease (First Cases Only)", colSpan: 2 }, ...days];
 
     // Construct data rows
-    const dataRows = ailments.map(({ disease }) => {
+    const dataRows = ailments.map((ailment, index) => {
+      const { disease } = ailment; // Destructure the disease from the current ailment
       const rowData = days.map((day) => diseaseDataLookup[disease]?.[day] || 0);
-      return [disease, ...rowData];
+      return [index + 1, disease, ...rowData]; // Create separate cells for index and disease
     });
+    
 
     // AutoTable with adjusted table width and smaller padding
     doc.autoTable({
@@ -144,14 +146,30 @@ const Report = () => {
       margin: { top: 15, right: 10, bottom: 0, left: 10 },
       styles: {
         fontSize: 5, // Reduce font size for fitting more data
+        fillColor: [255, 255, 255], // White background for all cells
+        textColor: [0, 0, 0], // Black text color for all cells
+        lineColor: [0, 0, 0], // Border color
+        lineWidth: 0.5, // Border width
+        // halign: 'center', // Center align all cell content
+      },
+      headStyles: {
+        fillColor: [255, 255, 255], // White background for header cells
+        textColor: [0, 0, 0], // Black text color for header
+        fontStyle: "bold", // Bold text for header
+        lineColor: [0, 0, 0], // Border color for header
+        lineWidth: 0.5, // Border width for header
+        halign: "center", // Center align header content
       },
       theme: "grid",
       tableWidth: "fit", // Make the table width auto-adjust to fit the page
       bodyStyles: {
         cellPadding: 1, // Smaller padding to fit more content
+        fillColor: [255, 255, 255], // White background for body cells
+        textColor: [0, 0, 0], // Black text color for body cells
+        halign: "center", // Center align body content
       },
       columnStyles: {
-        0: { cellWidth: "auto" }, // Make sure the first column auto-adjusts for the disease names
+        0: { cellWidth: "auto", fontStyle: "bold", halign: "left" }, // Make sure the first column auto-adjusts for the disease names
       },
     });
 
