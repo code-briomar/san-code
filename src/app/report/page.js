@@ -15,7 +15,7 @@ import { devMode } from "@/lib/dev_mode";
 import { updateReport } from "../services";
 import { Loader } from "lucide-react";
 import jsPDF from "jspdf";
-import autoTable from 'jspdf-autotable'; // Make sure to import this
+import autoTable from "jspdf-autotable"; // Make sure to import this
 
 const Report = () => {
   const data = [
@@ -97,61 +97,68 @@ const Report = () => {
 
   const downloadReportInPDF = () => {
     const doc = new jsPDF({
-      orientation: 'landscape', // Landscape mode for more width
-      unit: 'pt', // Points to control better
-      format: 'A4', // A4 size paper
+      orientation: "landscape", // Landscape mode for more width
+      unit: "pt", // Points to control better
+      format: "A4", // A4 size paper
     });
-  
+
     // Reduce font size for header info
     doc.setFontSize(10);
-  
+
     // Add the additional information before the header
-    // const additionalInfo = [
-    //   "Facility Name: ________________________________",
-    //   "Ward: ________________________________",
-    //   "Sub-County: ________________________________",
-    //   "County: ________________________________",
-    //   "Month: ________________________________",
-    //   "Year: ________________________________",
-    // ];
-  
-    // additionalInfo.forEach((info, index) => {
-    //   doc.text(info, 10, 10 + index * 10);
-    // });
-  
+    const additionalInfo = [
+      "Facility Name: ________________________________",
+      "Ward: ________________________________",
+      "Sub-County: ________________________________",
+      "County: ________________________________",
+      "Month: ________________________________",
+      "Year: ________________________________",
+    ];
+
+    // Define starting position for text
+    const startX = 10; // Starting X position
+    const startY = 5; // Starting Y position
+    const spacing = 180; // Space between each item
+    // Font size for the additional information
+
+    additionalInfo.forEach((info, index) => {
+      // Add the information at the top of the page horizontally
+      doc.setFontSize(4);
+      doc.text(info, startX + index * spacing, startY);
+    });
+
     // Construct the header row
     const headerRow = ["Disease (First Cases Only)", ...days];
-  
+
     // Construct data rows
     const dataRows = ailments.map(({ disease }) => {
       const rowData = days.map((day) => diseaseDataLookup[disease]?.[day] || 0);
       return [disease, ...rowData];
     });
-  
+
     // AutoTable with adjusted table width and smaller padding
     doc.autoTable({
       head: [headerRow],
       body: dataRows,
-      startY: 1, // Adjust based on the header
-      margin: { top: 0, right: 10, bottom: 10, left: 10 },
+      startY: 10, // Adjust based on the header
+      margin: { top: 15, right: 10, bottom: 0, left: 10 },
       styles: {
         fontSize: 5, // Reduce font size for fitting more data
       },
-      theme: 'grid',
-      tableWidth: 'fit', // Make the table width auto-adjust to fit the page
+      theme: "grid",
+      tableWidth: "fit", // Make the table width auto-adjust to fit the page
       bodyStyles: {
         cellPadding: 1, // Smaller padding to fit more content
       },
       columnStyles: {
-        0: { cellWidth: 'auto' }, // Make sure the first column auto-adjusts for the disease names
+        0: { cellWidth: "auto" }, // Make sure the first column auto-adjusts for the disease names
       },
     });
-  
+
     // Save the PDF
     const today = new Date().toISOString().split("T")[0];
     doc.save(`report-${today}.pdf`);
   };
-  
 
   return (
     <>

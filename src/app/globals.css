@@ -30,3 +30,27 @@
 ::-webkit-scrollbar-button {
   display: none;
 }
+
+/* Add this CSS to your global styles or in a <style> tag in your component */
+@media print {
+  /* Hide elements that are not needed in the print version */
+  .no-print {
+    display: none !important;
+  }
+
+  /* Set the page orientation to landscape */
+  @page {
+    size: landscape;
+    margin: 1cm;
+  }
+
+  /* Ensure the table and other elements fit within the print page */
+  .table-auto {
+    width: 100% !important;
+  }
+
+  /* Adjust other styles as needed for print */
+  body {
+    -webkit-print-color-adjust: exact;
+  }
+}
