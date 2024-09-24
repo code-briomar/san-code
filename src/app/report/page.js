@@ -15,7 +15,7 @@ import { devMode } from "@/lib/dev_mode";
 import { updateReport } from "../services";
 import { Loader } from "lucide-react";
 import jsPDF from "jspdf";
-import ReactToPrint from "react-to-print";
+import autoTable from 'jspdf-autotable'; // Make sure to import this
 
 const Report = () => {
   const data = [
@@ -95,73 +95,64 @@ const Report = () => {
     return lookup;
   }, {});
 
-  // Download the report in csv
-  const downloadReportInCSV = () => {
-    // Construct the header row
-    const miscellaneousInfo = `${
-      new Date().toLocaleString("default", { month: "long" }) +
-      " " +
-      new Date().getFullYear()
-    }.\n`;
-    const headerRow_1 = ["Facility Name:________________________________", "Ward:________________________________", "Sub-County:________________________________", "County:________________________________"];
-    const headerRow_2 = ["Disease (First Cases Only)", ...days].join(",");
-
-    // Construct data rows
-    const dataRows = ailments.map(({ disease }) => {
-      const rowData = days.map((day) => diseaseDataLookup[disease]?.[day] || 0);
-      return [`"${disease}"`, ...rowData].join(",");
-    });
-
-    // Combine header and data rows
-    const csv = [miscellaneousInfo, headerRow_1, headerRow_2, ...dataRows].join("\n");
-
-    const blob = new Blob([csv], { type: "text/csv" });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    const today = new Date().toISOString().split("T")[0];
-    a.download = `report-${today}.csv`;
-    a.click();
-  };
-
-  // Download the report in pdf
   const downloadReportInPDF = () => {
-    const doc = new jsPDF();
-
-    // Add the additional information before the header
-    const additionalInfo = [
-      "Facility Name: ________________________________",
-      "Ward: ________________________________",
-      "Sub-County: ________________________________",
-      "County: ________________________________",
-      "Month: ________________________________",
-      "Year: ________________________________",
-    ];
-
-    additionalInfo.forEach((info, index) => {
-      doc.text(info, 10, 10 + index * 10);
+    const doc = new jsPDF({
+      orientation: 'landscape', // Landscape mode for more width
+      unit: 'pt', // Points to control better
+      format: 'A4', // A4 size paper
     });
-
+  
+    // Reduce font size for header info
+    doc.setFontSize(10);
+  
+    // Add the additional information before the header
+    // const additionalInfo = [
+    //   "Facility Name: ________________________________",
+    //   "Ward: ________________________________",
+    //   "Sub-County: ________________________________",
+    //   "County: ________________________________",
+    //   "Month: ________________________________",
+    //   "Year: ________________________________",
+    // ];
+  
+    // additionalInfo.forEach((info, index) => {
+    //   doc.text(info, 10, 10 + index * 10);
+    // });
+  
     // Construct the header row
     const headerRow = ["Disease (First Cases Only)", ...days];
-
+  
     // Construct data rows
     const dataRows = ailments.map(({ disease }) => {
       const rowData = days.map((day) => diseaseDataLookup[disease]?.[day] || 0);
       return [disease, ...rowData];
     });
-
-    // Add the table to the PDF
+  
+    // AutoTable with adjusted table width and smaller padding
     doc.autoTable({
       head: [headerRow],
       body: dataRows,
-      startY: 80, // Adjust this value based on the additional info height
+      startY: 1, // Adjust based on the header
+      margin: { top: 0, right: 10, bottom: 10, left: 10 },
+      styles: {
+        fontSize: 5, // Reduce font size for fitting more data
+      },
+      theme: 'grid',
+      tableWidth: 'fit', // Make the table width auto-adjust to fit the page
+      bodyStyles: {
+        cellPadding: 1, // Smaller padding to fit more content
+      },
+      columnStyles: {
+        0: { cellWidth: 'auto' }, // Make sure the first column auto-adjusts for the disease names
+      },
     });
-
+  
     // Save the PDF
     const today = new Date().toISOString().split("T")[0];
     doc.save(`report-${today}.pdf`);
   };
+  
+
   return (
     <>
       <div className="m-10">
@@ -177,14 +168,10 @@ const Report = () => {
             <Link
               href={"javascript:void(0)"}
               className="text-blue-500 underline"
-              onClick={() => downloadReportInCSV()}
+              onClick={downloadReportInPDF} // Use the PDF generation function
             >
-              Print
+              Download PDF
             </Link>
-            {/* Print Requirements */}
-            {/* Remove All Headers and Footers */}
-            {/* Keep to Only One Page on Landscape */}
-            
           </div>
         </div>
         {isLoading && (
@@ -197,32 +184,26 @@ const Report = () => {
             <div className={"flex items-center space-x-2 my-2"}>
               <div className="flex items-center space-x-0">
                 <span>Facility Name:</span>
-                {/* Underline character */}
                 <span>________________________________</span>
               </div>
               <div className="flex items-center space-x-0">
                 <span>Ward:</span>
-                {/* Underline character */}
                 <span>________________________________</span>
               </div>
               <div className="flex items-center space-x-0">
                 <span>Sub-County:</span>
-                {/* Underline character */}
                 <span>________________________________</span>
               </div>
               <div className="flex items-center space-x-0">
                 <span>County:</span>
-                {/* Underline character */}
                 <span>________________________________</span>
               </div>
               <div className="flex items-center space-x-0">
                 <span>Month:</span>
-                {/* Underline character */}
                 <span>________________________________</span>
               </div>
               <div className="flex items-center space-x-0">
                 <span>Year:</span>
-                {/* Underline character */}
                 <span>________________________________</span>
               </div>
             </div>
@@ -242,8 +223,7 @@ const Report = () => {
               <TableBody>
                 {ailments.map((ailment) => (
                   <TableRow key={ailment.disease}>
-                    {/* <TableCell className="border border-gray-300  min-w-[300px]"> */}
-                    <TableCell className="border border-gray-300  min-w-[100px]">
+                    <TableCell className="border border-gray-300 min-w-[100px]">
                       {ailment.disease}
                     </TableCell>
                     {days.map((day) => (
