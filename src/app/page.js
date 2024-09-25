@@ -1,15 +1,43 @@
 "use client";
 import { ArrowRight } from "lucide-react";
 import Image from "next/image";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export default function Home() {
+  const [timeLeft, setTimeLeft] = useState({days:0,hours:0,minutes:0,seconds:0});
   useEffect(() => {
     console.log(
       "%c This project is developed by Briomar",
       "Github: https://github.com/code-briomar",
       "background: #222; color: #bada55"
     );
+
+
+    const targetDate = new Date();
+    targetDate.setDate(targetDate.getDate()+4);
+
+    const calculateTimeLeft = () => {
+      const now = new Date();
+      const timeDifference = targetDate - now;
+
+      if(timeDifference > 0){
+        const days = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((timeDifference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((timeDifference % (1000 * 60)) / 1000);
+        setTimeLeft({days,hours,minutes,seconds});
+      } else {
+        setTimeLeft({days:0, hours:0,minutes:0,seconds:0});
+      }
+    }
+
+    const timer = setInterval(() => {
+      calculateTimeLeft();
+    });
+
+    return () => {
+      clearInterval(timer);
+    }
   }, []);
   return (
     <>
@@ -40,6 +68,24 @@ export default function Home() {
             <p className="lg:mx-1 pointer-events-none text-xs md:text-sm opacity-50 lg:pointer-events-auto">
               LomoganTech
             </p>
+          </div>
+        </div>
+
+        {/* Announcement Banner */}
+        <div className={"border-solid border-2 border-slate-500 rounded-lg"}>
+          <div className="flex flex-col max-w-[800px] items-center justify-between p-4">
+            <p className="text-sm">
+              <span className="font-semibold">Announcement:</span> Some sections of this system might be disabled.
+              Please sort out the invoices before the deadline to prevent any inconveniences.
+            </p>
+            <a
+              href="https://lomogantech.co.ke"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-white bg-rose-500 rounded-lg"
+            >
+              Time Remaining : {timeLeft.days} days {timeLeft.hours} hours {timeLeft.minutes} minutes {timeLeft.seconds} seconds
+            </a>
           </div>
         </div>
 
