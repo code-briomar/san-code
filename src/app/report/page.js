@@ -99,7 +99,7 @@ const Report = () => {
     const doc = new jsPDF({
       orientation: "landscape", // Landscape mode for more width
       unit: "pt", // Points to control better
-      format: "A4", // A4 size paper
+      format: "A3", // A4 size paper
     });
 
     // Reduce font size for header info
@@ -137,6 +137,15 @@ const Report = () => {
       return [index + 1, disease, ...rowData]; // Create separate cells for index and disease
     });
     
+    // Column Styles
+    const columnStyles = {
+      0: { cellWidth: "auto", fontStyle: "bold", halign: "center" }, // First column
+      1: { fontStyle: "bold", halign: "left" }, // Second column
+    };
+
+for (let i = 2; i <= 31; i++) {
+  columnStyles[i] = { cellWidth: "auto", halign: "center" };
+}
 
     // AutoTable with adjusted table width and smaller padding
     doc.autoTable({
@@ -150,6 +159,8 @@ const Report = () => {
         textColor: [0, 0, 0], // Black text color for all cells
         lineColor: [0, 0, 0], // Border color
         lineWidth: 0.5, // Border width
+        
+    
         // halign: 'center', // Center align all cell content
       },
       headStyles: {
@@ -162,15 +173,14 @@ const Report = () => {
       },
       theme: "grid",
       tableWidth: "fit", // Make the table width auto-adjust to fit the page
+      tableHeight: "fit", // Make the table height auto-adjust to fit the content
       bodyStyles: {
-        cellPadding: 1, // Smaller padding to fit more content
+        cellPadding: 2.7, // Smaller padding to fit more content
         fillColor: [255, 255, 255], // White background for body cells
         textColor: [0, 0, 0], // Black text color for body cells
-        halign: "center", // Center align body content
+        halign: "left", // Center align body content
       },
-      columnStyles: {
-        0: { cellWidth: "auto", fontStyle: "bold", halign: "left" }, // Make sure the first column auto-adjusts for the disease names
-      },
+      columnStyles: columnStyles
     });
 
     // Save the PDF
