@@ -72,7 +72,7 @@ export default function Home() {
         </div>
 
         {/* Announcement Banner */}
-        <div className={"border-solid border-2 border-slate-500 rounded-lg"}>
+        {/* <div className={"border-solid border-2 border-slate-500 rounded-lg"}>
           <div className="flex flex-col max-w-[800px] items-center justify-between p-4">
             <p className="text-sm">
               <span className="font-semibold">Announcement:</span> Some sections of this system might be disabled.
@@ -87,7 +87,7 @@ export default function Home() {
               Time Remaining : {timeLeft.days} days {timeLeft.hours} hours {timeLeft.minutes} minutes {timeLeft.seconds} seconds
             </a>
           </div>
-        </div>
+        </div> */}
 
         {/* Links : students, staff, report and analytics, upload student details */}
         <div className="md:my-32 sm:mb-32 grid text-center lg:w-full lg:mb-0 lg:grid-cols-5 lg:text-left">
