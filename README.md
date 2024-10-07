@@ -1,43 +1,42 @@
-Here's an improved version of your README:
-
----
-
 # Health Records Management System
 
-**Project:** Health Records Management System for Alliance High School, Kikuyu  
+**Project Name:** Health Records Management System for Alliance High School, Kikuyu  
 **Author:** Briane Lomoni  
-**GitHub:** [code-briomar](https://github.com/code-briomar)  
-**Project Duration:** 2021 - 2024  
-**Start Date:** September 21, 2021
+**GitHub Profile:** [code-briomar](https://github.com/code-briomar)  
+**Project Timeline:** September 2021 – 2024
 
 ---
 
-## Wishlist
+## Overview
+
+The Health Records Management System is a digital platform designed to streamline the management of student health records at Alliance High School, Kikuyu. This system allows the school’s medical staff to efficiently track and manage students' medical histories, medication schedules, and visit logs, ensuring that all health information is accurate and easily accessible.
 
 ---
 
-This structure provides clarity and a more professional presentation for your project details.
+## Key Features
 
-### High Priority
-1. <s><span>No. of days student has been taking meds e.g 1st day, 2nd day etc.</span>
-<ul>
-Logic : Subtract days from today since when the record was created. ( That's your number of days )
-</ul>
+- **Student Health Profiles:** Each student has a dedicated health profile that stores important medical information, including medical history, allergies, and current medications.
+  
+- **Medication Tracking:** The system tracks the medication history of each student, showing when a student took medication and the time of day (morning, afternoon, or evening). This feature helps medical staff monitor and manage ongoing treatments more effectively.
+  
+- **New Student Registration:** Medical staff can easily add new students to the system, ensuring that their health records are up-to-date from the moment they join the school.
 
-2. <span>Show time of day when the student took the meds. ( Last took meds at lunchtime, morning or evening )
-</span>
-<ul>
-Logic : Check date when lastly here and get if it's morning, afternoon or evening.
-</ul>
-</s>
+- **Record Updates:** Health records can be edited to reflect changes in a student's medical status, treatments, or medications. This ensures that records are always current and accurate.
 
-3. <span>Form to add new students to the system.</span>
+- **Non-Busherian Students:** The system supports records for non-Busherian students, making it flexible and adaptable to different student groups.
 
-4. <span>Form to edit student records in the system.</span>
+---
 
-5. <span>Form to add non-busherian students records to the system.</span>
+## Purpose
 
+The primary goal of this system is to improve the efficiency and accuracy of managing health records at the school. By digitizing the process, the system reduces paperwork, minimizes errors, and allows for quicker access to critical health information. This ensures that students receive the best possible care in a timely manner.
 
+---
 
-### Low Priority
-<input type="checkbox"/> <span>Non busherian students </span> 
+## Contact
+
+For more information or questions about this project, please feel free to contact:
+
+**Briane Lomoni**  
+Email: [kapolonbraine@gmail.com](mailto:kapolonbraine@gmail.com)  
+GitHub: [code-briomar](https://github.com/code-briomar)
