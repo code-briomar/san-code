@@ -54,3 +54,8 @@
     -webkit-print-color-adjust: exact;
   }
 }
+
+/* In your CSS file */
+.no-outline:focus {
+  outline: none;
+}
