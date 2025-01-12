@@ -1,9 +1,6 @@
 "use client";
 
 import {
-  ColumnDef,
-  ColumnFiltersState,
-  SortingState,
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
@@ -12,6 +9,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 
+import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -20,10 +18,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import * as React from "react";
 import { Input } from "./input";
+
+import { useEffect, useState } from "react";
+import { DatePickerWithRange } from "./date_picker";
 
 export function DataTable({ columns, data }) {
   const [sorting, setSorting] = React.useState([]);
@@ -43,15 +43,29 @@ export function DataTable({ columns, data }) {
     },
   });
 
+  // Searching records by date
+  const [date, setDate] = useState();
+
+  useEffect(() => {
+    const formattedDate = date ? date.toISOString().split("T")[0] : "";
+    table.setGlobalFilter(formattedDate);
+  }, [date]);
+
   return (
     <div>
       <div className="flex items-center py-4">
         <Input
-          placeholder={`Search by ${
-            columns && columns.length ? columns[0].header : ""
-          }`}
+          placeholder={`Search by Name, Admission Number, Class, Ailment or Medication`}
           onChange={(e) => table.setGlobalFilter(e.target.value)}
         />
+        <div className="relative mx-1">
+          {/* Ping effect positioned at the top-right corner */}
+          <span className="absolute top-2 right-2 flex h-3 w-3">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-3 w-3 bg-sky-500"></span>
+          </span>
+          <DatePickerWithRange date={date} setDate={setDate} />
+        </div>
       </div>
 
       <div className="rounded-md border">
