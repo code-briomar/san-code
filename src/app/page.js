@@ -4,7 +4,12 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 
 export default function Home() {
-  const [timeLeft, setTimeLeft] = useState({days:0,hours:0,minutes:0,seconds:0});
+  const [timeLeft, setTimeLeft] = useState({
+    days: 0,
+    hours: 0,
+    minutes: 0,
+    seconds: 0,
+  });
   useEffect(() => {
     console.log(
       "%c This project is developed by Briomar",
@@ -12,24 +17,27 @@ export default function Home() {
       "background: #222; color: #bada55"
     );
 
-
     const targetDate = new Date();
-    targetDate.setDate(targetDate.getDate()+4);
+    targetDate.setDate(targetDate.getDate() + 4);
 
     const calculateTimeLeft = () => {
       const now = new Date();
       const timeDifference = targetDate - now;
 
-      if(timeDifference > 0){
+      if (timeDifference > 0) {
         const days = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((timeDifference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const minutes = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60));
+        const hours = Math.floor(
+          (timeDifference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+        );
+        const minutes = Math.floor(
+          (timeDifference % (1000 * 60 * 60)) / (1000 * 60)
+        );
         const seconds = Math.floor((timeDifference % (1000 * 60)) / 1000);
-        setTimeLeft({days,hours,minutes,seconds});
+        setTimeLeft({ days, hours, minutes, seconds });
       } else {
-        setTimeLeft({days:0, hours:0,minutes:0,seconds:0});
+        setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
       }
-    }
+    };
 
     const timer = setInterval(() => {
       calculateTimeLeft();
@@ -37,7 +45,7 @@ export default function Home() {
 
     return () => {
       clearInterval(timer);
-    }
+    };
   }, []);
   return (
     <>
@@ -163,6 +171,28 @@ export default function Home() {
             <p className={`m-0 max-w-[30ch] text-sm opacity-50 text-balance`}>
               Upload new students to the system to easily track their health
               records.
+            </p>
+          </a>
+
+          <a
+            href="/profile/search"
+            className="relative group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
+          >
+            {/* Ping effect positioned at the top-right corner */}
+            <span className="absolute top-2 right-2 flex h-3 w-3">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-3 w-3 bg-sky-500"></span>
+            </span>
+
+            {/* Main content */}
+            <h2 className="mb-3 text-2xl font-semibold flex items-center">
+              Profile Search
+              <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none ml-2">
+                <ArrowRight className="w-5 h-5" />
+              </span>
+            </h2>
+            <p className="m-0 max-w-[30ch] text-sm opacity-50 text-balance">
+              Search for a student's history
             </p>
           </a>
         </div>
