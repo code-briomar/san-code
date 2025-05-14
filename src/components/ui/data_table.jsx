@@ -55,15 +55,15 @@ export function DataTable({ columns, data }) {
     <div>
       <div className="flex items-center py-4">
         <Input
-          placeholder={`Search by Name, Admission Number, Class, Ailment or Medication`}
+          placeholder={`Search...`}
           onChange={(e) => table.setGlobalFilter(e.target.value)}
         />
         <div className="relative mx-1">
           {/* Ping effect positioned at the top-right corner */}
-          <span className="absolute top-2 right-2 flex h-3 w-3">
+          {/* <span className="absolute top-2 right-2 flex h-3 w-3">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
             <span className="relative inline-flex rounded-full h-3 w-3 bg-sky-500"></span>
-          </span>
+          </span> */}
           <DatePickerWithRange date={date} setDate={setDate} />
         </div>
       </div>

@@ -127,8 +127,8 @@ const DiseaseChart = ({ data, pageSize = 1 }) => {
   }, []);
 
   return (
-    <div>
-      <div ref={chartRef} style={{ width: "100%", height: "400px" }} />
+    <div className="dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:dark:bg-zinc-800/30">
+      <div ref={chartRef} style={{ width: "100%", height: "400px" }} className="dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:dark:bg-zinc-800/30" />
       <div style={{ textAlign: "center", marginTop: "10px" }}>
         <Button
           variant={"outline"}

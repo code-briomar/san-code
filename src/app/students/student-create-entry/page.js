@@ -117,7 +117,7 @@ export default function StudentCreateEntry() {
       </div>
 
       <div className="sm:mb-32 ">
-        <div className="border-b border-gray-300 pb-6 pt-8 lg:rounded-xl lg:p-8 lg:border">
+        <div className="border-b border-gray-300 dark:border-gray-800 pb-6 pt-8 lg:rounded-xl lg:p-8 lg:border">
           {pageLoading && <LucideLoader className="w-6 h-6 animate-spin" />}
 
           {!pageLoading && (
@@ -131,7 +131,7 @@ export default function StudentCreateEntry() {
                     value={formik.values.admNo}
                     onChange={formik.handleChange}
                     type="text"
-                    className="my-5 outline outline-gray-200 outline-[1px] focus:outline-red-500"
+                    className="my-5 dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:dark:bg-zinc-800/30"
                   />
                 </div>
                 <div className={"grid w-full gap-1.5"}>
@@ -142,7 +142,7 @@ export default function StudentCreateEntry() {
                     onChange={formik.handleChange}
                     placeholder={"e.g Braine"}
                     type="text"
-                    className="my-5 outline outline-gray-200 outline-[1px] focus:outline-red-500"
+                    className="my-5 dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:dark:bg-zinc-800/30"
                   />
                 </div>
                 <div className={"grid w-full gap-1.5"}>
@@ -153,7 +153,7 @@ export default function StudentCreateEntry() {
                     onChange={formik.handleChange}
                     placeholder={"e.g Lomoni"}
                     type="text"
-                    className="my-5 outline outline-gray-200 outline-[1px] focus:outline-red-500"
+                    className="my-5 dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:dark:bg-zinc-800/30"
                   />
                 </div>
                 <div className="grid w-full gap-1.5">
@@ -164,7 +164,7 @@ export default function StudentCreateEntry() {
                     onChange={formik.handleChange}
                     placeholder={"e.g 4D"}
                     type={"text"}
-                    className="my-5 outline outline-gray-200 outline-[1px] focus:outline-red-500"
+                    className="my-5 dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:dark:bg-zinc-800/30"
                   />
                 </div>
               </div>

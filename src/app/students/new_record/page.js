@@ -117,7 +117,7 @@ export default function NewRecordStudents() {
   });
 
   return (
-    <main className="flex min-h-screen flex-col items-center p-24">
+    <main className="flex min-h-screen flex-col items-center p-10 md:p-24">
       {/* Title bar */}
       <div className="z-10 max-w-5xl w-full items-center font-mono text-sm lg:flex">
         <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
@@ -128,7 +128,7 @@ export default function NewRecordStudents() {
       </div>
 
       {/* Form : Enter new record */}
-      <div className="sm:mb-32 ">
+      <div className="sm:mb-32 mt-10 ">
         <div className="border-b border-gray-300 pb-6 pt-8 lg:rounded-xl lg:p-8 lg:border">
           {pageLoading && <LucideLoader className="w-6 h-6 animate-spin" />}
 
@@ -150,7 +150,8 @@ export default function NewRecordStudents() {
                   />
                 </div>
                 <div className={"grid w-full gap-1.5"}>
-                  <label for={"tempReading"}>Temperature Reading</label>
+                  <label for={"tempReading"} className="md:hidden">Temp. Reading</label>
+                  <label for={"tempReading"} className="hidden md:block">Temperature Reading</label>
                   <Input
                     name={"tempReading"}
                     value={formik.values.tempReading}
@@ -177,7 +178,7 @@ export default function NewRecordStudents() {
                         variant="outline"
                         role="combobox"
                         aria-expanded={open}
-                        className="w-[200px] justify-between"
+                        className="md:w-[200px] justify-between"
                       >
                         <span className=" text-ellipsis overflow-hidden">
                           {formik.values.ailment
@@ -257,7 +258,7 @@ export default function NewRecordStudents() {
               <Button
                 variant="outline"
                 className={
-                  "flex space-x-1 items-center justify-center bg-green-500"
+                  "flex space-x-1 items-center justify-center bg-green-500 right-0" 
                 }
                 type="submit"
                 onClick={formik.handleSubmit}

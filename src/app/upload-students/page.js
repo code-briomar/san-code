@@ -103,7 +103,7 @@ export default function App() {
         <h4 className="text-2xl font-bold my-4">
           Upload an Excel file with student details:
         </h4>
-        <Link href={"/"} className="text-blue-500 underline">
+        <Link href={"/"} className="text-blue-500 underline lg:mr-[40px] lg:mt-10">
           Home
         </Link>
       </div>

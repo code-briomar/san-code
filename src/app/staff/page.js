@@ -174,7 +174,7 @@ export default function Students() {
 
       {/* Form : 1. Get record by id number*/}
       <div className="sm:mb-32 ">
-        <div className="border-b border-gray-300 pb-6 pt-8 lg:rounded-xl lg:p-8 lg:border">
+        <div className="border-b border-gray-300 pb-6 pt-8 lg:rounded-xl lg:p-8 lg:border dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:dark:bg-zinc-800/30">
           {!staffData && !addNewStaffRecord && (
             <>
               <span className="font-mono text-xs md:text-base">
@@ -187,12 +187,12 @@ export default function Students() {
                   type="text"
                   autoComplete="false"
                   placeholder="e.g 42073535"
-                  className="my-5 outline outline-gray-200 outline-[1px] focus:outline-red-500"
+                  className="my-5 dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:dark:bg-zinc-800/30"
                   onChange={formik.handleChange}
                 />
                 <Button
                   variant="outline"
-                  className={"flex space-x-1 items-center justify-center"}
+                  className={"flex space-x-1 items-center justify-center dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:dark:bg-zinc-800/30"}
                   type="button"
                   onClick={formik.handleSubmit}
                 >

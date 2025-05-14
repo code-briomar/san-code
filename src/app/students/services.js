@@ -16,6 +16,15 @@ export const fetchStudentData = async (admissionNumber) => {
   }
 };
 
+export const fetchStudentHistory = async (admissionNumber) => {
+  try {
+    const response = await base_api.get(`/students/history/${admissionNumber}`);
+    return response.data;
+  } catch (error) {
+    devMode && console.error(error);
+  }
+}
+
 // Route : /students-going-to-hospital
 export const fetchStudentsGoingToHospital = async () => {
   try {
