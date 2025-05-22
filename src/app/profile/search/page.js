@@ -1,6 +1,5 @@
 "use client";
 import { Loader } from "lucide-react";
-import Link from "next/link";
 import { useEffect, useState } from "react";
 import ProfileSearchInput from "./components/profile_search_input";
 
@@ -52,9 +51,9 @@ const ProfileSearch = () => {
           Profile Search
         </h3>
 
-        <Link href={"/"} className="mt-8 text-blue-500 underline">
+        <a href={"/"} className="mt-8 text-blue-500 underline">
           Home
-        </Link>
+        </a>
       </div>
       <div className="h-[82vh] w-full flex items-center justify-center">
         {isLoading && <Loader className="w-5 h-5 animate-spin" />}

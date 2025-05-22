@@ -1,11 +1,9 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import DiseaseChart from "./disease-chart";
-import Link from "next/link";
-import { base_api } from "@/lib/base_api";
-import { fetchReportData } from "./services";
 import { devMode } from "@/lib/dev_mode";
 import { Loader } from "lucide-react";
+import React, { useEffect, useState } from "react";
+import DiseaseChart from "./disease-chart";
+import { fetchReportData } from "./services";
 
 const Analytics = () => {
   const [reportData, setReportData] = useState([]);
@@ -44,9 +42,9 @@ const Analytics = () => {
           Official Analytics
         </h3>
 
-        <Link href={"/"} className="text-blue-500 underline">
+        <a href={"/"} className="text-blue-500 underline">
           Home
-        </Link>
+        </a>
       </div>
       <div className="m-10">
         {isLoading && <Loader className="w-5 h-5 animate-spin" />}

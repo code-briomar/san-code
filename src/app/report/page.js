@@ -3,19 +3,16 @@ import {
   Table,
   TableBody,
   TableCell,
-  TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { ailments } from "../staff/ailments";
-import Link from "next/link";
-import { fetchReportData } from "./services";
-import { useEffect, useState } from "react";
 import { devMode } from "@/lib/dev_mode";
-import { updateReport } from "../services";
-import { Loader } from "lucide-react";
 import jsPDF from "jspdf";
-import autoTable from "jspdf-autotable"; // Make sure to import this
+import { Loader } from "lucide-react";
+import { useEffect, useState } from "react";
+import { updateReport } from "../services";
+import { ailments } from "../staff/ailments";
+import { fetchReportData } from "./services";
 
 const Report = () => {
   const data = [
@@ -128,7 +125,10 @@ const Report = () => {
     });
 
     // Construct the header row
-    const headerRow = [{ content: "Disease (First Cases Only)", colSpan: 2 }, ...days];
+    const headerRow = [
+      { content: "Disease (First Cases Only)", colSpan: 2 },
+      ...days,
+    ];
 
     // Construct data rows
     const dataRows = ailments.map((ailment, index) => {
@@ -136,16 +136,16 @@ const Report = () => {
       const rowData = days.map((day) => diseaseDataLookup[disease]?.[day] || 0);
       return [index + 1, disease, ...rowData]; // Create separate cells for index and disease
     });
-    
+
     // Column Styles
     const columnStyles = {
       0: { cellWidth: "auto", fontStyle: "bold", halign: "center" }, // First column
       1: { fontStyle: "bold", halign: "left" }, // Second column
     };
 
-for (let i = 2; i <= 31; i++) {
-  columnStyles[i] = { cellWidth: "auto", halign: "center" };
-}
+    for (let i = 2; i <= 31; i++) {
+      columnStyles[i] = { cellWidth: "auto", halign: "center" };
+    }
 
     // AutoTable with adjusted table width and smaller padding
     doc.autoTable({
@@ -159,8 +159,7 @@ for (let i = 2; i <= 31; i++) {
         textColor: [0, 0, 0], // Black text color for all cells
         lineColor: [0, 0, 0], // Border color
         lineWidth: 0.5, // Border width
-        
-    
+
         // halign: 'center', // Center align all cell content
       },
       headStyles: {
@@ -180,7 +179,7 @@ for (let i = 2; i <= 31; i++) {
         textColor: [0, 0, 0], // Black text color for body cells
         halign: "left", // Center align body content
       },
-      columnStyles: columnStyles
+      columnStyles: columnStyles,
     });
 
     // Save the PDF
@@ -197,16 +196,16 @@ for (let i = 2; i <= 31; i++) {
           </h3>
 
           <div className="mt-8 flex items-center space-x-2">
-            <Link href={"/"} className="text-blue-500 underline">
+            <a href={"/"} className="text-blue-500 underline">
               Home
-            </Link>
-            <Link
+            </a>
+            <a
               href={"javascript:void(0)"}
               className="text-blue-500 underline"
               onClick={downloadReportInPDF} // Use the PDF generation function
             >
               Download PDF
-            </Link>
+            </a>
           </div>
         </div>
         {isLoading && (

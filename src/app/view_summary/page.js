@@ -1,16 +1,10 @@
 "use client";
+import { Button } from "@/components/ui/button";
+import { DataTable } from "@/components/ui/data_table";
+import { ArrowLeft, ArrowUpRightIcon, Loader } from "lucide-react";
+import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { fetchStaffData, fetchStudentData } from "./services";
-import { DataTable } from "@/components/ui/data_table";
-import {
-  ArrowLeft,
-  ArrowUpRightIcon,
-  Loader,
-  MessageCircleQuestion,
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
 
 const ViewSummary = () => {
   const router = useRouter();
@@ -207,7 +201,7 @@ const ViewSummary = () => {
           Records.
         </h3>
 
-        <Link
+        <a
           href={{
             pathname: "/report",
           }}
@@ -216,7 +210,7 @@ const ViewSummary = () => {
         >
           View official report
           <ArrowUpRightIcon className="w-5 h-5" />
-        </Link>
+        </a>
 
         <Button variant={"outline"} onClick={() => router.push("/")}>
           <ArrowLeft className="w-5 h-5" />

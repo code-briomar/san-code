@@ -1,8 +1,8 @@
-import { Inter } from "next/font/google";
-import "./globals.css";
-import { Toaster } from "sonner";
-import ThemeSwitcher from "@/components/custom/ThemeSwitcher";
+import { ThemeSwitcher } from "@/components/custom/ThemeSwitcher";
 import { ThemeProvider } from "next-themes";
+import { Inter } from "next/font/google";
+import { Toaster } from "sonner";
+import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -16,10 +16,10 @@ export default function RootLayout({ children }) {
     <>
       <html lang="en">
         <body className={inter.className}>
-          <Toaster richColors />
           <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
-            {children}
             <ThemeSwitcher />
+            <Toaster richColors />
+            {children}
           </ThemeProvider>
         </body>
       </html>

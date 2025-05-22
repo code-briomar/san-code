@@ -1,17 +1,16 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ArrowRight, Dot, LucideLoader, PenSquare } from "lucide-react";
-import React, { useEffect, useState } from "react";
-import { useFormik } from "formik";
-import * as Yup from "yup";
-import { updateEntry } from "./services";
-import { toast } from "sonner";
-import { devMode } from "@/lib/dev_mode";
 import { Separator } from "@/components/ui/separator";
+import { devMode } from "@/lib/dev_mode";
+import { useFormik } from "formik";
+import { ArrowRight, Dot, LucideLoader, PenSquare } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
+import React, { useEffect, useState } from "react";
+import { toast } from "sonner";
+import * as Yup from "yup";
 import { fetchStudentData } from "../services";
-import Link from "next/link";
+import { updateEntry } from "./services";
 
 export default function StudentUpdateEntry() {
   const router = useRouter();
@@ -118,22 +117,20 @@ export default function StudentUpdateEntry() {
           </code>
         </p>
 
-
         <div className="hidden lg:flex lg:space-x-4 lg:ml-4 lg:mt-2">
-          <Link
+          <a
             href="/"
             className="flex items-end space-x-1 text-base text-blue-500 underline font-semibold"
           >
             Home
-          </Link>
-          <Link
+          </a>
+          <a
             href="/students"
             className="flex items-end space-x-1 text-base text-blue-500 underline font-semibold"
           >
             Students
-          </Link>
+          </a>
         </div>
-
       </div>
 
       <div className="sm:mb-32 ">

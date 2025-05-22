@@ -1,49 +1,24 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Separator } from "@/components/ui/separator";
+import { devMode } from "@/lib/dev_mode";
+import { useFormik } from "formik";
 import {
   ArrowRight,
   ArrowUpRightFromSquare,
-  Check,
-  ChevronsUpDown,
   Dot,
   Loader,
   LucideLoader,
   Pencil,
-  PenSquare,
   Plus,
   X,
 } from "lucide-react";
-import Image from "next/image";
-import { useState } from "react";
-import { useFormik } from "formik";
-import * as Yup from "yup";
-import {
-  createNewStaffRecord,
-  fetchstaffData,
-  fetchStaffMemberData,
-} from "./services";
-import { toast } from "sonner";
-import { devMode } from "@/lib/dev_mode";
-import { Separator } from "@/components/ui/separator";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { fetchStaffData } from "../view_summary/services";
-import { ailments } from "./ailments";
-import { Textarea } from "@/components/ui/textarea";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
+import { useState } from "react";
+import { toast } from "sonner";
+import * as Yup from "yup";
+import { createNewStaffRecord, fetchStaffMemberData } from "./services";
 
 export default function Students() {
   const router = useRouter();
@@ -164,12 +139,9 @@ export default function Students() {
           <code className="font-mono font-bold">&nbsp;Staff</code>
         </p>
 
-        <Link
-          href={"/"}
-          className="text-blue-500 underline font-semibold text-lg"
-        >
+        <a href={"/"} className="text-blue-500 underline font-semibold text-lg">
           Home
-        </Link>
+        </a>
       </div>
 
       {/* Form : 1. Get record by id number*/}
@@ -192,7 +164,9 @@ export default function Students() {
                 />
                 <Button
                   variant="outline"
-                  className={"flex space-x-1 items-center justify-center dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:dark:bg-zinc-800/30"}
+                  className={
+                    "flex space-x-1 items-center justify-center dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:dark:bg-zinc-800/30"
+                  }
                   type="button"
                   onClick={formik.handleSubmit}
                 >
@@ -217,14 +191,14 @@ export default function Students() {
                 </div>
               )}
               <div className="flex items-center space-x-2 mt-10">
-              <Link
-                href={"/view_summary"}
-                target="_blank"
-                className={"text-[#039be5] underline flex gap-2 items-center"}
-              >
-                {"View Summary"}
-                <ArrowUpRightFromSquare className={"w-5 h-5"} />
-              </Link>
+                <a
+                  href={"/view_summary"}
+                  target="_blank"
+                  className={"text-[#039be5] underline flex gap-2 items-center"}
+                >
+                  {"View Summary"}
+                  <ArrowUpRightFromSquare className={"w-5 h-5"} />
+                </a>
               </div>
             </>
           )}

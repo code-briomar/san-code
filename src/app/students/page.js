@@ -1,6 +1,10 @@
 "use client";
 import { Button } from "@/components/ui/button";
+import { DataTable } from "@/components/ui/data_table";
 import { Input } from "@/components/ui/input";
+import { Separator } from "@/components/ui/separator";
+import { devMode } from "@/lib/dev_mode";
+import { useFormik } from "formik";
 import {
   ArrowRight,
   ArrowUpRightFromSquare,
@@ -13,9 +17,9 @@ import {
   Wrench,
   X,
 } from "lucide-react";
-import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { useFormik } from "formik";
+import { toast } from "sonner";
 import * as Yup from "yup";
 import {
   fetchStudentData,
@@ -23,12 +27,6 @@ import {
   fetchStudentsGoingToHospital,
   updateStudentDetails,
 } from "./services";
-import { toast } from "sonner";
-import { devMode } from "@/lib/dev_mode";
-import { Separator } from "@/components/ui/separator";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { DataTable } from "@/components/ui/data_table";
 
 export default function Students() {
   const router = useRouter();
@@ -150,13 +148,7 @@ export default function Students() {
             variant={"outline"}
             className={"cursor-pointer"}
             onClick={() => {
-              updateStudentDetails(
-                admNo,
-                tempReading,
-                complain,
-                ailment,
-                0
-              );
+              updateStudentDetails(admNo, tempReading, complain, ailment, 0);
               goingToHospital();
             }}
           >
@@ -178,21 +170,21 @@ export default function Students() {
     },
     {
       accessorKey: "medication",
-      header: "Medication"
+      header: "Medication",
     },
     {
       accessorKey: "ailment",
-      header: "Ailment"
+      header: "Ailment",
     },
     {
       accessorKey: "complain",
-      header: "Complains"
+      header: "Complains",
     },
     {
       accessorKey: "tempreading",
-      header: "Temp. Reading"
-    }
-  ]
+      header: "Temp. Reading",
+    },
+  ];
 
   // Enter key pressed to submit form.
   const handleKeyPressed = (e) => {
@@ -213,18 +205,18 @@ export default function Students() {
           </p>
 
           <div className="hidden lg:flex lg:space-x-5 lg:ml-10 lg:mt-2">
-            <Link
+            <a
               href={"/"}
               className="text-blue-500 underline font-semibold text-base"
             >
               Home
-            </Link>
-            <Link
+            </a>
+            <a
               href={"/students/student-create-entry"}
               className="text-blue-500 underline font-semibold text-base"
             >
               Add New Student To Database
-            </Link>
+            </a>
           </div>
         </div>
 
@@ -279,7 +271,7 @@ export default function Students() {
                   </div>
                 )}
                 <div className="flex space-x-10 mt-10">
-                  <Link
+                  <a
                     href={"/view_summary"}
                     target="_blank"
                     className={
@@ -288,9 +280,9 @@ export default function Students() {
                   >
                     {"View Summary"}
                     <ArrowUpRightFromSquare className={"w-5 h-5"} />
-                  </Link>
+                  </a>
 
-                  <Link
+                  <a
                     href={"/students/non_busherian"}
                     target="_blank"
                     className={
@@ -300,180 +292,183 @@ export default function Students() {
                     {/* Entry for student who isn't a busherian */}
                     {"Non-Busherian"}
                     <ArrowUpRightFromSquare className={"w-5 h-5"} />
-                  </Link>
+                  </a>
                 </div>
               </>
             )}
 
             {studentData && (
               <>
-              <div className="flex space-x-4">
-                <div>
-                  <div className="font-mono flex items-center space-x-1">
-                    <span>{studentData?.admNo}</span>
-                    <ArrowRight className={"w-5 h-5"} />
-                    <span className="flex space-x-2">
-                      {studentData?.fName}&nbsp;
-                      {studentData?.sName}
-                    </span>
-                  </div>
-                  <div className="flex items-center space-x-2 font-mono my-3 justify-between">
-                    <span>
-                      <code>Class</code>
-                      &nbsp;:&nbsp;
-                      <code>{studentData?.class}</code>
-                    </span>
-
-                    <Link
-                      href={`/students/student-update-entry/?admission_number=${studentData?.admNo}`}
-                      className="text-blue-500 underline font-semibold text-sm flex items-center space-x-2"
-                    >
-                      <span>Edit</span>
-                      <PenSquare className="w-4 h-4" />
-                    </Link>
-                  </div>
-                  <Separator className={"my-2"} />
-                  <div className={"font-mono my-3"}>
-                    <div className="flex flex-col space-y-2">
-                      <span className="underline">Temperature Reading</span>
-                      <span
-                        className={`${
-                          studentData?.tempReading > 37
-                            ? "text-rose-500"
-                            : "text-green-500"
-                        }`}
-                      >
-                        {studentData?.tempReading}
+                <div className="flex space-x-4">
+                  <div>
+                    <div className="font-mono flex items-center space-x-1">
+                      <span>{studentData?.admNo}</span>
+                      <ArrowRight className={"w-5 h-5"} />
+                      <span className="flex space-x-2">
+                        {studentData?.fName}&nbsp;
+                        {studentData?.sName}
                       </span>
                     </div>
-                  </div>
-                  <div className={"font-mono my-3"}>
-                    <div className="flex flex-col space-y-2">
-                      <span className="underline">Complains</span>
-                      <span
-                        className={
-                          "text-blue-500 font-semibold  tracking-tight"
-                        }
-                      >
-                        {studentData?.complain}
+                    <div className="flex items-center space-x-2 font-mono my-3 justify-between">
+                      <span>
+                        <code>Class</code>
+                        &nbsp;:&nbsp;
+                        <code>{studentData?.class}</code>
                       </span>
+
+                      <a
+                        href={`/students/student-update-entry/?admission_number=${studentData?.admNo}`}
+                        className="text-blue-500 underline font-semibold text-sm flex items-center space-x-2"
+                      >
+                        <span>Edit</span>
+                        <PenSquare className="w-4 h-4" />
+                      </a>
                     </div>
-                  </div>
-                  <div className={"font-mono my-3"}>
-                    <div className="flex flex-col space-y-2">
-                      <span className="underline">Ailment</span>
-                      <span
-                        className={
-                          "text-blue-500 font-semibold  tracking-tight"
-                        }
-                      >
-                        {studentData?.ailment}
-                      </span>
+                    <Separator className={"my-2"} />
+                    <div className={"font-mono my-3"}>
+                      <div className="flex flex-col space-y-2">
+                        <span className="underline">Temperature Reading</span>
+                        <span
+                          className={`${
+                            studentData?.tempReading > 37
+                              ? "text-rose-500"
+                              : "text-green-500"
+                          }`}
+                        >
+                          {studentData?.tempReading}
+                        </span>
+                      </div>
                     </div>
-                  </div>
-                  <div className={"font-mono my-3"}>
-                    <div className="flex flex-col space-y-2">
-                      <span className="underline">Medication(s)</span>
-                      <span
-                        className={
-                          "text-blue-500 font-semibold  tracking-tight"
-                        }
-                      >
-                        {studentData?.medication}
-                      </span>
+                    <div className={"font-mono my-3"}>
+                      <div className="flex flex-col space-y-2">
+                        <span className="underline">Complains</span>
+                        <span
+                          className={
+                            "text-blue-500 font-semibold  tracking-tight"
+                          }
+                        >
+                          {studentData?.complain}
+                        </span>
+                      </div>
+                    </div>
+                    <div className={"font-mono my-3"}>
+                      <div className="flex flex-col space-y-2">
+                        <span className="underline">Ailment</span>
+                        <span
+                          className={
+                            "text-blue-500 font-semibold  tracking-tight"
+                          }
+                        >
+                          {studentData?.ailment}
+                        </span>
+                      </div>
+                    </div>
+                    <div className={"font-mono my-3"}>
+                      <div className="flex flex-col space-y-2">
+                        <span className="underline">Medication(s)</span>
+                        <span
+                          className={
+                            "text-blue-500 font-semibold  tracking-tight"
+                          }
+                        >
+                          {studentData?.medication}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className={"font-mono my-3"}>
+                      <div className="flex flex-col space-y-2">
+                        <span className="underline">Days on Medication</span>
+                        <span
+                          className={
+                            "text-blue-500 font-semibold  tracking-tight"
+                          }
+                        >
+                          {
+                            // studentData?.timestamp
+                            new Date().getDate() -
+                              new Date(studentData?.timestamp).getDate() +
+                              1
+                          }
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className={"font-mono my-3"}>
+                      <div className="flex flex-col space-y-2">
+                        <span className="underline">Last took meds</span>
+                        <span
+                          className={
+                            "text-blue-500 font-semibold  tracking-tight"
+                          }
+                        >
+                          {
+                            // e.g lunchtime, morning or evening
+                            new Date(studentData?.timestamp).getHours() >= 12
+                              ? "at lunchtime"
+                              : new Date(studentData?.timestamp).getHours() >= 6
+                              ? "in the morning"
+                              : "in the evening"
+                          }
+                        </span>
+                      </div>
+                    </div>
+                    <div className={"font-mono my-3 w-full"}>
+                      <div className="flex md:space-x-2 flex-col md:flex-row space-y-2 md:space-y-0">
+                        <Button
+                          variant={"outline"}
+                          className={"flex items-center space-x-2"}
+                          onClick={() =>
+                            directToPage("/students/new_record", "new_record")
+                          }
+                        >
+                          <>
+                            {!loading && <Plus className="w-4 h-4" />}
+                            <span>New Record</span>
+                          </>
+
+                          {loading && directingTo == "new_record" && (
+                            <Loader className="w-4 h-4 animate-spin" />
+                          )}
+                        </Button>
+
+                        <Button
+                          variant={"outline"}
+                          className={"flex items-center space-x-2 w-full"}
+                          onClick={() =>
+                            directToPage(
+                              "/students/update_record",
+                              "update_record"
+                            )
+                          }
+                        >
+                          <Pencil className="w-5 h-5" />
+                          <span>Update Record</span>
+                          {loading && directingTo == "update_record" && (
+                            <Loader className="w-4 h-4 animate-spin" />
+                          )}
+                        </Button>
+                        <Button
+                          variant={"destructive"}
+                          className={"flex items-center space-x-2"}
+                          onClick={() => setStudentData(null)}
+                        >
+                          <X className="w-5 h-5" />
+                          <span>Cancel</span>
+                        </Button>
+                      </div>
                     </div>
                   </div>
 
-                  <div className={"font-mono my-3"}>
-                    <div className="flex flex-col space-y-2">
-                      <span className="underline">Days on Medication</span>
-                      <span
-                        className={
-                          "text-blue-500 font-semibold  tracking-tight"
-                        }
-                      >
-                        {
-                          // studentData?.timestamp
-                          new Date().getDate() -
-                            new Date(studentData?.timestamp).getDate() +
-                            1
-                        }
-                      </span>
-                    </div>
+                  <div>
+                    <h1 className="text-lg uppercase underline">History</h1>
+                    {studentHistory.length > 0 && (
+                      <DataTable
+                        data={studentHistory}
+                        columns={student_history_columns}
+                      />
+                    )}
                   </div>
-
-                  <div className={"font-mono my-3"}>
-                    <div className="flex flex-col space-y-2">
-                      <span className="underline">Last took meds</span>
-                      <span
-                        className={
-                          "text-blue-500 font-semibold  tracking-tight"
-                        }
-                      >
-                        {
-                          // e.g lunchtime, morning or evening
-                          new Date(studentData?.timestamp).getHours() >= 12
-                            ? "at lunchtime"
-                            : new Date(studentData?.timestamp).getHours() >= 6
-                            ? "in the morning"
-                            : "in the evening"
-                        }
-                      </span>
-                    </div>
-                  </div>
-                  <div className={"font-mono my-3 w-full"}>
-                    <div className="flex md:space-x-2 flex-col md:flex-row space-y-2 md:space-y-0">
-                      <Button
-                        variant={"outline"}
-                        className={"flex items-center space-x-2"}
-                        onClick={() =>
-                          directToPage("/students/new_record", "new_record")
-                        }
-                      >
-                        <>
-                          {!loading && <Plus className="w-4 h-4" />}
-                          <span>New Record</span>
-                        </>
-
-                        {loading && directingTo == "new_record" && (
-                          <Loader className="w-4 h-4 animate-spin" />
-                        )}
-                      </Button>
-
-                      <Button
-                        variant={"outline"}
-                        className={"flex items-center space-x-2 w-full"}
-                        onClick={() =>
-                          directToPage(
-                            "/students/update_record",
-                            "update_record"
-                          )
-                        }
-                      >
-                        <Pencil className="w-5 h-5" />
-                        <span>Update Record</span>
-                        {loading && directingTo == "update_record" && (
-                          <Loader className="w-4 h-4 animate-spin" />
-                        )}
-                      </Button>
-                      <Button
-                        variant={"destructive"}
-                        className={"flex items-center space-x-2"}
-                        onClick={() => setStudentData(null)}
-                      >
-                        <X className="w-5 h-5" />
-                        <span>Cancel</span>
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-
-                <div>
-                  <h1 className="text-lg uppercase underline">History</h1>
-                {studentHistory.length > 0 && (
-                  <DataTable data={studentHistory} columns={student_history_columns}/>
-                )}
-                </div>
                 </div>
               </>
             )}
@@ -484,7 +479,7 @@ export default function Students() {
             <span className="self-center font-mono text-base underline">
               Students going to the hospital
             </span>
-            <div className="flex space-x-2 p-4 border m-2"> 
+            <div className="flex space-x-2 p-4 border m-2">
               {/* {studentsGoingToHospital && (
                 <DataTable
                   data={studentsGoingToHospital}
@@ -496,9 +491,10 @@ export default function Students() {
                   No Students Going To The Hospital Today.
                 </p>
               )} */}
-                <Wrench className="w-5 h-5"/>
+              <Wrench className="w-5 h-5" />
               <p>
-                Maintenance of this section is in progress. You will receive updates in due time. Sorry for the inconveniences.
+                Maintenance of this section is in progress. You will receive
+                updates in due time. Sorry for the inconveniences.
               </p>
             </div>
           </div>

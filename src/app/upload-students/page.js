@@ -1,16 +1,15 @@
 "use client";
 import { devMode } from "@/lib/dev_mode";
-import Link from "next/link";
 import { useState } from "react";
 // React-router-dom
-import readXlsxFile from "read-excel-file";
-import { uploadStudentsExcelData } from "./services";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Loader, X } from "lucide-react";
 import { useRouter } from "next/navigation";
+import readXlsxFile from "read-excel-file";
+import { toast } from "sonner";
+import { uploadStudentsExcelData } from "./services";
 export default function App() {
   const router = useRouter();
   const [excelInfo, setExcelInfo] = useState([]);
@@ -103,9 +102,9 @@ export default function App() {
         <h4 className="text-2xl font-bold my-4">
           Upload an Excel file with student details:
         </h4>
-        <Link href={"/"} className="text-blue-500 underline lg:mr-[40px] lg:mt-10">
+        <a href={"/"} className="text-blue-500 underline lg:mr-[40px] lg:mt-10">
           Home
-        </Link>
+        </a>
       </div>
 
       {/* <GoBackButton destination={"/"} /> */}
