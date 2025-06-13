@@ -404,11 +404,18 @@ export default function Students() {
                         >
                           {
                             // e.g lunchtime, morning or evening
-                            new Date(studentData?.timestamp).getHours() >= 12
-                              ? "at lunchtime"
-                              : new Date(studentData?.timestamp).getHours() >= 6
+                            new Date(studentData?.timestamp).getHours() >= 5 &&
+                            new Date(studentData?.timestamp).getHours() < 12
                               ? "in the morning"
-                              : "in the evening"
+                              : new Date(studentData?.timestamp).getHours() >=
+                                  12 &&
+                                new Date(studentData?.timestamp).getHours() < 17
+                              ? "at lunchtime"
+                              : new Date(studentData?.timestamp).getHours() >=
+                                  17 &&
+                                new Date(studentData?.timestamp).getHours() < 19
+                              ? "in the evening"
+                              : "at night"
                           }
                         </span>
                       </div>
