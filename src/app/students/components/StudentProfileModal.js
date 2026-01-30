@@ -92,7 +92,7 @@ export default function StudentProfileModal({
 
   return (
     <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-4xl">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 font-mono text-lg">
             <span className="text-blue-600">{studentData?.admNo}</span>
@@ -103,89 +103,68 @@ export default function StudentProfileModal({
           </DialogTitle>
         </DialogHeader>
 
-        {/* Student Info Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {/* Left Column - Basic Info */}
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <span className="text-gray-500">Class:</span>
-              <span className="font-semibold">{studentData?.class}</span>
-            </div>
-
-            <Separator />
-
-            <div className="flex items-center justify-between">
-              <span className="text-gray-500">Temperature:</span>
-              <span
-                className={`font-semibold ${
-                  studentData?.tempReading > 37
-                    ? "text-rose-500"
-                    : "text-green-500"
-                }`}
-              >
-                {studentData?.tempReading}
-              </span>
-            </div>
-
-            <div className="flex items-center justify-between">
-              <span className="text-gray-500">Complains:</span>
-              <span className="font-semibold text-blue-600">
-                {studentData?.complain || "-"}
-              </span>
-            </div>
-
-            <div className="flex items-center justify-between">
-              <span className="text-gray-500">Ailment:</span>
-              <span className="font-semibold text-blue-600">
-                {studentData?.ailment || "-"}
-              </span>
-            </div>
-
-            <div className="flex items-center justify-between">
-              <span className="text-gray-500">Medication:</span>
-              <span className="font-semibold text-blue-600">
-                {studentData?.medication || "-"}
-              </span>
-            </div>
-
-            <Separator />
-
-            <div className="flex items-center justify-between">
-              <span className="text-gray-500">Days on medication:</span>
-              <span className="font-semibold">{daysOnMedication}</span>
-            </div>
-
-            <div className="flex items-center justify-between">
-              <span className="text-gray-500">Last took meds:</span>
-              <span className="font-semibold">
-                {getTimeOfDay(studentData?.timestamp)}
-              </span>
-            </div>
-          </div>
-
-          {/* Right Column - History */}
+        {/* Student Info */}
+        <div className="grid grid-cols-3 md:grid-cols-6 gap-x-4 gap-y-2 text-sm">
           <div>
-            <div className="flex items-center justify-between mb-2">
-              <h3 className="font-semibold uppercase text-sm">History</h3>
-              <a
-                href={`/students/student-update-entry/?admission_number=${studentData?.admNo}`}
-                className="text-blue-500 text-sm flex items-center gap-1 hover:underline"
-              >
-                <span>Edit Profile</span>
-                <PenSquare className="w-3 h-3" />
-              </a>
-            </div>
-            {studentHistory?.length > 0 ? (
-              <div className="max-h-48 overflow-y-auto">
-                <DataTable
-                  data={studentHistory}
-                  columns={student_history_columns}
-                />
-              </div>
-            ) : (
-              <p className="text-gray-500 text-sm">No history available</p>
-            )}
+            <p className="text-gray-500">Class</p>
+            <p className="font-semibold">{studentData?.class}</p>
           </div>
+          <div>
+            <p className="text-gray-500">Temperature</p>
+            <p
+              className={`font-semibold ${
+                studentData?.tempReading > 37
+                  ? "text-rose-500"
+                  : "text-green-500"
+              }`}
+            >
+              {studentData?.tempReading}°C
+            </p>
+          </div>
+          <div>
+            <p className="text-gray-500">Days on meds</p>
+            <p className="font-semibold">{daysOnMedication}</p>
+          </div>
+          <div>
+            <p className="text-gray-500">Last took meds</p>
+            <p className="font-semibold">{getTimeOfDay(studentData?.timestamp)}</p>
+          </div>
+          <div>
+            <p className="text-gray-500">Ailment</p>
+            <p className="font-semibold text-blue-600">{studentData?.ailment || "-"}</p>
+          </div>
+          <div>
+            <p className="text-gray-500">Medication</p>
+            <p className="font-semibold text-blue-600">{studentData?.medication || "-"}</p>
+          </div>
+          <div className="col-span-3 md:col-span-6">
+            <p className="text-gray-500">Complains</p>
+            <p className="font-semibold text-blue-600">{studentData?.complain || "-"}</p>
+          </div>
+        </div>
+
+        {/* History */}
+        <div className="mt-4">
+          <div className="flex items-center justify-between mb-2">
+            <h3 className="font-semibold uppercase text-sm">History</h3>
+            <a
+              href={`/students/student-update-entry/?admission_number=${studentData?.admNo}`}
+              className="text-blue-500 text-sm flex items-center gap-1 hover:underline"
+            >
+              <span>Edit Profile</span>
+              <PenSquare className="w-3 h-3" />
+            </a>
+          </div>
+          {studentHistory?.length > 0 ? (
+            <DataTable
+              data={studentHistory}
+              columns={student_history_columns}
+              compact
+              pageSize={3}
+            />
+          ) : (
+            <p className="text-gray-500 text-sm">No history available</p>
+          )}
         </div>
 
         {/* Action Buttons */}

@@ -1,7 +1,10 @@
 "use client";
-import { AlertTriangle, Pill, Users } from "lucide-react";
+import { useState } from "react";
+import { AlertTriangle, ChevronDown, ChevronUp, Pill, Users } from "lucide-react";
 
 export default function Dashboard({ stats, onPatientClick }) {
+  const [alertsExpanded, setAlertsExpanded] = useState(false);
+
   if (!stats) return null;
 
   // Only show if there's something important to display
@@ -11,26 +14,29 @@ export default function Dashboard({ stats, onPatientClick }) {
 
   if (!hasAlerts && !hasMedicationDue && !hasActivity) return null;
 
-  return (
-    <div className="w-full space-y-3 mb-4">
-      {/* Outbreak Alerts - Most Important */}
-      {hasAlerts && (
-        <div className="space-y-2">
-          {stats.outbreaks.map((outbreak, index) => (
-            <div
-              key={index}
-              className="flex items-center gap-2 p-3 bg-red-100 dark:bg-red-900/30 border border-red-300 dark:border-red-700 rounded-lg"
-            >
-              <AlertTriangle className="w-5 h-5 text-red-600 dark:text-red-400 flex-shrink-0 animate-pulse" />
-              <span className="font-semibold text-red-700 dark:text-red-300 text-sm">
-                ALERT: {outbreak.count} students with "{outbreak.ailment}" today
-              </span>
-            </div>
-          ))}
-        </div>
-      )}
+  // Calculate total affected students and sort by severity
+  const sortedOutbreaks = hasAlerts
+    ? [...stats.outbreaks].sort((a, b) => b.count - a.count)
+    : [];
+  const totalAffected = sortedOutbreaks.reduce((sum, o) => sum + o.count, 0);
+  const alertCount = sortedOutbreaks.length;
 
-      {/* Stats Row - Compact inline */}
+  // Severity: red for count >= 10, yellow for count >= 5, gray for less
+  const getSeverityClasses = (count) => {
+    if (count >= 10) return "bg-red-100 dark:bg-red-900/30 border-red-300 dark:border-red-700 text-red-700 dark:text-red-300";
+    if (count >= 5) return "bg-yellow-100 dark:bg-yellow-900/30 border-yellow-400 dark:border-yellow-600 text-yellow-700 dark:text-yellow-300";
+    return "bg-gray-100 dark:bg-gray-800/50 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300";
+  };
+
+  const getSeverityIcon = (count) => {
+    if (count >= 10) return "text-red-600 dark:text-red-400";
+    if (count >= 5) return "text-yellow-600 dark:text-yellow-400";
+    return "text-gray-500 dark:text-gray-400";
+  };
+
+  return (
+    <div className="w-full space-y-3">
+      {/* Stats Row - Always visible */}
       <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
         {hasActivity && (
           <div className="flex items-center gap-1">
@@ -61,6 +67,49 @@ export default function Dashboard({ stats, onPatientClick }) {
           </div>
         )}
       </div>
+
+      {/* Collapsible Alerts Section */}
+      {hasAlerts && (
+        <div className="border border-gray-200 dark:border-neutral-700 rounded-lg overflow-hidden">
+          {/* Summary Header - Always visible */}
+          <button
+            onClick={() => setAlertsExpanded(!alertsExpanded)}
+            className="w-full flex items-center justify-between p-3 bg-gray-50 dark:bg-zinc-800/50 hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors"
+          >
+            <div className="flex items-center gap-2">
+              <AlertTriangle className="w-4 h-4 text-red-500" />
+              <span className="font-medium text-sm">
+                {alertCount} health {alertCount === 1 ? "alert" : "alerts"}
+              </span>
+              <span className="text-xs text-gray-500 dark:text-gray-400">
+                ({totalAffected} students affected)
+              </span>
+            </div>
+            {alertsExpanded ? (
+              <ChevronUp className="w-4 h-4 text-gray-500" />
+            ) : (
+              <ChevronDown className="w-4 h-4 text-gray-500" />
+            )}
+          </button>
+
+          {/* Expanded Alerts */}
+          {alertsExpanded && (
+            <div className="p-2 space-y-2 bg-white dark:bg-zinc-900/50">
+              {sortedOutbreaks.map((outbreak, index) => (
+                <div
+                  key={index}
+                  className={`flex items-center gap-2 p-2 border rounded-md text-sm ${getSeverityClasses(outbreak.count)}`}
+                >
+                  <AlertTriangle className={`w-4 h-4 flex-shrink-0 ${getSeverityIcon(outbreak.count)}`} />
+                  <span className="font-medium">
+                    {outbreak.count} students with "{outbreak.ailment}"
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }

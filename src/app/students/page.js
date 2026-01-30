@@ -212,9 +212,6 @@ function StudentsContent() {
 
         {/* Main Content */}
         <div className="w-full max-w-2xl mt-16 lg:mt-0">
-          {/* Dashboard - Alerts & Stats */}
-          <Dashboard stats={todayStats} onPatientClick={performSearch} />
-
           {/* Search Section */}
           <div className="border-2 border-gray-300 dark:border-neutral-700 rounded-xl p-4 md:p-6 bg-white dark:bg-zinc-800/30">
             <label className="font-semibold text-sm block mb-3">
@@ -236,7 +233,7 @@ function StudentsContent() {
               />
               <Button
                 variant="outline"
-                className="h-12 px-6 dark:bg-white dark:text-zinc-900 dark:hover:bg-zinc-100"
+                className="h-12 px-6 dark:bg-white dark:text-zinc-900 dark:hover:bg-zinc-100 dark:hover:text-zinc-900"
                 type="submit"
                 onClick={formik.handleSubmit}
                 disabled={searchLoading}
@@ -292,6 +289,12 @@ function StudentsContent() {
               Non-Busherian
               <ArrowUpRightFromSquare className="w-3 h-3" />
             </a>
+          </div>
+
+          {/* Dashboard - Alerts & Stats */}
+          <div className="mt-6 pt-6 border-t border-gray-200 dark:border-neutral-700">
+            <h3 className="text-sm font-semibold text-gray-500 dark:text-gray-400 mb-3">Today's Overview</h3>
+            <Dashboard stats={todayStats} onPatientClick={performSearch} />
           </div>
         </div>
       </main>
