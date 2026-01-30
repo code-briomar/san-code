@@ -93,7 +93,7 @@ const ProfileSearchInput = ({ setStudents, setLoading, loading }) => {
           </Button>
         </div>
         <div className="text-gray-500 text-xs my-2">
-          Press <kbd className="px-1 border border-gray-300 rounded">Enter</kbd>{" "}
+          Press <kbd className="px-1 border-2 border-gray-300 rounded">Enter</kbd>{" "}
           to search
         </div>
         {formik?.errors?.search && (

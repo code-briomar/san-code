@@ -241,14 +241,14 @@ const Report = () => {
                 <span>________________________________</span>
               </div>
             </div>
-            <Table id="report" className="table-auto border-collapse border">
+            <Table id="report" className="table-auto border-collapse border-2">
               <TableHeader className="bg-gray-200">
                 <TableRow>
-                  <TableCell className="border border-gray-300">
+                  <TableCell className="border-2 border-gray-300">
                     Diseases (First Cases Only)
                   </TableCell>
                   {days.map((day) => (
-                    <TableCell key={day} className="border border-gray-300">
+                    <TableCell key={day} className="border-2 border-gray-300">
                       {day}
                     </TableCell>
                   ))}
@@ -257,11 +257,11 @@ const Report = () => {
               <TableBody>
                 {ailments.map((ailment) => (
                   <TableRow key={ailment.disease}>
-                    <TableCell className="border border-gray-300 min-w-[100px]">
+                    <TableCell className="border-2 border-gray-300 min-w-[100px]">
                       {ailment.disease}
                     </TableCell>
                     {days.map((day) => (
-                      <TableCell key={day} className="border border-gray-300">
+                      <TableCell key={day} className="border-2 border-gray-300">
                         {diseaseDataLookup[ailment.disease]
                           ? diseaseDataLookup[ailment.disease][day] || 0
                           : 0}

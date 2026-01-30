@@ -126,7 +126,7 @@ export default function App() {
             id="picture"
             type="file"
             className={`
-            border border-gray-300 p-2 rounded w-full
+            border-2 border-gray-300 p-2 rounded w-full
             admNos.length > 0 ? "bg-green-500" : "bg-white"
           `}
             onChange={handleUpload}
