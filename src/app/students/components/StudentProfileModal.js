@@ -83,41 +83,43 @@ export default function StudentProfileModal({
 
         {/* Status Cards */}
         <div className="p-6 py-4 border-b border-gray-100 dark:border-neutral-800">
-          <div className="grid grid-cols-3 gap-3">
-            {/* Temperature */}
-            <div className="text-center p-3 rounded-lg bg-gray-50 dark:bg-zinc-800/50">
-              <Thermometer className={`w-5 h-5 mx-auto mb-1 ${
-                studentData?.tempReading > 37
-                  ? "text-rose-500"
-                  : "text-green-500"
-              }`} />
-              <p className={`text-lg font-bold ${
-                studentData?.tempReading > 37
-                  ? "text-rose-600 dark:text-rose-400"
-                  : "text-green-600 dark:text-green-400"
-              }`}>
-                {studentData?.tempReading}°C
-              </p>
-              <p className="text-xs text-gray-500 dark:text-gray-400">Temperature</p>
-            </div>
+          {/* Temperature - inline */}
+          <div className="flex items-center gap-2 mb-4">
+            <Thermometer className={`w-5 h-5 ${
+              studentData?.tempReading > 37
+                ? "text-rose-500"
+                : "text-green-500"
+            }`} />
+            <span className={`text-lg font-bold ${
+              studentData?.tempReading > 37
+                ? "text-rose-600 dark:text-rose-400"
+                : "text-green-600 dark:text-green-400"
+            }`}>
+              {studentData?.tempReading}°C
+            </span>
+            <span className="text-sm text-gray-500 dark:text-gray-400">Temperature</span>
+          </div>
 
-            {/* Medication */}
-            <div className="text-center p-3 rounded-lg bg-gray-50 dark:bg-zinc-800/50">
-              <Pill className="w-5 h-5 mx-auto mb-1 text-blue-500" />
-              <p className="text-lg font-bold text-gray-800 dark:text-gray-200 truncate">
-                {studentData?.medication || "-"}
-              </p>
-              <p className="text-xs text-gray-500 dark:text-gray-400">Medication</p>
+          {/* Ailment */}
+          <div className="mb-3">
+            <div className="flex items-center gap-2 mb-1">
+              <Stethoscope className="w-4 h-4 text-purple-500" />
+              <span className="text-xs font-medium uppercase text-gray-500 dark:text-gray-400">Ailment</span>
             </div>
+            <p className="text-gray-800 dark:text-gray-200 pl-6">
+              {studentData?.ailment || "-"}
+            </p>
+          </div>
 
-            {/* Ailment */}
-            <div className="text-center p-3 rounded-lg bg-gray-50 dark:bg-zinc-800/50">
-              <Stethoscope className="w-5 h-5 mx-auto mb-1 text-purple-500" />
-              <p className="text-lg font-bold text-gray-800 dark:text-gray-200 truncate">
-                {studentData?.ailment || "-"}
-              </p>
-              <p className="text-xs text-gray-500 dark:text-gray-400">Ailment</p>
+          {/* Medication */}
+          <div>
+            <div className="flex items-center gap-2 mb-1">
+              <Pill className="w-4 h-4 text-blue-500" />
+              <span className="text-xs font-medium uppercase text-gray-500 dark:text-gray-400">Medication</span>
             </div>
+            <p className="text-gray-800 dark:text-gray-200 pl-6">
+              {studentData?.medication || "-"}
+            </p>
           </div>
 
           {/* Supporting Info */}
