@@ -10,7 +10,7 @@ import {
   LucideLoader,
 } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState, useCallback } from "react";
+import { Suspense, useEffect, useState, useCallback } from "react";
 import { toast } from "sonner";
 import * as Yup from "yup";
 import {
@@ -22,7 +22,7 @@ import StudentProfileModal from "./components/StudentProfileModal";
 import LoadingModal from "./components/LoadingModal";
 import Dashboard from "./components/Dashboard";
 
-export default function Students() {
+function StudentsContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -296,5 +296,13 @@ export default function Students() {
         </div>
       </main>
     </>
+  );
+}
+
+export default function Students() {
+  return (
+    <Suspense fallback={<div className="flex min-h-screen items-center justify-center"><LucideLoader className="w-8 h-8 animate-spin" /></div>}>
+      <StudentsContent />
+    </Suspense>
   );
 }
