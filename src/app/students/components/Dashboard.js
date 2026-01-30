@@ -35,79 +35,94 @@ export default function Dashboard({ stats, onPatientClick }) {
   };
 
   return (
-    <div className="w-full space-y-3">
-      {/* Stats Row - Always visible */}
-      <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
+    <div className="w-full">
+      {/* Horizontal Stats Bar */}
+      <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm">
+        {/* Students Seen */}
         {hasActivity && (
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-2">
             <Users className="w-4 h-4 text-blue-500" />
-            <span>
+            <span className="text-gray-600 dark:text-gray-400">
               <strong className="text-blue-600 dark:text-blue-400">{stats.studentCount}</strong> seen today
             </span>
           </div>
         )}
 
+        {/* Divider */}
+        {hasActivity && hasMedicationDue && (
+          <div className="hidden sm:block w-px h-4 bg-gray-300 dark:bg-neutral-700" />
+        )}
+
+        {/* Medication Due */}
         {hasMedicationDue && (
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-2">
             <Pill className="w-4 h-4 text-orange-500" />
             <span className="text-orange-600 dark:text-orange-400">
-              <strong>{stats.medicationDue.length}</strong> medication due
+              <strong>{stats.medicationDue.length}</strong> meds due
             </span>
-            <div className="flex gap-1 ml-1">
+            <div className="flex gap-1">
               {stats.medicationDue.slice(0, 2).map((patient, index) => (
                 <button
                   key={index}
                   onClick={() => onPatientClick(patient.admNo)}
-                  className="px-2 py-0.5 text-xs bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 rounded hover:bg-orange-200 dark:hover:bg-orange-800/50"
+                  className="px-2 py-0.5 text-xs bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 rounded-full hover:bg-orange-200 dark:hover:bg-orange-800/50 transition-colors"
                 >
                   {patient.admNo}
                 </button>
               ))}
+              {stats.medicationDue.length > 2 && (
+                <span className="text-xs text-orange-500">+{stats.medicationDue.length - 2}</span>
+              )}
             </div>
           </div>
         )}
-      </div>
 
-      {/* Collapsible Alerts Section */}
-      {hasAlerts && (
-        <div className="border border-gray-200 dark:border-neutral-700 rounded-lg overflow-hidden">
-          {/* Summary Header - Always visible */}
+        {/* Divider */}
+        {(hasActivity || hasMedicationDue) && hasAlerts && (
+          <div className="hidden sm:block w-px h-4 bg-gray-300 dark:bg-neutral-700" />
+        )}
+
+        {/* Alerts Toggle */}
+        {hasAlerts && (
           <button
             onClick={() => setAlertsExpanded(!alertsExpanded)}
-            className="w-full flex items-center justify-between p-3 bg-gray-50 dark:bg-zinc-800/50 hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors"
+            className="flex items-center gap-2 px-3 py-1 rounded-full bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 hover:bg-red-200 dark:hover:bg-red-900/50 transition-colors"
           >
-            <div className="flex items-center gap-2">
-              <AlertTriangle className="w-4 h-4 text-red-500" />
-              <span className="font-medium text-sm">
-                {alertCount} health {alertCount === 1 ? "alert" : "alerts"}
-              </span>
-              <span className="text-xs text-gray-500 dark:text-gray-400">
-                ({totalAffected} students affected)
-              </span>
-            </div>
+            <AlertTriangle className="w-4 h-4" />
+            <span className="font-medium text-sm">
+              {alertCount} {alertCount === 1 ? "alert" : "alerts"}
+            </span>
             {alertsExpanded ? (
-              <ChevronUp className="w-4 h-4 text-gray-500" />
+              <ChevronDown className="w-3 h-3" />
             ) : (
-              <ChevronDown className="w-4 h-4 text-gray-500" />
+              <ChevronUp className="w-3 h-3" />
             )}
           </button>
+        )}
+      </div>
 
-          {/* Expanded Alerts */}
-          {alertsExpanded && (
-            <div className="p-2 space-y-2 bg-white dark:bg-zinc-900/50">
-              {sortedOutbreaks.map((outbreak, index) => (
-                <div
-                  key={index}
-                  className={`flex items-center gap-2 p-2 border rounded-md text-sm ${getSeverityClasses(outbreak.count)}`}
-                >
-                  <AlertTriangle className={`w-4 h-4 flex-shrink-0 ${getSeverityIcon(outbreak.count)}`} />
-                  <span className="font-medium">
-                    {outbreak.count} students with "{outbreak.ailment}"
-                  </span>
-                </div>
-              ))}
-            </div>
-          )}
+      {/* Expanded Alerts Panel */}
+      {hasAlerts && alertsExpanded && (
+        <div className="mt-1 p-3 bg-white dark:bg-zinc-800 border border-gray-200 dark:border-neutral-700 rounded-lg max-w-1xl mx-auto">
+          <div className="flex items-center justify-between mb-2">
+            <h4 className="font-semibold text-sm text-gray-700 dark:text-gray-300">
+              Health Alerts
+            </h4>
+            <span className="text-xs text-gray-500">{totalAffected} students affected</span>
+          </div>
+          <div className="space-y-1.5 max-h-48 overflow-y-auto">
+            {sortedOutbreaks.map((outbreak, index) => (
+              <div
+                key={index}
+                className={`flex items-center gap-2 px-2 py-1.5 border rounded text-xs ${getSeverityClasses(outbreak.count)}`}
+              >
+                <AlertTriangle className={`w-3 h-3 flex-shrink-0 ${getSeverityIcon(outbreak.count)}`} />
+                <span className="font-medium">
+                  {outbreak.count} — {outbreak.ailment}
+                </span>
+              </div>
+            ))}
+          </div>
         </div>
       )}
     </div>

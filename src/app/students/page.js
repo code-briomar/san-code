@@ -187,38 +187,48 @@ function StudentsContent() {
         studentHistory={studentHistory}
       />
 
-      <main className="flex min-h-screen flex-col items-center p-4 md:p-10">
-        {/* Title bar */}
-        <div className="z-10 max-w-5xl w-full items-center font-mono text-sm lg:flex lg:justify-between mb-6">
-          <p className="fixed left-0 top-0 flex w-full justify-center border-b-2 border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-            <code className="font-mono font-bold">&nbsp;Students</code>
-          </p>
-
-          <div className="hidden lg:flex lg:space-x-5 lg:ml-10 lg:mt-2">
-            <a
-              href="/"
-              className="text-blue-500 underline font-semibold text-base"
-            >
-              Home
-            </a>
-            <a
-              href="/students/student-create-entry"
-              className="text-blue-500 underline font-semibold text-base"
-            >
-              Add New Student
-            </a>
+      <div className="min-h-screen flex flex-col">
+        {/* Compact Header */}
+        <header className="border-b border-gray-200 dark:border-neutral-800 bg-white dark:bg-zinc-900">
+          <div className="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
+            <div className="flex items-center gap-6">
+              <h1 className="font-mono font-bold text-lg">Students</h1>
+              <nav className="hidden sm:flex items-center gap-4 text-sm">
+                <a href="/" className="text-gray-600 dark:text-gray-400 hover:text-blue-500">
+                  Home
+                </a>
+                <a href="/students/student-create-entry" className="text-gray-600 dark:text-gray-400 hover:text-blue-500">
+                  Add New Student
+                </a>
+              </nav>
+            </div>
+            <div className="flex items-center gap-3 text-sm">
+              <a
+                href="/view_summary"
+                target="_blank"
+                className="text-gray-500 hover:text-blue-500 flex items-center gap-1"
+              >
+                Summary
+                <ArrowUpRightFromSquare className="w-3 h-3" />
+              </a>
+            </div>
           </div>
-        </div>
+        </header>
 
         {/* Main Content */}
-        <div className="w-full max-w-2xl mt-16 lg:mt-0">
-          {/* Search Section */}
-          <div className="border-2 border-gray-300 dark:border-neutral-700 rounded-xl p-4 md:p-6 bg-white dark:bg-zinc-800/30">
-            <label className="font-semibold text-sm block mb-3">
-              Search by admission number
-            </label>
+        <main className="flex-1 flex flex-col items-center justify-center px-4 py-8">
+          <div className="w-full max-w-xl">
+            {/* Hero Search */}
+            <div className="text-center mb-6">
+              <h2 className="text-2xl font-semibold text-gray-800 dark:text-gray-200 mb-2">
+                Search Student
+              </h2>
+              <p className="text-gray-500 dark:text-gray-400 text-sm">
+                Enter admission number to view or update records
+              </p>
+            </div>
 
-            <div className="flex flex-col sm:flex-row gap-2">
+            <div className="flex gap-2">
               <Input
                 name="admission_number"
                 value={formik.values.admission_number}
@@ -226,14 +236,13 @@ function StudentsContent() {
                 autoComplete="off"
                 autoFocus
                 placeholder="e.g 13256"
-                className="flex-1 h-12 text-lg font-mono bg-white dark:bg-zinc-900 border-gray-300 dark:border-neutral-600 focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-gray-400 dark:focus-visible:border-neutral-500"
+                className="flex-1 h-14 text-xl font-mono text-center bg-white dark:bg-zinc-900 border-2 border-gray-300 dark:border-neutral-600 focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-blue-500 dark:focus-visible:border-blue-500"
                 onChange={formik.handleChange}
                 onKeyDown={handleKeyPressed}
                 disabled={searchLoading}
               />
               <Button
-                variant="outline"
-                className="h-12 px-6 dark:bg-white dark:text-zinc-900 dark:hover:bg-zinc-100 dark:hover:text-zinc-900"
+                className="h-14 px-8 text-base"
                 type="submit"
                 onClick={formik.handleSubmit}
                 disabled={searchLoading}
@@ -251,7 +260,7 @@ function StudentsContent() {
 
             {/* Recent Searches */}
             {recentPatients.length > 0 && (
-              <div className="flex items-center gap-2 mt-4 pt-4 border-t border-gray-200 dark:border-neutral-700">
+              <div className="flex items-center justify-center gap-2 mt-4">
                 <Clock className="w-3 h-3 text-gray-400" />
                 <span className="text-xs text-gray-500">Recent:</span>
                 <div className="flex flex-wrap gap-1">
@@ -260,7 +269,7 @@ function StudentsContent() {
                       key={patient.admNo}
                       onClick={() => performSearch(patient.admNo)}
                       disabled={searchLoading}
-                      className="px-2 py-0.5 text-xs border border-gray-200 dark:border-neutral-600 rounded hover:bg-gray-100 dark:hover:bg-zinc-700 disabled:opacity-50"
+                      className="px-3 py-1 text-sm bg-gray-100 dark:bg-zinc-800 text-gray-700 dark:text-gray-300 rounded-full hover:bg-gray-200 dark:hover:bg-zinc-700 disabled:opacity-50 transition-colors"
                     >
                       {patient.admNo}
                     </button>
@@ -269,35 +278,15 @@ function StudentsContent() {
               </div>
             )}
           </div>
+        </main>
 
-          {/* Quick Links - Tertiary */}
-          <div className="flex flex-wrap justify-center gap-4 mt-4 text-sm">
-            <a
-              href="/view_summary"
-              target="_blank"
-              className="text-gray-500 hover:text-blue-500 hover:underline flex items-center gap-1"
-            >
-              View Summary
-              <ArrowUpRightFromSquare className="w-3 h-3" />
-            </a>
-
-            <a
-              href="/students/non_busherian"
-              target="_blank"
-              className="text-gray-500 hover:text-blue-500 hover:underline flex items-center gap-1"
-            >
-              Non-Busherian
-              <ArrowUpRightFromSquare className="w-3 h-3" />
-            </a>
-          </div>
-
-          {/* Dashboard - Alerts & Stats */}
-          <div className="mt-6 pt-6 border-t border-gray-200 dark:border-neutral-700">
-            <h3 className="text-sm font-semibold text-gray-500 dark:text-gray-400 mb-3">Today's Overview</h3>
+        {/* Stats Bar - Fixed at bottom */}
+        <div className="border-t border-gray-200 dark:border-neutral-800 bg-gray-50 dark:bg-zinc-900">
+          <div className="max-w-4xl mx-auto px-4 py-3">
             <Dashboard stats={todayStats} onPatientClick={performSearch} />
           </div>
         </div>
-      </main>
+      </div>
     </>
   );
 }
