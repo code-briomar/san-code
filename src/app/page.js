@@ -1,118 +1,124 @@
 "use client";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Users, UserCog, FileText, BarChart3, Upload } from "lucide-react";
 import Image from "next/image";
 
 export default function Home() {
   return (
-    <>
-      <main className="flex min-h-screen flex-col items-center justify-between p-24 bg-white text-black lg:dark:bg-zinc-800/30 dark:text-white">
-        {/* Title bar */}
-        <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
-          <p className="fixed left-0 top-0 flex w-full justify-center border-b-2 border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-            Manage student health records with
-            <code className="font-mono font-bold">&nbsp;SanCode</code>
-          </p>
-          <div className="hidden md:block fixed flex flex-column bottom-0 left-0 flex h-48 w-full items-center px-10 justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-            <a
-              className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-              href="https://lomogantech.co.ke"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              By{" "}
-              <Image
-                src="/lomogan-logo.ico"
-                alt="Vercel Logo"
-                className="rounded-lg"
-                width={100}
-                height={24}
-                priority
-              />
-            </a>
-            <p className="lg:mx-1 pointer-events-none text-xs md:text-sm opacity-50 lg:pointer-events-auto">
-              LomoganTech
-            </p>
-          </div>
-        </div>
+    <div className="min-h-screen flex flex-col bg-white dark:bg-zinc-900">
+      {/* Header */}
+      <header className="py-12 text-center">
+        <h1 className="text-4xl font-bold text-gray-900 dark:text-white">
+          SanCode
+        </h1>
+        <p className="mt-2 text-gray-500 dark:text-gray-400">
+          School Health Management
+        </p>
+      </header>
 
-        {/* Links : students, staff, report and analytics, upload student details */}
-        <div className="md:my-32 sm:mb-32 grid text-center lg:w-full lg:mb-0 lg:grid-cols-5 lg:text-left">
+      {/* Main Content */}
+      <main className="flex-1 flex flex-col items-center justify-center px-4">
+        <div className="w-full max-w-2xl space-y-4">
+          {/* Primary Card - Students */}
           <a
             href="/students"
-            className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
+            className="block p-6 rounded-lg border-2 border-gray-200 dark:border-zinc-700 hover:border-gray-300 dark:hover:border-zinc-600 hover:bg-gray-50 dark:hover:bg-zinc-800/50 transition-colors group"
           >
-            <h2 className={`mb-3 text-2xl font-semibold`}>
-              Students{" "}
-              <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-                <ArrowRight className="w-5 h-5" />
-              </span>
-            </h2>
-            <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-              Manage student health records.
-            </p>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <Users className="w-6 h-6 text-gray-400 dark:text-gray-500" />
+                <div>
+                  <h2 className="text-lg font-medium text-gray-900 dark:text-white">
+                    Students
+                  </h2>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                    Manage student health records
+                  </p>
+                </div>
+              </div>
+              <ArrowRight className="w-4 h-4 text-gray-300 dark:text-gray-600 group-hover:text-gray-400 group-hover:translate-x-1 transition-all" />
+            </div>
           </a>
 
-          <a
-            href="/staff"
-            className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800 hover:dark:bg-opacity-30"
-          >
-            <h2 className={`mb-3 text-2xl font-semibold`}>
-              Staff{" "}
-              <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-                <ArrowRight className="w-5 h-5" />
-              </span>
-            </h2>
-            <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-              Manage staff health records.
-            </p>
-          </a>
+          {/* Secondary Cards - 2x2 Grid */}
+          <div className="grid grid-cols-2 gap-3">
+            {/* Staff */}
+            <a
+              href="/staff"
+              className="p-4 rounded-lg border-2 border-gray-200 dark:border-zinc-700 hover:border-gray-300 dark:hover:border-zinc-600 hover:bg-gray-50 dark:hover:bg-zinc-800/50 transition-colors group"
+            >
+              <div className="flex items-center gap-3">
+                <UserCog className="w-5 h-5 text-gray-400 dark:text-gray-500" />
+                <div>
+                  <h3 className="font-medium text-gray-900 dark:text-white">Staff</h3>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">Health records</p>
+                </div>
+              </div>
+            </a>
 
-          <a
-            href="/report"
-            className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          >
-            <h2 className={`mb-3 text-2xl font-semibold`}>
-              Report{" "}
-              <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-                <ArrowRight className="w-5 h-5" />
-              </span>
-            </h2>
-            <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-              View generated reports of the student and staff records.
-            </p>
-          </a>
-          <a
-            href="/analytics"
-            className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          >
-            <h2 className={`mb-3 text-2xl font-semibold`}>
-              Analytics{" "}
-              <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-                <ArrowRight className="w-5 h-5" />
-              </span>
-            </h2>
-            <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-              View generated analytics of the student and staff records.
-            </p>
-          </a>
+            {/* Reports */}
+            <a
+              href="/report"
+              className="p-4 rounded-lg border-2 border-gray-200 dark:border-zinc-700 hover:border-gray-300 dark:hover:border-zinc-600 hover:bg-gray-50 dark:hover:bg-zinc-800/50 transition-colors group"
+            >
+              <div className="flex items-center gap-3">
+                <FileText className="w-5 h-5 text-gray-400 dark:text-gray-500" />
+                <div>
+                  <h3 className="font-medium text-gray-900 dark:text-white">Reports</h3>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">View & export</p>
+                </div>
+              </div>
+            </a>
 
-          <a
-            href="/upload-students"
-            className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          >
-            <h2 className={`mb-3 text-2xl font-semibold`}>
-              Upload Student Details{" "}
-              <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-                <ArrowRight className="w-5 h-5" />
-              </span>
-            </h2>
-            <p className={`m-0 max-w-[30ch] text-sm opacity-50 text-balance`}>
-              Upload new students to the system to easily track their health
-              records.
-            </p>
-          </a>
+            {/* Analytics */}
+            <a
+              href="/analytics"
+              className="p-4 rounded-lg border-2 border-gray-200 dark:border-zinc-700 hover:border-gray-300 dark:hover:border-zinc-600 hover:bg-gray-50 dark:hover:bg-zinc-800/50 transition-colors group"
+            >
+              <div className="flex items-center gap-3">
+                <BarChart3 className="w-5 h-5 text-gray-400 dark:text-gray-500" />
+                <div>
+                  <h3 className="font-medium text-gray-900 dark:text-white">Analytics</h3>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">Insights & trends</p>
+                </div>
+              </div>
+            </a>
+
+            {/* Upload */}
+            <a
+              href="/upload-students"
+              className="p-4 rounded-lg border-2 border-gray-200 dark:border-zinc-700 hover:border-gray-300 dark:hover:border-zinc-600 hover:bg-gray-50 dark:hover:bg-zinc-800/50 transition-colors group"
+            >
+              <div className="flex items-center gap-3">
+                <Upload className="w-5 h-5 text-gray-400 dark:text-gray-500" />
+                <div>
+                  <h3 className="font-medium text-gray-900 dark:text-white">Upload</h3>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">Import data</p>
+                </div>
+              </div>
+            </a>
+          </div>
         </div>
       </main>
-    </>
+
+      {/* Footer */}
+      <footer className="py-6 text-center border-t border-gray-200 dark:border-zinc-800">
+        <a
+          href="https://lomogantech.co.ke"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
+        >
+          <span>By</span>
+          <Image
+            src="/lomogan-logo.ico"
+            alt="LomoganTech Logo"
+            className="rounded"
+            width={20}
+            height={20}
+          />
+          <span>LomoganTech</span>
+        </a>
+      </footer>
+    </div>
   );
 }
