@@ -3,41 +3,23 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
   ArrowRight,
-  Check,
-  ChevronsUpDown,
-  Dot,
   LucideLoader,
   Pencil,
-  PenSquare,
-  Plus,
   X,
 } from "lucide-react";
-import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { createNewStudentRecord, updateStudentDetails } from "./services";
+import { updateStudentDetails } from "./services";
 import { toast } from "sonner";
 import { devMode } from "@/lib/dev_mode";
-import { Separator } from "@/components/ui/separator";
-import { useParams, useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Textarea } from "@/components/ui/textarea";
-import { PopoverContent, PopoverTrigger } from "@radix-ui/react-popover";
-import { ailments } from "./ailments";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
-import { Popover } from "@/components/ui/popover";
 import { fetchStudentData } from "../services";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 
-export default function NewRecordStudents() {
+export default function UpdateRecordStudents() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const admission_number = searchParams.get("admission_number");
@@ -45,55 +27,52 @@ export default function NewRecordStudents() {
   const [loading, setLoading] = useState();
   const [pageLoading, setPageLoading] = useState(true);
   const [admNo, setAdmno] = useState();
-  const [open, setOpen] = React.useState(false);
 
   useEffect(() => {
     setPageLoading(true);
     if (!admission_number) {
       toast.error("An issue came up. Please try again");
-
       if (!devMode) {
         router.push("/students");
       }
+      return;
     }
 
-    setTimeout(async () => {
+    const loadData = async () => {
       const student_data = await fetchStudentData(admission_number);
 
       if (student_data == null) {
         toast.error("Student not found");
         setPageLoading(false);
-        formikHelpers.resetForm();
+        router.push("/students");
         return;
       }
       setAdmno(admission_number);
       setStudentData(student_data);
       setPageLoading(false);
-    }, 1000);
-  }, []);
+    };
+
+    setTimeout(loadData, 500);
+  }, [admission_number, router]);
+
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
       studentAdmNo: admNo,
-      tempReading: studentData?.tempReading,
-      complain: studentData?.complain,
-      ailment: studentData?.ailment,
-      medication: studentData?.medication,
-      going_to_hospital: studentData?.going_to_hospital,
+      tempReading: studentData?.tempReading || "",
+      complain: studentData?.complain || "",
+      ailment: studentData?.ailment || "",
+      medication: studentData?.medication || "",
+      going_to_hospital: studentData?.going_to_hospital || false,
     },
     validationSchema: Yup.object({
-      tempReading: Yup.string().required(
-        "Student temperature reading is required!"
-      ),
-      complain: Yup.string().required("Student complains are required"),
-      ailment: Yup.string().required("Student ailment is required"),
-      medication: Yup.string().required("Medication administered is required"),
+      tempReading: Yup.string().required("Temperature is required"),
+      complain: Yup.string().required("Complains are required"),
+      medication: Yup.string().required("Medication is required"),
     }),
     onSubmit: async (values, formikHelpers) => {
       setLoading(true);
 
-      console.log(values.medication);
-      // Update student data with the provided details
       const response = await updateStudentDetails(
         Number(admission_number),
         Number(values.tempReading),
@@ -103,147 +82,164 @@ export default function NewRecordStudents() {
       );
 
       if (response == null) {
-        toast.error("Error inserting records");
+        toast.error("Error updating record");
         setLoading(false);
-        formikHelpers.resetForm();
         return;
       }
 
       if (devMode) console.log(response);
 
-      toast.success(response?.data?.message);
+      toast.success("Record updated successfully");
       setTimeout(() => {
         setLoading(false);
-
         if (!devMode) {
-          router.push("/students");
+          router.push(`/students?admission_number=${admission_number}&saved=update`);
         }
       }, 1000);
     },
   });
 
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter" && formik.isValid) {
+      formik.handleSubmit();
+    }
+  };
+
   return (
-    <main className="flex min-h-screen flex-col items-center mt-10 p-10 md:p-24">
-      {/* Title bar */}
-      <div className="z-10 max-w-5xl w-full items-center font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          <code className="font-mono font-bold">
-            &nbsp;Update Record - Students
-          </code>
-        </p>
+    <main className="min-h-screen p-4 md:p-8">
+      {/* Header */}
+      <div className="max-w-xl mx-auto mb-6">
+        <button
+          onClick={() => router.push("/students")}
+          className="text-sm text-gray-500 hover:text-gray-700 dark:hover:text-gray-300 mb-4 flex items-center gap-1"
+        >
+          <X className="w-4 h-4" />
+          Cancel
+        </button>
+
+        <div className="flex items-center gap-3">
+          <div className="p-2 bg-amber-100 dark:bg-amber-900/30 rounded-lg">
+            <Pencil className="w-5 h-5 text-amber-600 dark:text-amber-400" />
+          </div>
+          <div>
+            <h1 className="text-xl font-semibold">Update Record</h1>
+            <p className="text-sm text-gray-500">
+              Student {admNo} - Modify existing record
+            </p>
+          </div>
+        </div>
       </div>
 
-      {/* Form : Enter new record */}
-      <div className="sm:mb-32 ">
-        <div className="border-b border-gray-300 pb-6 pt-8 lg:rounded-xl lg:p-8 lg:border">
-          {pageLoading && <LucideLoader className="w-6 h-6 animate-spin" />}
+      {/* Form */}
+      <div className="max-w-xl mx-auto">
+        {pageLoading ? (
+          <div className="flex items-center justify-center py-12">
+            <LucideLoader className="w-6 h-6 animate-spin" />
+          </div>
+        ) : (
+          <div className="border border-zinc-200 dark:border-zinc-800 rounded-xl p-6 bg-white dark:bg-zinc-900/50">
+            <div className="space-y-5">
+              {/* Ailment - Read only */}
+              <div className="p-3 bg-zinc-50 dark:bg-zinc-800/50 rounded-lg">
+                <Label className="text-xs text-gray-500 block mb-1">
+                  Ailment (cannot be changed)
+                </Label>
+                <p className="font-medium">{formik.values.ailment || "—"}</p>
+              </div>
 
-          {!pageLoading && admNo !== null && (
-            <>
-              <div className="font-mono text-xs md:text-lg flex items-center mb-10 space-x-2">
-                <PenSquare className={"w-5 h-5"} />
-                <p>Update</p>
+              {/* Temperature */}
+              <div>
+                <Label htmlFor="tempReading" className="text-sm font-medium mb-2 block">
+                  Temperature Reading *
+                </Label>
+                <Input
+                  id="tempReading"
+                  name="tempReading"
+                  value={formik.values.tempReading}
+                  onChange={formik.handleChange}
+                  onKeyDown={handleKeyDown}
+                  placeholder="e.g 36.5"
+                  autoFocus
+                  className="h-11"
+                />
+                {formik.touched.tempReading && formik.errors.tempReading && (
+                  <p className="text-sm text-red-500 mt-1">{formik.errors.tempReading}</p>
+                )}
               </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div className={"grid w-full gap-0.5"}>
-                  <label for={"studentAdmNo"}>Admission Number</label>
-                  <Input
-                    name={"studentAdmNo"}
-                    value={formik.values.studentAdmNo}
-                    type="text"
-                    disabled
-                    className="my-5 outline outline-gray-200 outline-[1px] focus:outline-red-500"
-                  />
-                </div>
-                <div className={"grid w-full gap-1.5"}>
-                  <label for={"tempReading"}>Temperature Reading</label>
-                  <Input
-                    name={"tempReading"}
-                    value={formik.values.tempReading}
-                    onChange={formik.handleChange}
-                    placeholder={"35.6"}
-                    autoFocus
-                    type="text"
-                    className="my-5 outline outline-gray-200 outline-[1px] focus:outline-red-500"
-                  />
-                </div>
-                <div className={"grid w-full gap-1.5"}>
-                  <label for={"complain"}>Student Complains</label>
-                  <Textarea
-                    defaultValue={formik.values.complain}
-                    onChange={formik.handleChange}
-                    placeholder={"e.g Headache"}
-                    name={"complain"}
-                  />
-                </div>
-                <div className={"grid w-full gap-1.5"}>
-                  <label for={"studentAdmNo"}>Ailment</label>
-                  <p className="flex items-center space-x-1">
-                    <ArrowRight className="w-3 h-4" />
-                    {formik.values?.ailment}
-                  </p>
-                </div>
-                <div className="grid w-full gap-1.5">
-                  <label for={"medication"}>Medication</label>
-                  <Input
-                    name={"medication"}
-                    value={formik.values.medication}
-                    onChange={formik.handleChange}
-                    placeholder={"e.g PCM"}
-                    type={"text"}
-                    className="my-5 outline outline-gray-200 outline-[1px] focus:outline-red-500"
-                  />
-                </div>
+
+              {/* Complains */}
+              <div>
+                <Label htmlFor="complain" className="text-sm font-medium mb-2 block">
+                  Student Complains *
+                </Label>
+                <Textarea
+                  id="complain"
+                  name="complain"
+                  value={formik.values.complain}
+                  onChange={formik.handleChange}
+                  placeholder="e.g Headache, stomach pain..."
+                  rows={3}
+                  className="resize-none"
+                />
+                {formik.touched.complain && formik.errors.complain && (
+                  <p className="text-sm text-red-500 mt-1">{formik.errors.complain}</p>
+                )}
               </div>
-              <div className="flex items-center space-x-2 my-2">
+
+              {/* Medication */}
+              <div>
+                <Label htmlFor="medication" className="text-sm font-medium mb-2 block">
+                  Medication *
+                </Label>
+                <Input
+                  id="medication"
+                  name="medication"
+                  value={formik.values.medication}
+                  onChange={formik.handleChange}
+                  onKeyDown={handleKeyDown}
+                  placeholder="e.g Paracetamol, Amoxicillin..."
+                  className="h-11"
+                />
+                {formik.touched.medication && formik.errors.medication && (
+                  <p className="text-sm text-red-500 mt-1">{formik.errors.medication}</p>
+                )}
+              </div>
+
+              {/* Going to hospital */}
+              <div className="flex items-center gap-3 py-2">
                 <Checkbox
-                  name={"going_to_hospital"}
-                  checked={formik.values.going_to_hospital == 1 ? true : false}
+                  id="going_to_hospital"
+                  name="going_to_hospital"
+                  checked={formik.values.going_to_hospital}
                   onCheckedChange={(value) => {
                     formik.setFieldValue("going_to_hospital", value);
-                    if (devMode) console.log(formik.values.going_to_hospital);
                   }}
                 />
-                <Label
-                  htmlFor={"going_to_hospital"}
-                  className={"text-sm font-medium leading-none"}
-                >
-                  Is the student being taken to the hospital?
+                <Label htmlFor="going_to_hospital" className="text-sm cursor-pointer">
+                  Refer to hospital
                 </Label>
               </div>
+            </div>
+
+            {/* Submit */}
+            <div className="mt-6 pt-6 border-t border-zinc-200 dark:border-zinc-800">
               <Button
-                variant="outline"
-                className={
-                  "flex space-x-1 items-center justify-center bg-green-500"
-                }
-                type="submit"
+                className="w-full h-11"
                 onClick={formik.handleSubmit}
-                disabled={!formik.isValid}
+                disabled={loading || !formik.isValid}
               >
-                {loading && <LucideLoader className="w-6 h-6 animate-spin" />}
-                {!loading && (
+                {loading ? (
+                  <LucideLoader className="w-5 h-5 animate-spin" />
+                ) : (
                   <>
-                    <span>Update</span>
-                    <span>
-                      <ArrowRight className="w-3 h-4" />
-                    </span>
+                    <span>Update Record</span>
+                    <ArrowRight className="w-4 h-4 ml-2" />
                   </>
                 )}
               </Button>
-              <Separator className={"m-2"} />
-              <div>
-                {formik?.errors?.tempReading && (
-                  <div className={"flex text-sm text-rose-500"}>
-                    <p className={"flex items-center"}>
-                      <Dot className={"w-5 h-5"} />
-                      {formik?.errors?.tempReading}
-                    </p>
-                  </div>
-                )}
-              </div>
-            </>
-          )}
-        </div>
+            </div>
+          </div>
+        )}
       </div>
     </main>
   );
