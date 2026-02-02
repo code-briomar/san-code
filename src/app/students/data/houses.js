@@ -1,0 +1,15 @@
+export const HOUSES = [
+  "AGGREY",
+  "ARTHUR",
+  "CAMPBELL",
+  "FRANCIS",
+  "GITHAIGA",
+  "GRIEVE",
+  "LIVINGSTONE",
+  "MANENO",
+  "SANDERS",
+  "SELWOOD",
+  "SMITH",
+  "WANGAI",
+  "WILBERFORCE",
+];

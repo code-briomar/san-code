@@ -1,2 +1,2 @@
 // Set the dev mode
-export const devMode = false;
+export const devMode = true;

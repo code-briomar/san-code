@@ -37,6 +37,17 @@ export const fetchStudentsGoingToHospital = async () => {
     return null;
   }
 };
+// Route: PATCH /student-profile/:admNo
+export const updateStudentProfile = async (admNo, profileData) => {
+  try {
+    const response = await base_api.patch(`/student-profile/${admNo}`, profileData);
+    return response.data;
+  } catch (error) {
+    devMode && console.error(error);
+    return null;
+  }
+};
+
 export const updateStudentDetails = async (
   studentAdmNo,
   tempReading,

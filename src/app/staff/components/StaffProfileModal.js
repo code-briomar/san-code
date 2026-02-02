@@ -4,7 +4,6 @@ import {
   Dialog,
   DialogContent,
   DialogTitle,
-  DialogDescription,
 } from "@/components/ui/dialog";
 import {
   ArrowRight,
@@ -18,26 +17,22 @@ import {
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import MissingInfoBanner from "./MissingInfoBanner";
-import ProfileUpdateModal from "./ProfileUpdateModal";
 
-export default function StudentProfileModal({
+export default function StaffProfileModal({
   open,
   onClose,
-  studentData,
-  studentHistory,
-  onStudentUpdate,
+  staffData,
+  staffHistory,
 }) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [directingTo, setDirectingTo] = useState(null);
-  const [profileModalOpen, setProfileModalOpen] = useState(false);
 
   const directToPage = (link, target) => {
     setDirectingTo(target);
     setLoading(true);
     setTimeout(() => {
-      router.push(`${link}?admission_number=${studentData?.admNo}`);
+      router.push(`${link}?id_number=${staffData?.idNo}`);
       setLoading(false);
     }, 500);
   };
@@ -47,13 +42,13 @@ export default function StudentProfileModal({
     setLoading(true);
     setTimeout(() => {
       router.push(
-        `/students/new_record?admission_number=${studentData?.admNo}&prefill=true`
+        `/staff/new_record?id_number=${staffData?.idNo}&prefill=true`
       );
       setLoading(false);
     }, 500);
   };
 
-  if (!studentData) return null;
+  if (!staffData) return null;
 
   const getTimeOfDay = (timestamp) => {
     const hour = new Date(timestamp).getHours();
@@ -64,7 +59,7 @@ export default function StudentProfileModal({
   };
 
   const daysOnMedication =
-    new Date().getDate() - new Date(studentData?.timestamp).getDate() + 1;
+    new Date().getDate() - new Date(staffData?.timestamp).getDate() + 1;
 
   const formatDate = (timestamp) => {
     const date = new Date(timestamp);
@@ -75,54 +70,41 @@ export default function StudentProfileModal({
     <Dialog open={open} onOpenChange={(isOpen) => !isOpen && onClose()}>
       <DialogContent className="max-w-lg p-0 gap-0 overflow-hidden" aria-describedby={undefined}>
         <DialogTitle className="sr-only">
-          Student Profile - {studentData?.fName} {studentData?.sName}
+          Staff Profile - {staffData?.fName} {staffData?.sName}
         </DialogTitle>
         {/* Header - Identity */}
         <div className="p-6 pb-4 border-b border-gray-100 dark:border-neutral-800">
           <p className="text-3xl font-mono font-bold text-blue-600 dark:text-blue-400">
-            {studentData?.admNo}
+            {staffData?.idNo}
           </p>
           <p className="text-xl font-semibold mt-1">
-            {studentData?.fName} {studentData?.sName}
+            {staffData?.fName} {staffData?.sName}
           </p>
           <p className="text-gray-500 dark:text-gray-400">
-            Class {studentData?.class}
-            {studentData?.house && (
-              <span className="ml-2 text-gray-600 dark:text-gray-300">
-                · {studentData.house}
-              </span>
-            )}
+            Staff Member
           </p>
-        </div>
-
-        {/* Missing Info Banner */}
-        <div className="mt-2">
-        {!studentData?.house && (
-          <MissingInfoBanner
-            missingFields={["House"]}
-            onAddClick={() => setProfileModalOpen(true)}
-          />
-        )}
         </div>
 
         {/* Status Cards */}
         <div className="p-6 py-4 border-b border-gray-100 dark:border-neutral-800">
           {/* Temperature - inline */}
-          <div className="flex items-center gap-2 mb-4">
-            <Thermometer className={`w-5 h-5 ${
-              studentData?.tempReading > 37
-                ? "text-rose-500"
-                : "text-green-500"
-            }`} />
-            <span className={`text-lg font-bold ${
-              studentData?.tempReading > 37
-                ? "text-rose-600 dark:text-rose-400"
-                : "text-green-600 dark:text-green-400"
-            }`}>
-              {studentData?.tempReading}°C
-            </span>
-            <span className="text-sm text-gray-500 dark:text-gray-400">Temperature</span>
-          </div>
+          {staffData?.tempReading && (
+            <div className="flex items-center gap-2 mb-4">
+              <Thermometer className={`w-5 h-5 ${
+                staffData?.tempReading > 37
+                  ? "text-rose-500"
+                  : "text-green-500"
+              }`} />
+              <span className={`text-lg font-bold ${
+                staffData?.tempReading > 37
+                  ? "text-rose-600 dark:text-rose-400"
+                  : "text-green-600 dark:text-green-400"
+              }`}>
+                {staffData?.tempReading}°C
+              </span>
+              <span className="text-sm text-gray-500 dark:text-gray-400">Temperature</span>
+            </div>
+          )}
 
           {/* Ailment */}
           <div className="mb-3">
@@ -131,7 +113,7 @@ export default function StudentProfileModal({
               <span className="text-xs font-medium uppercase text-gray-500 dark:text-gray-400">Ailment</span>
             </div>
             <p className="text-gray-800 dark:text-gray-200 pl-6">
-              {studentData?.ailment || "-"}
+              {staffData?.ailment || "-"}
             </p>
           </div>
 
@@ -142,21 +124,23 @@ export default function StudentProfileModal({
               <span className="text-xs font-medium uppercase text-gray-500 dark:text-gray-400">Medication</span>
             </div>
             <p className="text-gray-800 dark:text-gray-200 pl-6">
-              {studentData?.medication || "-"}
+              {staffData?.medication || "-"}
             </p>
           </div>
 
           {/* Supporting Info */}
           <div className="mt-4 space-y-1">
-            {studentData?.complain && (
+            {staffData?.complain && (
               <p className="text-sm text-gray-600 dark:text-gray-400">
                 <span className="font-medium text-gray-800 dark:text-gray-200">Complains:</span>{" "}
-                {studentData.complain}
+                {staffData.complain}
               </p>
             )}
-            <p className="text-sm text-gray-500 dark:text-gray-400">
-              On medication for {daysOnMedication} {daysOnMedication === 1 ? "day" : "days"} · Last took meds {getTimeOfDay(studentData?.timestamp)}
-            </p>
+            {staffData?.timestamp && (
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                On medication for {daysOnMedication} {daysOnMedication === 1 ? "day" : "days"} · Last took meds {getTimeOfDay(staffData?.timestamp)}
+              </p>
+            )}
           </div>
         </div>
 
@@ -165,7 +149,7 @@ export default function StudentProfileModal({
           <div className="flex gap-2">
             <Button
               className="flex-1"
-              onClick={() => directToPage("/students/new_record", "new_record")}
+              onClick={() => directToPage("/staff/new_record", "new_record")}
               disabled={loading}
             >
               {loading && directingTo === "new_record" ? (
@@ -176,7 +160,7 @@ export default function StudentProfileModal({
               New Record
             </Button>
 
-            {studentData?.ailment && studentData?.medication && (
+            {staffData?.ailment && staffData?.medication && (
               <Button
                 variant="outline"
                 className="flex-1 border-blue-500 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-950"
@@ -194,7 +178,7 @@ export default function StudentProfileModal({
 
             <Button
               variant="outline"
-              onClick={() => directToPage("/students/update_record", "update_record")}
+              onClick={() => directToPage("/staff/update_record", "update_record")}
               disabled={loading}
             >
               {loading && directingTo === "update_record" ? (
@@ -212,20 +196,11 @@ export default function StudentProfileModal({
             <h3 className="text-xs font-semibold uppercase text-gray-500 dark:text-gray-400 tracking-wide">
               History
             </h3>
-            {studentHistory?.length > 3 && (
-              <a
-                href={`/students/history?admission_number=${studentData?.admNo}`}
-                className="text-xs text-blue-500 hover:underline flex items-center gap-1"
-              >
-                View All
-                <ArrowRight className="w-3 h-3" />
-              </a>
-            )}
           </div>
 
-          {studentHistory?.length > 0 ? (
+          {staffHistory?.length > 0 ? (
             <div className="space-y-2">
-              {studentHistory.slice(0, 5).map((record, index) => (
+              {staffHistory.slice(0, 5).map((record, index) => (
                 <div
                   key={index}
                   className="flex items-center gap-3 text-sm py-2 border-b border-gray-100 dark:border-neutral-800 last:border-0"
@@ -255,16 +230,6 @@ export default function StudentProfileModal({
             </p>
           )}
         </div>
-
-        {/* Profile Update Modal */}
-        <ProfileUpdateModal
-          open={profileModalOpen}
-          onClose={() => setProfileModalOpen(false)}
-          studentData={studentData}
-          onSuccess={(updatedData) => {
-            onStudentUpdate?.(updatedData);
-          }}
-        />
       </DialogContent>
     </Dialog>
   );

@@ -1,8 +1,8 @@
 "use client";
 import { useState } from "react";
-import { AlertTriangle, ChevronDown, ChevronUp, Pill, Users } from "lucide-react";
+import { AlertTriangle, ChevronDown, ChevronUp, Users } from "lucide-react";
 
-export default function Dashboard({ stats, onPatientClick, loading }) {
+export default function Dashboard({ stats, onStaffClick, loading }) {
   const [alertsExpanded, setAlertsExpanded] = useState(false);
 
   if (loading || !stats) {
@@ -20,11 +20,10 @@ export default function Dashboard({ stats, onPatientClick, loading }) {
 
   // Check what data we have
   const hasAlerts = stats.outbreaks?.length > 0;
-  const hasMedicationDue = stats.medicationDue?.length > 0;
-  const hasActivity = stats.studentCount > 0;
+  const hasActivity = stats.staffCount > 0;
 
   // Show "No activity" message if nothing to display
-  if (!hasAlerts && !hasMedicationDue && !hasActivity) {
+  if (!hasAlerts && !hasActivity) {
     return (
       <div className="text-center text-sm text-gray-400 dark:text-gray-500">
         No activity since yesterday
@@ -32,7 +31,7 @@ export default function Dashboard({ stats, onPatientClick, loading }) {
     );
   }
 
-  // Calculate total affected students and sort by severity
+  // Calculate total affected staff and sort by severity
   const sortedOutbreaks = hasAlerts
     ? [...stats.outbreaks].sort((a, b) => b.count - a.count)
     : [];
@@ -56,50 +55,21 @@ export default function Dashboard({ stats, onPatientClick, loading }) {
     <div className="w-full">
       {/* Horizontal Stats Bar */}
       <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm">
-        {/* Students Seen */}
+        {/* Staff Seen */}
         {hasActivity && (
           <div className="flex items-center gap-2">
             <Users className="w-4 h-4 text-blue-500" />
             <span className="text-gray-600 dark:text-gray-400">
-              <strong className="text-blue-600 dark:text-blue-400">{stats.studentCount}</strong> seen recently
-              {stats.studentCountToday > 0 && stats.studentCountToday < stats.studentCount && (
-                <span className="text-gray-400 dark:text-gray-500"> ({stats.studentCountToday} today)</span>
+              <strong className="text-blue-600 dark:text-blue-400">{stats.staffCount}</strong> seen recently
+              {stats.staffCountToday > 0 && stats.staffCountToday < stats.staffCount && (
+                <span className="text-gray-400 dark:text-gray-500"> ({stats.staffCountToday} today)</span>
               )}
             </span>
           </div>
         )}
 
         {/* Divider */}
-        {hasActivity && hasMedicationDue && (
-          <div className="hidden sm:block w-px h-4 bg-gray-300 dark:bg-neutral-700" />
-        )}
-
-        {/* Medication Due */}
-        {hasMedicationDue && (
-          <div className="flex items-center gap-2">
-            <Pill className="w-4 h-4 text-orange-500" />
-            <span className="text-orange-600 dark:text-orange-400">
-              <strong>{stats.medicationDue.length}</strong> meds due
-            </span>
-            <div className="flex gap-1">
-              {stats.medicationDue.slice(0, 2).map((patient, index) => (
-                <button
-                  key={index}
-                  onClick={() => onPatientClick(patient.admNo)}
-                  className="px-2 py-0.5 text-xs bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 rounded-full hover:bg-orange-200 dark:hover:bg-orange-800/50 transition-colors"
-                >
-                  {patient.admNo}
-                </button>
-              ))}
-              {stats.medicationDue.length > 2 && (
-                <span className="text-xs text-orange-500">+{stats.medicationDue.length - 2}</span>
-              )}
-            </div>
-          </div>
-        )}
-
-        {/* Divider */}
-        {(hasActivity || hasMedicationDue) && hasAlerts && (
+        {hasActivity && hasAlerts && (
           <div className="hidden sm:block w-px h-4 bg-gray-300 dark:bg-neutral-700" />
         )}
 
@@ -129,7 +99,7 @@ export default function Dashboard({ stats, onPatientClick, loading }) {
             <h4 className="font-semibold text-sm text-gray-700 dark:text-gray-300">
               Health Alerts
             </h4>
-            <span className="text-xs text-gray-500">{totalAffected} students affected</span>
+            <span className="text-xs text-gray-500">{totalAffected} staff affected</span>
           </div>
           <div className="space-y-1.5 max-h-48 overflow-y-auto">
             {sortedOutbreaks.map((outbreak, index) => (

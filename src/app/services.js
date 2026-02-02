@@ -56,34 +56,45 @@ export const updateReport = () => {
   }
 };
 
-// Fetch today's activity stats for dashboard
+// Fetch recent activity stats for dashboard (since yesterday morning)
 export const fetchTodayStats = async () => {
   try {
     const response = await base_api.get("/student-data");
     const allRecords = response.data || [];
 
-    // Get today's date at midnight for comparison
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    // Get yesterday at 6am as the cutoff (covers overnight/shift changes)
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    yesterday.setHours(6, 0, 0, 0);
 
-    // Filter records for today
-    const todayRecords = allRecords.filter((record) => {
+    // Get today at midnight for "today" vs "yesterday" distinction
+    const todayMidnight = new Date();
+    todayMidnight.setHours(0, 0, 0, 0);
+
+    // Filter records since yesterday morning
+    const recentRecords = allRecords.filter((record) => {
       const recordDate = new Date(record.timestamp);
-      recordDate.setHours(0, 0, 0, 0);
-      return recordDate.getTime() === today.getTime();
+      return recordDate >= yesterday;
     });
 
-    // Get unique students seen today
-    const uniqueStudents = [...new Map(todayRecords.map(r => [r.admNo, r])).values()];
+    // Also get just today's records for "today" count
+    const todayRecords = recentRecords.filter((record) => {
+      const recordDate = new Date(record.timestamp);
+      return recordDate >= todayMidnight;
+    });
+
+    // Get unique students seen (recent period)
+    const uniqueStudentsRecent = [...new Map(recentRecords.map(r => [r.admNo, r])).values()];
+    const uniqueStudentsToday = [...new Map(todayRecords.map(r => [r.admNo, r])).values()];
 
     // Get recent patients (last 5, sorted by timestamp descending)
-    const recentPatients = [...todayRecords]
+    const recentPatients = [...recentRecords]
       .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp))
       .slice(0, 5);
 
-    // Count ailments for outbreak detection
+    // Count ailments for outbreak detection (use recent period)
     const ailmentCounts = {};
-    todayRecords.forEach((record) => {
+    recentRecords.forEach((record) => {
       const ailment = record.ailment?.toLowerCase() || "unknown";
       ailmentCounts[ailment] = (ailmentCounts[ailment] || 0) + 1;
     });
@@ -96,12 +107,8 @@ export const fetchTodayStats = async () => {
     // Get students who might need afternoon medication
     // (took meds in morning 5am-12pm, hasn't returned since)
     const currentHour = new Date().getHours();
-    const morningPatients = todayRecords.filter((record) => {
-      const hour = new Date(record.timestamp).getHours();
-      return hour >= 5 && hour < 12;
-    });
 
-    // Find students whose last visit was in the morning
+    // Find students whose last visit was in the morning (today only for medication reminders)
     const medicationDue = [];
     if (currentHour >= 12) {
       const studentLastVisit = {};
@@ -121,8 +128,10 @@ export const fetchTodayStats = async () => {
     }
 
     return {
-      studentCount: uniqueStudents.length,
-      totalVisits: todayRecords.length,
+      studentCount: uniqueStudentsRecent.length,
+      studentCountToday: uniqueStudentsToday.length,
+      totalVisits: recentRecords.length,
+      totalVisitsToday: todayRecords.length,
       recentPatients,
       outbreaks,
       medicationDue,

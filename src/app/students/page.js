@@ -29,6 +29,7 @@ function StudentsContent() {
   // Loading states
   const [searchLoading, setSearchLoading] = useState(false);
   const [autoSearchLoading, setAutoSearchLoading] = useState(false);
+  const [statsLoading, setStatsLoading] = useState(true);
 
   // Data states
   const [studentData, setStudentData] = useState(null);
@@ -54,8 +55,10 @@ function StudentsContent() {
   // Load today's stats
   useEffect(() => {
     const loadStats = async () => {
+      setStatsLoading(true);
       const stats = await fetchTodayStats();
       setTodayStats(stats);
+      setStatsLoading(false);
     };
     loadStats();
   }, []);
@@ -185,6 +188,7 @@ function StudentsContent() {
         onClose={handleCloseProfile}
         studentData={studentData}
         studentHistory={studentHistory}
+        onStudentUpdate={(updatedData) => setStudentData(updatedData)}
       />
 
       <div className="min-h-screen flex flex-col">
@@ -199,6 +203,9 @@ function StudentsContent() {
                 </a>
                 <a href="/students/student-create-entry" className="text-gray-600 dark:text-gray-400 hover:text-blue-500">
                   Add New Student
+                </a>
+                <a href="/students/none_busherian" className="text-gray-600 dark:text-gray-400 hover:text-blue-500">
+                  Non-Busherian
                 </a>
               </nav>
             </div>
@@ -283,7 +290,7 @@ function StudentsContent() {
         {/* Stats Bar - Fixed at bottom */}
         <div className="border-t border-gray-200 dark:border-neutral-800 bg-gray-50 dark:bg-zinc-900">
           <div className="max-w-4xl mx-auto px-4 py-3">
-            <Dashboard stats={todayStats} onPatientClick={performSearch} />
+            <Dashboard stats={todayStats} onPatientClick={performSearch} loading={statsLoading} />
           </div>
         </div>
       </div>
