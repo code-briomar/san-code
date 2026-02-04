@@ -6,7 +6,7 @@ export const base_api = axios.create({
   //   ? "http://localhost:5000"
   //   : "https://sancode-api.onrender.com", // -> OLD LIVE SERVER LINK
   // "https://san-code-api.lomogan.africa",
-  baseURL: "https://156.232.88.204/sanCode-API/",
+  baseURL: "https://sancode-api.onrender.com",
   headers: {
     "Content-Type": "application/json",
   },
