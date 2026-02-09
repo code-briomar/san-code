@@ -5,6 +5,7 @@ import { Separator } from "@/components/ui/separator";
 import { devMode } from "@/lib/dev_mode";
 import { useFormik } from "formik";
 import { ArrowRight, Dot, LucideLoader, PenSquare } from "lucide-react";
+import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -118,18 +119,18 @@ export default function StudentUpdateEntry() {
         </p>
 
         <div className="hidden lg:flex lg:space-x-4 lg:ml-4 lg:mt-2">
-          <a
+          <Link
             href="/"
             className="flex items-end space-x-1 text-base text-blue-500 underline font-semibold"
           >
             Home
-          </a>
-          <a
+          </Link>
+          <Link
             href="/students"
             className="flex items-end space-x-1 text-base text-blue-500 underline font-semibold"
           >
             Students
-          </a>
+          </Link>
         </div>
       </div>
 

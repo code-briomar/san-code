@@ -9,6 +9,7 @@ import {
   Clock,
   LucideLoader,
 } from "lucide-react";
+import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState, useCallback } from "react";
 import { toast } from "sonner";
@@ -142,7 +143,7 @@ function StudentsContent() {
       performSearch(admissionNumber, true);
 
       // Clear URL params without reload
-      window.history.replaceState({}, "", "/students");
+      router.replace("/students");
     }
   }, [searchParams, performSearch]);
 
@@ -198,26 +199,26 @@ function StudentsContent() {
             <div className="flex items-center gap-6">
               <h1 className="font-mono font-bold text-lg">Students</h1>
               <nav className="hidden sm:flex items-center gap-4 text-sm">
-                <a href="/" className="text-gray-600 dark:text-gray-400 hover:text-blue-500">
+                <Link href="/" className="text-gray-600 dark:text-gray-400 hover:text-blue-500">
                   Home
-                </a>
-                <a href="/students/student-create-entry" className="text-gray-600 dark:text-gray-400 hover:text-blue-500">
+                </Link>
+                <Link href="/students/student-create-entry" className="text-gray-600 dark:text-gray-400 hover:text-blue-500">
                   Add New Student
-                </a>
-                <a href="/students/none_busherian" className="text-gray-600 dark:text-gray-400 hover:text-blue-500">
+                </Link>
+                <Link href="/students/none_busherian" className="text-gray-600 dark:text-gray-400 hover:text-blue-500">
                   Non-Busherian
-                </a>
+                </Link>
               </nav>
             </div>
             <div className="flex items-center gap-3 text-sm">
-              <a
+              <Link
                 href="/view_summary"
                 target="_blank"
                 className="text-gray-500 hover:text-blue-500 flex items-center gap-1"
               >
                 Summary
                 <ArrowUpRightFromSquare className="w-3 h-3" />
-              </a>
+              </Link>
             </div>
           </div>
         </header>

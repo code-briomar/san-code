@@ -1,6 +1,7 @@
 "use client";
 import { ArrowRight, Users, UserCog, FileText, BarChart3, Upload } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function Home() {
   return (
@@ -19,7 +20,7 @@ export default function Home() {
       <main className="flex-1 flex flex-col items-center justify-center px-4">
         <div className="w-full max-w-2xl space-y-4">
           {/* Primary Card - Students */}
-          <a
+          <Link
             href="/students"
             className="block p-6 rounded-lg border-2 border-gray-200 dark:border-zinc-700 hover:border-gray-300 dark:hover:border-zinc-600 hover:bg-gray-50 dark:hover:bg-zinc-800/50 transition-colors group"
           >
@@ -37,12 +38,12 @@ export default function Home() {
               </div>
               <ArrowRight className="w-4 h-4 text-gray-300 dark:text-gray-600 group-hover:text-gray-400 group-hover:translate-x-1 transition-all" />
             </div>
-          </a>
+          </Link>
 
           {/* Secondary Cards - 2x2 Grid */}
           <div className="grid grid-cols-2 gap-3">
             {/* Staff */}
-            <a
+            <Link
               href="/staff"
               className="p-4 rounded-lg border-2 border-gray-200 dark:border-zinc-700 hover:border-gray-300 dark:hover:border-zinc-600 hover:bg-gray-50 dark:hover:bg-zinc-800/50 transition-colors group"
             >
@@ -53,10 +54,10 @@ export default function Home() {
                   <p className="text-xs text-gray-500 dark:text-gray-400">Health records</p>
                 </div>
               </div>
-            </a>
+            </Link>
 
             {/* Reports */}
-            <a
+            <Link
               href="/report"
               className="p-4 rounded-lg border-2 border-gray-200 dark:border-zinc-700 hover:border-gray-300 dark:hover:border-zinc-600 hover:bg-gray-50 dark:hover:bg-zinc-800/50 transition-colors group"
             >
@@ -67,10 +68,10 @@ export default function Home() {
                   <p className="text-xs text-gray-500 dark:text-gray-400">View & export</p>
                 </div>
               </div>
-            </a>
+            </Link>
 
             {/* Analytics */}
-            <a
+            <Link
               href="/analytics"
               className="p-4 rounded-lg border-2 border-gray-200 dark:border-zinc-700 hover:border-gray-300 dark:hover:border-zinc-600 hover:bg-gray-50 dark:hover:bg-zinc-800/50 transition-colors group"
             >
@@ -81,10 +82,10 @@ export default function Home() {
                   <p className="text-xs text-gray-500 dark:text-gray-400">Insights & trends</p>
                 </div>
               </div>
-            </a>
+            </Link>
 
             {/* Upload */}
-            <a
+            <Link
               href="/upload-students"
               className="p-4 rounded-lg border-2 border-gray-200 dark:border-zinc-700 hover:border-gray-300 dark:hover:border-zinc-600 hover:bg-gray-50 dark:hover:bg-zinc-800/50 transition-colors group"
             >
@@ -95,7 +96,7 @@ export default function Home() {
                   <p className="text-xs text-gray-500 dark:text-gray-400">Import data</p>
                 </div>
               </div>
-            </a>
+            </Link>
           </div>
         </div>
       </main>
