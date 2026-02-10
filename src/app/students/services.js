@@ -48,6 +48,27 @@ export const updateStudentProfile = async (admNo, profileData) => {
   }
 };
 
+// Fetch unique student classes from /student-data, excluding [NB] prefixed classes
+export const fetchAllStudentClasses = async () => {
+  try {
+    const response = await base_api.get("/student-data");
+    const allRecords = response.data || [];
+
+    const classes = [
+      ...new Set(
+        allRecords
+          .map((r) => r.class)
+          .filter((c) => c && !c.startsWith("[NB]"))
+      ),
+    ].sort();
+
+    return classes;
+  } catch (error) {
+    devMode && console.error(error);
+    return [];
+  }
+};
+
 export const updateStudentDetails = async (
   studentAdmNo,
   tempReading,
