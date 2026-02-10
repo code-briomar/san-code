@@ -52,7 +52,7 @@ export function ThemeSwitcher() {
   if (!mounted) return null;
 
   return (
-    <div className="fixed top-4 right-4 z-50">
+    <div className="fixed top-4 right-4 z-50 no-print">
       <DropdownMenu className="dark:bg-zinc-800/30 dark:from-inherit dark:text-white dark:border-gray-800 dark:outline-none dark:ring-offset-0">
         <DropdownMenuTrigger asChild>
           <Button

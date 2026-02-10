@@ -1,81 +1,55 @@
 "use client";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { devMode } from "@/lib/dev_mode";
+import { base_api } from "@/lib/base_api";
 import Link from "next/link";
-import jsPDF from "jspdf";
 import { Loader } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+
 import { updateReport } from "../services";
 import { ailments } from "../staff/ailments";
 import { fetchReportData } from "./services";
+import MOH705Table from "./components/MOH705Table";
+import ExtendedReportTable from "./components/ExtendedReportTable";
+import MOH717Form from "./components/MOH717Form";
+import ArchiveReportTable from "./components/ArchiveReportTable";
+import {
+  generateMOH705PDF,
+  generateMOH717PDF,
+  generateExtendedPDF,
+  generateArchivePDF,
+} from "./components/PDFGenerator";
 
 const Report = () => {
-  const data = [
-    {
-      1: 32,
-      2: 20,
-      3: 40,
-      4: 0,
-      5: 0,
-      6: 0,
-      7: 0,
-      8: 0,
-      9: 0,
-      10: 0,
-      11: 0,
-      12: 0,
-      13: 0,
-      14: 0,
-      15: 0,
-      16: 0,
-      17: 0,
-      18: 0,
-      19: 0,
-      20: 0,
-      21: 0,
-      22: 0,
-      23: 0,
-      24: 0,
-      25: 0,
-      26: 0,
-      27: 0,
-      28: 0,
-      29: 0,
-      30: 0,
-      31: 0,
-      disease: "Diarrhoea",
-    },
-    // Add other disease data objects here
-  ];
-
   const [reportData, setReportData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [activeTab, setActiveTab] = useState("moh705");
+  const [showZeros, setShowZeros] = useState(false);
+  const archiveRef = useRef({ data: [], month: "" });
+
+  // Editable header fields
+  const [facilityName, setFacilityName] = useState("");
+  const [district, setDistrict] = useState("");
+  const [month, setMonth] = useState(
+    new Date().toLocaleString("default", { month: "long" })
+  );
+  const [year, setYear] = useState(String(new Date().getFullYear()));
 
   const fetchFromReportEndpoint = async () => {
     setIsLoading(true);
-
     try {
       const updateReportResponse = await updateReport();
-      console.log(updateReportResponse);
+      if (devMode) console.log(updateReportResponse);
       const response = await fetchReportData();
-
       if (devMode) console.log(response);
-
-      setReportData(response?.data);
+      setReportData(response?.data || []);
     } catch (error) {
       if (devMode) {
         console.error("An error occurred while fetching the data: ", error);
       }
     } finally {
-      setTimeout(() => {
-        setIsLoading(false);
-      }, 1000);
+      setTimeout(() => setIsLoading(false), 1000);
     }
   };
 
@@ -85,197 +59,133 @@ const Report = () => {
     }
   }, []);
 
-  const days = Array.from({ length: 31 }, (_, i) => i + 1);
-
-  // Create a lookup object for quick data access
-  const diseaseDataLookup = reportData.reduce((lookup, entry) => {
-    lookup[entry.disease] = entry;
-    return lookup;
-  }, {});
-
-  const downloadReportInPDF = () => {
-    const doc = new jsPDF({
-      orientation: "landscape", // Landscape mode for more width
-      unit: "pt", // Points to control better
-      format: "A3", // A4 size paper
-    });
-
-    // Reduce font size for header info
-    doc.setFontSize(10);
-
-    // Add the additional information before the header
-    const additionalInfo = [
-      "Facility Name: ________________________________",
-      "Ward: ________________________________",
-      "Sub-County: ________________________________",
-      "County: ________________________________",
-      "Month: ________________________________",
-      "Year: ________________________________",
-    ];
-
-    // Define starting position for text
-    const startX = 10; // Starting X position
-    const startY = 5; // Starting Y position
-    const spacing = 180; // Space between each item
-    // Font size for the additional information
-
-    additionalInfo.forEach((info, index) => {
-      // Add the information at the top of the page horizontally
-      doc.setFontSize(4);
-      doc.text(info, startX + index * spacing, startY);
-    });
-
-    // Construct the header row
-    const headerRow = [
-      { content: "Disease (First Cases Only)", colSpan: 2 },
-      ...days,
-    ];
-
-    // Construct data rows
-    const dataRows = ailments.map((ailment, index) => {
-      const { disease } = ailment; // Destructure the disease from the current ailment
-      const rowData = days.map((day) => diseaseDataLookup[disease]?.[day] || 0);
-      return [index + 1, disease, ...rowData]; // Create separate cells for index and disease
-    });
-
-    // Column Styles
-    const columnStyles = {
-      0: { cellWidth: "auto", fontStyle: "bold", halign: "center" }, // First column
-      1: { fontStyle: "bold", halign: "left" }, // Second column
-    };
-
-    for (let i = 2; i <= 31; i++) {
-      columnStyles[i] = { cellWidth: "auto", halign: "center" };
+  const handleDownloadPDF = () => {
+    const opts = { facilityName, district, month, year };
+    if (activeTab === "moh705") {
+      generateMOH705PDF(reportData, opts);
+    } else if (activeTab === "extended") {
+      generateExtendedPDF(reportData, ailments);
+    } else if (activeTab === "moh717") {
+      generateMOH717PDF(reportData, opts);
+    } else if (activeTab === "archive") {
+      const { data, month: archiveMonth } = archiveRef.current;
+      if (data.length === 0) return;
+      const label = new Date(archiveMonth).toLocaleString("default", { month: "long", year: "numeric" });
+      generateArchivePDF(data, label);
     }
+  };
 
-    // AutoTable with adjusted table width and smaller padding
-    doc.autoTable({
-      head: [headerRow],
-      body: dataRows,
-      startY: 10, // Adjust based on the header
-      margin: { top: 15, right: 10, bottom: 0, left: 10 },
-      styles: {
-        fontSize: 5, // Reduce font size for fitting more data
-        fillColor: [255, 255, 255], // White background for all cells
-        textColor: [0, 0, 0], // Black text color for all cells
-        lineColor: [0, 0, 0], // Border color
-        lineWidth: 0.5, // Border width
+  const handlePrint = () => {
+    const now = new Date();
+    const stamp = `${String(now.getDate()).padStart(2, "0")}-${String(now.getMonth() + 1).padStart(2, "0")}-${now.getFullYear()}`;
+    const originalTitle = document.title;
+    document.title = `sanCode-${stamp}`;
+    window.print();
+    document.title = originalTitle;
+  };
 
-        // halign: 'center', // Center align all cell content
-      },
-      headStyles: {
-        fillColor: [255, 255, 255], // White background for header cells
-        textColor: [0, 0, 0], // Black text color for header
-        fontStyle: "bold", // Bold text for header
-        lineColor: [0, 0, 0], // Border color for header
-        lineWidth: 0.5, // Border width for header
-        halign: "center", // Center align header content
-      },
-      theme: "grid",
-      tableWidth: "fit", // Make the table width auto-adjust to fit the page
-      tableHeight: "fit", // Make the table height auto-adjust to fit the content
-      bodyStyles: {
-        cellPadding: 2.7, // Smaller padding to fit more content
-        fillColor: [255, 255, 255], // White background for body cells
-        textColor: [0, 0, 0], // Black text color for body cells
-        halign: "left", // Center align body content
-      },
-      columnStyles: columnStyles,
-    });
-
-    // Save the PDF
-    const today = new Date().toISOString().split("T")[0];
-    doc.save(`report-${today}.pdf`);
+  const handleExcelDownload = () => {
+    const baseURL = base_api.defaults.baseURL;
+    window.open(baseURL + "/export-report-excel", "_blank");
   };
 
   return (
-    <>
-      <div className="m-10">
-        <div className="flex items-center justify-between no-print">
-          <h3 className="mt-8 scroll-m-20 text-2xl font-semibold tracking-tight">
-            Official Report
-          </h3>
-
-          <div className="mt-8 flex items-center space-x-2">
-            <Link href={"/"} className="text-blue-500 underline">
-              Home
-            </Link>
-            <a
-              href={"javascript:void(0)"}
-              className="text-blue-500 underline"
-              onClick={downloadReportInPDF} // Use the PDF generation function
-            >
-              Download PDF
-            </a>
-          </div>
+    <div className="m-4 md:m-10">
+      {/* Action bar */}
+      <div className="flex items-center justify-between mb-4 no-print">
+        <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight dark:text-gray-100">
+          Official Report
+        </h3>
+        <div className="flex items-center space-x-3">
+          <Link href="/" className="text-blue-500 dark:text-blue-400 underline text-sm">
+            Home
+          </Link>
+          <button
+            onClick={handleDownloadPDF}
+            className="text-blue-500 dark:text-blue-400 underline text-sm"
+          >
+            Download PDF
+          </button>
+          <button
+            onClick={handleExcelDownload}
+            className="text-blue-500 dark:text-blue-400 underline text-sm"
+          >
+            Excel
+          </button>
+          <button
+            onClick={handlePrint}
+            className="text-blue-500 dark:text-blue-400 underline text-sm"
+          >
+            Print
+          </button>
+          <label className="flex items-center gap-1.5 text-sm cursor-pointer select-none dark:text-gray-300">
+            <input
+              type="checkbox"
+              checked={showZeros}
+              onChange={(e) => setShowZeros(e.target.checked)}
+              className="accent-blue-500"
+            />
+            Show zeros
+          </label>
         </div>
-        {isLoading && (
-          <div className="absolute flex items-center justify-center h-dvh w-dvw no-print">
-            <Loader className="w-6 h-6 animate-spin" />
-          </div>
-        )}
-        {!isLoading && (
-          <>
-            <div className={"flex items-center space-x-2 my-2"}>
-              <div className="flex items-center space-x-0">
-                <span>Facility Name:</span>
-                <span>________________________________</span>
-              </div>
-              <div className="flex items-center space-x-0">
-                <span>Ward:</span>
-                <span>________________________________</span>
-              </div>
-              <div className="flex items-center space-x-0">
-                <span>Sub-County:</span>
-                <span>________________________________</span>
-              </div>
-              <div className="flex items-center space-x-0">
-                <span>County:</span>
-                <span>________________________________</span>
-              </div>
-              <div className="flex items-center space-x-0">
-                <span>Month:</span>
-                <span>________________________________</span>
-              </div>
-              <div className="flex items-center space-x-0">
-                <span>Year:</span>
-                <span>________________________________</span>
-              </div>
-            </div>
-            <Table id="report" className="table-auto border-collapse border-2">
-              <TableHeader className="bg-gray-200">
-                <TableRow>
-                  <TableCell className="border-2 border-gray-300">
-                    Diseases (First Cases Only)
-                  </TableCell>
-                  {days.map((day) => (
-                    <TableCell key={day} className="border-2 border-gray-300">
-                      {day}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {ailments.map((ailment) => (
-                  <TableRow key={ailment.disease}>
-                    <TableCell className="border-2 border-gray-300 min-w-[100px]">
-                      {ailment.disease}
-                    </TableCell>
-                    {days.map((day) => (
-                      <TableCell key={day} className="border-2 border-gray-300">
-                        {diseaseDataLookup[ailment.disease]
-                          ? diseaseDataLookup[ailment.disease][day] || 0
-                          : 0}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </>
-        )}
       </div>
-    </>
+
+      {isLoading && (
+        <div className="flex items-center justify-center h-64 no-print">
+          <Loader className="w-6 h-6 animate-spin" />
+        </div>
+      )}
+
+      {!isLoading && (
+        <Tabs value={activeTab} onValueChange={setActiveTab}>
+          <TabsList className="no-print mb-4">
+            <TabsTrigger value="moh705">MOH 705</TabsTrigger>
+            <TabsTrigger value="extended">Extended Report</TabsTrigger>
+            <TabsTrigger value="moh717">MOH 717</TabsTrigger>
+            <TabsTrigger value="archive">Archive</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="moh705">
+            <div className="overflow-x-auto print-overflow-visible">
+              <MOH705Table
+                reportData={reportData}
+                showZeros={showZeros}
+                facilityName={facilityName}
+                setFacilityName={setFacilityName}
+                district={district}
+                setDistrict={setDistrict}
+                month={month}
+                setMonth={setMonth}
+                year={year}
+                setYear={setYear}
+              />
+            </div>
+          </TabsContent>
+
+          <TabsContent value="extended">
+            <div className="overflow-x-auto print-overflow-visible">
+              <ExtendedReportTable reportData={reportData} showZeros={showZeros} />
+            </div>
+          </TabsContent>
+
+          <TabsContent value="moh717">
+            <MOH717Form
+              reportData={reportData}
+              facilityName={facilityName}
+              district={district}
+              month={month}
+              year={year}
+            />
+          </TabsContent>
+
+          <TabsContent value="archive">
+            <div className="overflow-x-auto print-overflow-visible">
+              <ArchiveReportTable showZeros={showZeros} archiveRef={archiveRef} />
+            </div>
+          </TabsContent>
+        </Tabs>
+      )}
+    </div>
   );
 };
 

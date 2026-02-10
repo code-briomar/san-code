@@ -31,27 +31,141 @@
   display: none;
 }
 
-/* Add this CSS to your global styles or in a <style> tag in your component */
+/* Print styles for MOH reports */
 @media print {
-  /* Hide elements that are not needed in the print version */
   .no-print {
     display: none !important;
   }
 
-  /* Set the page orientation to landscape */
   @page {
-    size: landscape;
-    margin: 1cm;
+    size: A3 landscape;
+    margin: 6mm;
   }
 
-  /* Ensure the table and other elements fit within the print page */
-  .table-auto {
-    width: 100% !important;
-  }
-
-  /* Adjust other styles as needed for print */
-  body {
+  /* ── Force light mode in print (override dark theme) ── */
+  html, body {
     -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    overflow: visible !important;
+    background: white !important;
+    color: black !important;
+  }
+
+  /* Nuke every dark-mode background & text colour */
+  *, *::before, *::after {
+    background-color: transparent !important;
+    color: black !important;
+    border-color: #999 !important;
+    box-shadow: none !important;
+  }
+
+  /* Table header row gets a light grey fill so it stands out */
+  .print-table thead tr,
+  .print-table thead th {
+    background-color: #eee !important;
+  }
+
+  /* Summary rows keep a subtle tint */
+  .print-table tbody tr.font-bold,
+  .print-table tbody tr.bg-gray-50 {
+    background-color: #f5f5f5 !important;
+  }
+
+  /* Remove screen margins/padding from the page wrapper */
+  .m-4, .md\:m-10 {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* Remove overflow hidden from scroll wrappers so table can expand */
+  .print-overflow-visible {
+    overflow: visible !important;
+    max-width: none !important;
+  }
+
+  /* Ensure active tab content is visible when printing */
+  [data-state="active"] {
+    display: block !important;
+    overflow: visible !important;
+  }
+
+  /* ── Table sizing: fill the full A3 page ── */
+  .print-table {
+    width: 100% !important;
+    table-layout: fixed !important;
+  }
+
+  /*
+   * Override Tailwind h-6 (24px) on table rows — way too tall for A3.
+   * A3 landscape usable height ≈ 250mm for ~56 rows → ~4.4mm each ≈ 17px.
+   */
+  .print-table tr {
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+  }
+
+  .print-table td,
+  .print-table th {
+    font-size: 6pt !important;
+    padding: 0.3mm 1px !important;
+    line-height: 1.15 !important;
+    overflow: hidden !important;
+    word-break: break-all !important;
+    height: auto !important;
+  }
+
+  /* Row # column — narrow */
+  .print-table th:first-child,
+  .print-table td:first-child {
+    width: 16px !important;
+  }
+
+  /* Disease name column — wider */
+  .print-table th:nth-child(2),
+  .print-table td:nth-child(2) {
+    width: 120px !important;
+    white-space: normal !important;
+    word-break: break-word !important;
+  }
+
+  /* TOTAL column (last) — slightly wider */
+  .print-table th:last-child,
+  .print-table td:last-child {
+    width: 30px !important;
+  }
+
+  /* Print underline inputs as plain text with underline */
+  .print-underline-input {
+    border: none !important;
+    border-bottom: 1px solid black !important;
+    background: transparent !important;
+  }
+
+  .print-underline {
+    border-bottom: 1px solid black !important;
+  }
+
+  /* Keep header/footer on same page as table */
+  .report-header,
+  .report-footer {
+    page-break-inside: avoid;
+    margin: 0 !important;
+    padding: 1mm 0 !important;
+  }
+
+  /* Compact the header and footer text */
+  .report-header p {
+    margin: 0 !important;
+    line-height: 1.2 !important;
+    font-size: 7pt !important;
+  }
+
+  .report-footer {
+    margin-top: 1mm !important;
   }
 }
 
