@@ -7,6 +7,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { devMode } from "@/lib/dev_mode";
+import Link from "next/link";
 import jsPDF from "jspdf";
 import { Loader } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -196,9 +197,9 @@ const Report = () => {
           </h3>
 
           <div className="mt-8 flex items-center space-x-2">
-            <a href={"/"} className="text-blue-500 underline">
+            <Link href={"/"} className="text-blue-500 underline">
               Home
-            </a>
+            </Link>
             <a
               href={"javascript:void(0)"}
               className="text-blue-500 underline"

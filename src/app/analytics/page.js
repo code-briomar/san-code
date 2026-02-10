@@ -1,5 +1,6 @@
 "use client";
 import { devMode } from "@/lib/dev_mode";
+import Link from "next/link";
 import { Loader } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import DiseaseChart from "./disease-chart";
@@ -42,9 +43,9 @@ const Analytics = () => {
           Official Analytics
         </h3>
 
-        <a href={"/"} className="text-blue-500 underline">
+        <Link href={"/"} className="text-blue-500 underline">
           Home
-        </a>
+        </Link>
       </div>
       <div className="m-10">
         {isLoading && <Loader className="w-5 h-5 animate-spin" />}

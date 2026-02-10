@@ -1,5 +1,6 @@
 "use client";
 import { devMode } from "@/lib/dev_mode";
+import Link from "next/link";
 import { useState } from "react";
 // React-router-dom
 import { Button } from "@/components/ui/button";
@@ -102,9 +103,9 @@ export default function App() {
         <h4 className="text-2xl font-bold my-4">
           Upload an Excel file with student details:
         </h4>
-        <a href={"/"} className="text-blue-500 underline lg:mr-[40px] lg:mt-10">
+        <Link href={"/"} className="text-blue-500 underline lg:mr-[40px] lg:mt-10">
           Home
-        </a>
+        </Link>
       </div>
 
       {/* <GoBackButton destination={"/"} /> */}

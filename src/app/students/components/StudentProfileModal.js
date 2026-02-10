@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -232,13 +233,13 @@ export default function StudentProfileModal({
                   History
                 </h3>
                 {studentHistory?.length > 3 && (
-                  <a
+                  <Link
                     href={`/students/history?admission_number=${studentData?.admNo}`}
                     className="text-xs text-blue-500 hover:underline flex items-center gap-1"
                   >
                     View All
                     <ArrowRight className="w-3 h-3" />
-                  </a>
+                  </Link>
                 )}
               </div>
 
