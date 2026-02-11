@@ -17,7 +17,7 @@ export const createNewStaffRecord = async ({
   medication,
 }) => {
   try {
-    const response = base_api.post("/staff-full-entry", {
+    const response = await base_api.post("/staff-full-entry", {
       idNo,
       tempReading,
       complain,

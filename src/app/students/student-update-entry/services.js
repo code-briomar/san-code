@@ -18,7 +18,7 @@ export const updateEntry = async ({admNo, fName, sName, studentClass, graduation
     if (graduationYear !== undefined) {
       body.graduationYear = graduationYear;
     }
-    const response = base_api.post("/student-update-entry", body);
+    const response = await base_api.post("/student-update-entry", body);
 
     return response;
   } catch (error) {

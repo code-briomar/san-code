@@ -45,9 +45,9 @@
 import { base_api } from "@/lib/base_api";
 import { devMode } from "@/lib/dev_mode";
 
-export const updateReport = () => {
+export const updateReport = async () => {
   try {
-    return base_api.get("/update-report");
+    return await base_api.get("/update-report");
   } catch (error) {
     if (devMode) {
       console.log(error);

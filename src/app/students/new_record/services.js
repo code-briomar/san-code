@@ -19,7 +19,7 @@ export const createNewStudentRecord = async ({
   going_to_hospital,
 }) => {
   try {
-    const response = base_api.post("/student-full-entry", {
+    const response = await base_api.post("/student-full-entry", {
       studentAdmNo,
       tempReading,
       complain,

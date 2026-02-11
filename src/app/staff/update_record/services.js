@@ -12,7 +12,7 @@ export const updateStaffData = async (
   medication
 ) => {
   try {
-    const response = base_api.post("/staff-quick-update", {
+    const response = await base_api.post("/staff-quick-update", {
       idNo,
       tempReading,
       complain,

@@ -15,7 +15,7 @@ export const updateStudentDetails = async (
   going_to_hospital
 ) => {
   try {
-    const response = base_api.post("/student-quick-update", {
+    const response = await base_api.post("/student-quick-update", {
       studentAdmNo,
       tempReading,
       complain,

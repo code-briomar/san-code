@@ -8,7 +8,7 @@ export const createEntry = async ({
   class: studentClass
 }) => {
   try {
-    const response = base_api.post("/student-create-entry", {
+    const response = await base_api.post("/student-create-entry", {
       admNo,
       fName,
       sName,

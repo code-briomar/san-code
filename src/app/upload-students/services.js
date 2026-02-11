@@ -4,12 +4,7 @@ import { devMode } from "@/lib/dev_mode";
 // Function : Upload Students Excel Data
 export const uploadStudentsExcelData = async (excelInfo) => {
   try {
-    const response = base_api.post("/new-students", {
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(excelInfo),
-    });
+    const response = await base_api.post("/new-students", excelInfo);
 
     return response;
   } catch (error) {

@@ -48,21 +48,11 @@ export const updateStudentProfile = async (admNo, profileData) => {
   }
 };
 
-// Fetch unique student classes from /student-data, excluding [NB] prefixed classes
+// Fetch unique student classes from dedicated /classes endpoint
 export const fetchAllStudentClasses = async () => {
   try {
-    const response = await base_api.get("/student-data");
-    const allRecords = response.data || [];
-
-    const classes = [
-      ...new Set(
-        allRecords
-          .map((r) => r.class)
-          .filter((c) => c && !c.startsWith("[NB]"))
-      ),
-    ].sort();
-
-    return classes;
+    const response = await base_api.get("/classes");
+    return response.data || [];
   } catch (error) {
     devMode && console.error(error);
     return [];
@@ -77,7 +67,7 @@ export const updateStudentDetails = async (
   going_to_hospital
 ) => {
   try {
-    const response = base_api.post("/student-quick-update", {
+    const response = await base_api.post("/student-quick-update", {
       studentAdmNo,
       tempReading,
       complain,

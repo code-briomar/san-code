@@ -167,6 +167,37 @@
   .report-footer {
     margin-top: 1mm !important;
   }
+
+  /* ── Analytics dashboard print styles ── */
+
+  /* Show print-only header */
+  .print-show {
+    display: block !important;
+  }
+
+  /* Use portrait A4 when printing from analytics page */
+  .analytics-print-root {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* Preserve SVG fills inside ECharts so charts actually print */
+  .analytics-print-root svg *,
+  .analytics-print-root svg {
+    color: inherit !important;
+  }
+
+  /* Keep card borders visible */
+  .analytics-print-root [class*="rounded-lg"][class*="border"] {
+    border: 1px solid #ccc !important;
+    padding: 8px !important;
+    page-break-inside: avoid;
+  }
+
+  /* Summary cards: keep the grid side-by-side */
+  .analytics-print-root .grid {
+    display: grid !important;
+  }
 }
 
 /* In your CSS file */
