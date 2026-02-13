@@ -22,3 +22,14 @@ export const fetchStudentRecords = async () => {
     return [];
   }
 };
+
+// Re-exports for analytics convenience
+export {
+  fetchStudentsGoingToHospital,
+  fetchStudentData,
+  fetchStudentHistory,
+} from "@/app/students/services";
+export {
+  fetchArchivedMonths,
+  fetchArchivedReport,
+} from "@/app/report/services";

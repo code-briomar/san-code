@@ -3,9 +3,15 @@
 import { devMode } from "@/lib/dev_mode";
 import Link from "next/link";
 import { Loader, Printer } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { fetchReportData, fetchStudentRecords } from "./services";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import {
+  fetchReportData,
+  fetchStudentRecords,
+  fetchStudentsGoingToHospital,
+  fetchArchivedMonths,
+} from "./services";
 import { fetchTodayStats } from "@/app/services";
 import OutbreakAlert from "./outbreak-alert";
 import SummaryCards from "./summary-cards";
@@ -13,12 +19,26 @@ import MonthlyTrendChart from "./monthly-trend-chart";
 import DiseaseDistributionChart from "./disease-distribution-chart";
 import PeakHoursChart from "./peak-hours-chart";
 import ReadmissionTable from "./readmission-table";
+import AttendanceImpact from "./attendance-impact";
+import ActionableAlerts from "./actionable-alerts";
+import MedicationTracker from "./medication-tracker";
+import FollowUpList from "./follow-up-list";
+import WeeklyComparison from "./weekly-comparison";
+import ClassBreakdown from "./class-breakdown";
+import StudentLookup from "./student-lookup";
+import AdminReportExport from "./admin-report-export";
 
 const Analytics = () => {
   const [reportData, setReportData] = useState([]);
   const [todayStats, setTodayStats] = useState(null);
   const [studentRecords, setStudentRecords] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+
+  // Lazy-loaded data
+  const [hospitalReferrals, setHospitalReferrals] = useState(null);
+  const [archivedMonths, setArchivedMonths] = useState(null);
+  const [activeTab, setActiveTab] = useState("overview");
+  const tabDataLoaded = useRef({ alerts: false, trends: false });
 
   const handlePrint = () => {
     const now = new Date();
@@ -27,6 +47,20 @@ const Analytics = () => {
     document.title = `sanCode-Analytics-${stamp}`;
     window.print();
     document.title = originalTitle;
+  };
+
+  const handleTabChange = async (value) => {
+    setActiveTab(value);
+    if (value === "alerts" && !tabDataLoaded.current.alerts) {
+      tabDataLoaded.current.alerts = true;
+      const referrals = await fetchStudentsGoingToHospital();
+      setHospitalReferrals(referrals || []);
+    }
+    if (value === "trends" && !tabDataLoaded.current.trends) {
+      tabDataLoaded.current.trends = true;
+      const months = await fetchArchivedMonths();
+      setArchivedMonths(months?.data || []);
+    }
   };
 
   useEffect(() => {
@@ -103,33 +137,84 @@ const Analytics = () => {
         </p>
       </div>
 
-      <div className="mt-6 space-y-6">
-        {/* Outbreak Alert */}
-        <OutbreakAlert outbreaks={todayStats?.outbreaks} />
+      <Tabs value={activeTab} onValueChange={handleTabChange} className="mt-6">
+        <TabsList className="no-print flex w-full overflow-x-auto">
+          <TabsTrigger value="overview">Overview</TabsTrigger>
+          <TabsTrigger value="alerts">Alerts & Follow-ups</TabsTrigger>
+          <TabsTrigger value="trends">Trends</TabsTrigger>
+          <TabsTrigger value="student">Student Lookup</TabsTrigger>
+          <TabsTrigger value="admin">Admin Report</TabsTrigger>
+        </TabsList>
 
-        {/* Summary Cards */}
-        <SummaryCards reportData={reportData} todayStats={todayStats} />
+        {/* Tab 1: Overview (existing dashboard + attendance impact) */}
+        <TabsContent value="overview">
+          <div className="space-y-6">
+            <OutbreakAlert outbreaks={todayStats?.outbreaks} />
+            <SummaryCards reportData={reportData} todayStats={todayStats} />
+            <AttendanceImpact records={studentRecords} />
 
-        {/* Charts Row 1 */}
-        <div className="grid gap-6 lg:grid-cols-3">
-          <div className="lg:col-span-2">
-            <MonthlyTrendChart reportData={reportData} />
-          </div>
-          <div className="lg:col-span-1">
-            <DiseaseDistributionChart reportData={reportData} />
-          </div>
-        </div>
+            <div className="grid gap-6 lg:grid-cols-3">
+              <div className="lg:col-span-2">
+                <MonthlyTrendChart reportData={reportData} />
+              </div>
+              <div className="lg:col-span-1">
+                <DiseaseDistributionChart reportData={reportData} />
+              </div>
+            </div>
 
-        {/* Charts Row 2 */}
-        <div className="grid gap-6 lg:grid-cols-3">
-          <div className="lg:col-span-2">
-            <PeakHoursChart records={studentRecords} />
+            <div className="grid gap-6 lg:grid-cols-3">
+              <div className="lg:col-span-2">
+                <PeakHoursChart records={studentRecords} />
+              </div>
+              <div className="lg:col-span-1">
+                <ReadmissionTable records={studentRecords} />
+              </div>
+            </div>
           </div>
-          <div className="lg:col-span-1">
-            <ReadmissionTable records={studentRecords} />
+        </TabsContent>
+
+        {/* Tab 2: Alerts & Follow-ups */}
+        <TabsContent value="alerts">
+          <div className="space-y-6">
+            <ActionableAlerts
+              outbreaks={todayStats?.outbreaks}
+              records={studentRecords}
+            />
+            <MedicationTracker medicationDue={todayStats?.medicationDue} />
+            <FollowUpList
+              hospitalReferrals={hospitalReferrals}
+              records={studentRecords}
+            />
           </div>
-        </div>
-      </div>
+        </TabsContent>
+
+        {/* Tab 3: Trends */}
+        <TabsContent value="trends">
+          <div className="space-y-6">
+            <WeeklyComparison
+              records={studentRecords}
+              reportData={reportData}
+              archivedMonths={archivedMonths}
+            />
+            <ClassBreakdown records={studentRecords} />
+          </div>
+        </TabsContent>
+
+        {/* Tab 4: Student Lookup */}
+        <TabsContent value="student">
+          <StudentLookup />
+        </TabsContent>
+
+        {/* Tab 5: Admin Report */}
+        <TabsContent value="admin">
+          <AdminReportExport
+            reportData={reportData}
+            todayStats={todayStats}
+            studentRecords={studentRecords}
+            hospitalReferrals={hospitalReferrals}
+          />
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };

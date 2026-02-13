@@ -158,3 +158,270 @@ export function computeReadmissions(records, windowDays = 7) {
     (a, b) => new Date(b.returnVisit) - new Date(a.returnVisit)
   );
 }
+
+/* ── New analytics utilities ───────────────────────────────────────────────── */
+
+/** Attendance impact: student-days affected this week/month + chronic students */
+export function computeAttendanceImpact(records) {
+  if (!records?.length)
+    return { weekStudentDays: 0, monthStudentDays: 0, chronicStudents: [] };
+
+  const now = new Date();
+  const weekStart = new Date(now);
+  weekStart.setDate(now.getDate() - now.getDay());
+  weekStart.setHours(0, 0, 0, 0);
+
+  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+
+  const weekDays = new Set();
+  const monthDays = new Set();
+  const monthVisitsByStudent = {};
+
+  for (const r of records) {
+    const d = new Date(r.timestamp);
+    const dateStr = d.toISOString().split("T")[0];
+    const key = `${r.admNo}_${dateStr}`;
+
+    if (d >= monthStart) {
+      monthDays.add(key);
+      monthVisitsByStudent[r.admNo] =
+        (monthVisitsByStudent[r.admNo] || 0) + 1;
+    }
+    if (d >= weekStart) {
+      weekDays.add(key);
+    }
+  }
+
+  const chronicStudents = Object.entries(monthVisitsByStudent)
+    .filter(([, count]) => count >= 3)
+    .map(([admNo, count]) => ({ admNo, count }))
+    .sort((a, b) => b.count - a.count);
+
+  return {
+    weekStudentDays: weekDays.size,
+    monthStudentDays: monthDays.size,
+    chronicStudents,
+  };
+}
+
+/** Disease-specific suggested actions */
+const DISEASE_ACTIONS = {
+  malaria: [
+    "Schedule fumigation around school",
+    "Distribute mosquito nets to affected dormitories",
+    "Health education on malaria prevention",
+  ],
+  flu: [
+    "Encourage frequent hand washing",
+    "Consider temporary isolation of affected students",
+    "Ensure classrooms are well ventilated",
+  ],
+  typhoid: [
+    "Check water sources and purification",
+    "Reinforce handwashing after toilet use",
+    "Review cafeteria food handling and hygiene",
+  ],
+  diarrhea: [
+    "Check water and food hygiene",
+    "Ensure handwashing stations are stocked with soap",
+    "Review sanitation facilities",
+  ],
+  cholera: [
+    "Immediate water source testing",
+    "Enforce boiling of drinking water",
+    "Notify county health officer",
+  ],
+  "chest infection": [
+    "Check for damp/dusty classroom conditions",
+    "Ensure proper ventilation",
+    "Refer severe cases to hospital",
+  ],
+  headache: [
+    "Check for dehydration — ensure water access",
+    "Monitor for stress or vision issues",
+    "Review classroom lighting and ventilation",
+  ],
+};
+
+const DEFAULT_ACTIONS = [
+  "Monitor affected students closely",
+  "Inform school administration",
+  "Consider a health education session",
+];
+
+/** Enhance outbreaks with suggested actions + class breakdown */
+export function getActionableAlertData(outbreaks, records) {
+  if (!outbreaks?.length) return [];
+
+  return outbreaks.map((outbreak) => {
+    const ailmentLower = outbreak.ailment.toLowerCase();
+
+    const matchedKey = Object.keys(DISEASE_ACTIONS).find((k) =>
+      ailmentLower.includes(k)
+    );
+    const actions = DISEASE_ACTIONS[matchedKey] || DEFAULT_ACTIONS;
+
+    const classBreakdown = {};
+    if (records?.length) {
+      const yesterday = new Date();
+      yesterday.setDate(yesterday.getDate() - 1);
+      yesterday.setHours(6, 0, 0, 0);
+
+      for (const r of records) {
+        if (
+          (r.ailment || "").toLowerCase() === ailmentLower &&
+          new Date(r.timestamp) >= yesterday
+        ) {
+          const cls = r.class || "Unknown";
+          classBreakdown[cls] = (classBreakdown[cls] || 0) + 1;
+        }
+      }
+    }
+
+    return { ...outbreak, actions, classBreakdown };
+  });
+}
+
+/** Group student records by class for the current month */
+export function computeClassBreakdown(records) {
+  if (!records?.length) return [];
+
+  const now = new Date();
+  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+
+  const classStats = {};
+
+  for (const r of records) {
+    const d = new Date(r.timestamp);
+    if (d < monthStart) continue;
+
+    const cls = r.class || "Unknown";
+    if (!classStats[cls]) {
+      classStats[cls] = {
+        className: cls,
+        visits: 0,
+        uniqueStudents: new Set(),
+        ailments: {},
+      };
+    }
+    classStats[cls].visits++;
+    classStats[cls].uniqueStudents.add(r.admNo);
+    const ailment = (r.ailment || "unknown").toLowerCase();
+    classStats[cls].ailments[ailment] =
+      (classStats[cls].ailments[ailment] || 0) + 1;
+  }
+
+  return Object.values(classStats)
+    .map((c) => ({
+      className: c.className,
+      visits: c.visits,
+      uniqueStudents: c.uniqueStudents.size,
+      topAilment:
+        Object.entries(c.ailments).sort((a, b) => b[1] - a[1])[0]?.[0] || "-",
+    }))
+    .sort((a, b) => b.visits - a.visits);
+}
+
+/** Week-over-week comparison from student records */
+export function computeWeeklyComparison(records) {
+  if (!records?.length) return null;
+
+  const now = new Date();
+  const thisWeekStart = new Date(now);
+  thisWeekStart.setDate(now.getDate() - now.getDay());
+  thisWeekStart.setHours(0, 0, 0, 0);
+
+  const lastWeekStart = new Date(thisWeekStart);
+  lastWeekStart.setDate(lastWeekStart.getDate() - 7);
+  const lastWeekEnd = new Date(thisWeekStart);
+
+  const thisWeekRecords = records.filter(
+    (r) => new Date(r.timestamp) >= thisWeekStart
+  );
+  const lastWeekRecords = records.filter((r) => {
+    const d = new Date(r.timestamp);
+    return d >= lastWeekStart && d < lastWeekEnd;
+  });
+
+  const thisWeekVisits = thisWeekRecords.length;
+  const lastWeekVisits = lastWeekRecords.length;
+
+  return {
+    thisWeek: {
+      visits: thisWeekVisits,
+      uniqueStudents: new Set(thisWeekRecords.map((r) => r.admNo)).size,
+    },
+    lastWeek: {
+      visits: lastWeekVisits,
+      uniqueStudents: new Set(lastWeekRecords.map((r) => r.admNo)).size,
+    },
+    percentChange:
+      lastWeekVisits > 0
+        ? Math.round(
+            ((thisWeekVisits - lastWeekVisits) / lastWeekVisits) * 100
+          )
+        : null,
+  };
+}
+
+/** Month-over-month comparison using current + archived report data */
+export function computeMonthComparison(currentReport, archivedReport) {
+  if (!currentReport?.length || !archivedReport?.length) return null;
+
+  const currentTotal = computeMonthTotal(currentReport);
+  const archivedTotal = computeMonthTotal(archivedReport);
+
+  const currentTop = computeTopAilment(currentReport);
+  const archivedTop = computeTopAilment(archivedReport);
+
+  return {
+    currentMonth: { total: currentTotal, topAilment: currentTop },
+    previousMonth: { total: archivedTotal, topAilment: archivedTop },
+    percentChange:
+      archivedTotal > 0
+        ? Math.round(
+            ((currentTotal - archivedTotal) / archivedTotal) * 100
+          )
+        : null,
+  };
+}
+
+/** Compute stats from a student's visit history (for student lookup) */
+export function computeStudentLookupStats(history) {
+  if (!history?.length)
+    return {
+      totalVisits: 0,
+      avgTemp: null,
+      feverCount: 0,
+      commonAilments: [],
+    };
+
+  const getTemp = (record) => {
+    const temp = parseFloat(record.tempreading ?? record.tempReading);
+    return isNaN(temp) ? null : temp;
+  };
+
+  const validTemps = history.map(getTemp).filter((t) => t !== null);
+  const avgTemp =
+    validTemps.length > 0
+      ? (validTemps.reduce((sum, t) => sum + t, 0) / validTemps.length).toFixed(
+          1
+        )
+      : null;
+
+  const commonAilments = Object.entries(
+    history.reduce((acc, r) => {
+      if (r.ailment) acc[r.ailment] = (acc[r.ailment] || 0) + 1;
+      return acc;
+    }, {})
+  )
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 3);
+
+  return {
+    totalVisits: history.length,
+    avgTemp,
+    feverCount: validTemps.filter((t) => t > 37).length,
+    commonAilments,
+  };
+}
