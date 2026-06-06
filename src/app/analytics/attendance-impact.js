@@ -3,12 +3,8 @@
 import { useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CalendarDays, UserCheck, AlertCircle } from "lucide-react";
-import { computeAttendanceImpact } from "./utils";
-
-export default function AttendanceImpact({ records }) {
-  const impact = useMemo(() => computeAttendanceImpact(records), [records]);
-
-  if (!impact.weekStudentDays && !impact.monthStudentDays) return null;
+export default function AttendanceImpact({ impact }) {
+  if (!impact || (!impact.weekStudentDays && !impact.monthStudentDays)) return null;
 
   return (
     <div className="grid gap-4 sm:grid-cols-3">

@@ -11,37 +11,20 @@ import {
   AlertTriangle,
   Hospital,
 } from "lucide-react";
-import {
-  computeMonthTotal,
-  computeTopAilment,
-  computeDiseaseDistribution,
-  computeWeeklyComparison,
-} from "./utils";
-
 export default function AdminReportExport({
-  reportData,
   todayStats,
-  studentRecords,
+  computed,
   hospitalReferrals,
 }) {
   const [generating, setGenerating] = useState(false);
 
-  const monthTotal = useMemo(
-    () => computeMonthTotal(reportData),
-    [reportData]
-  );
-  const topAilment = useMemo(
-    () => computeTopAilment(reportData),
-    [reportData]
-  );
+  const monthTotal = computed?.monthTotal || 0;
+  const topAilment = computed?.topAilment || null;
   const diseases = useMemo(
-    () => computeDiseaseDistribution(reportData).slice(0, 5),
-    [reportData]
+    () => (computed?.diseaseDistribution || []).slice(0, 5),
+    [computed?.diseaseDistribution]
   );
-  const weekly = useMemo(
-    () => computeWeeklyComparison(studentRecords),
-    [studentRecords]
-  );
+  const weekly = computed?.weeklyComparison || null;
 
   const outbreaks = todayStats?.outbreaks || [];
 

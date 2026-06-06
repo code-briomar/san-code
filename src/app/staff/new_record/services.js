@@ -5,7 +5,6 @@
 // complain: "Fever",
 // ailment: "Fevers",
 
-import { updateReport } from "@/app/services";
 import { base_api } from "@/lib/base_api";
 import { devMode } from "@/lib/dev_mode";
 
@@ -24,17 +23,10 @@ export const createNewStaffRecord = async ({
       ailment,
       medication,
     });
-    const updateReportResponse = await updateReport();
-
-    if (updateReportResponse.data.status === 200) {
-      devMode && console.log("Update report sent successfully");
-      return response;
-    } else {
-      throw new Error("Update report failed");
-    }
+    return response;
   } catch (error) {
     if (devMode) {
-      console.log();
+      console.log(error);
     }
     return null;
   }

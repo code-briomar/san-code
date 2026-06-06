@@ -167,16 +167,37 @@ export default function StudentProfileModal({
               </div>
 
               {/* Supporting Info */}
-              <div className="mt-4 space-y-1">
+              <div className="mt-4 space-y-2">
                 {studentData?.complain && (
                   <p className="text-sm text-gray-600 dark:text-gray-400">
                     <span className="font-medium text-gray-800 dark:text-gray-200">Complains:</span>{" "}
                     {studentData.complain}
                   </p>
                 )}
-                <p className="text-sm text-gray-500 dark:text-gray-400">
-                  On medication for {daysOnMedication} {daysOnMedication === 1 ? "day" : "days"} · Last took meds {getTimeOfDay(studentData?.timestamp)}
-                </p>
+                
+                {studentData?.medicationTiming && studentData.medicationTiming.status !== "NONE" ? (
+                  <div className="text-xs space-y-1 bg-slate-50 dark:bg-zinc-800/40 p-2.5 rounded-lg border border-slate-100 dark:border-zinc-800">
+                    <p className="text-slate-600 dark:text-zinc-400">
+                      <span className="font-semibold text-slate-800 dark:text-zinc-300">Last Taken:</span> {studentData.medicationTiming.lastTakenText}
+                    </p>
+                    <p className="text-slate-600 dark:text-zinc-400">
+                      <span className="font-semibold text-slate-800 dark:text-zinc-300">Next Dose:</span>{" "}
+                      <span className={
+                        studentData.medicationTiming.status === "OVERDUE" 
+                          ? "text-rose-500 font-bold" 
+                          : studentData.medicationTiming.status === "DUE" 
+                            ? "text-amber-500 font-bold" 
+                            : "text-green-600 dark:text-green-400 font-semibold"
+                      }>
+                        {studentData.medicationTiming.nextDueText}
+                      </span>
+                    </p>
+                  </div>
+                ) : (
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                    On medication for {daysOnMedication} {daysOnMedication === 1 ? "day" : "days"} · Last took meds {getTimeOfDay(studentData?.timestamp)}
+                  </p>
+                )}
               </div>
             </div>
 

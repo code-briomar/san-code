@@ -10,13 +10,66 @@ import {
   CheckCircle2,
   ShieldCheck,
 } from "lucide-react";
-import { getActionableAlertData } from "./utils";
+const DISEASE_ACTIONS = {
+  malaria: [
+    "Schedule fumigation around school",
+    "Distribute mosquito nets to affected dormitories",
+    "Health education on malaria prevention",
+  ],
+  flu: [
+    "Encourage frequent hand washing",
+    "Consider temporary isolation of affected students",
+    "Ensure classrooms are well ventilated",
+  ],
+  typhoid: [
+    "Check water sources and purification",
+    "Reinforce handwashing after toilet use",
+    "Review cafeteria food handling and hygiene",
+  ],
+  diarrhea: [
+    "Check water and food hygiene",
+    "Ensure handwashing stations are stocked with soap",
+    "Review sanitation facilities",
+  ],
+  cholera: [
+    "Immediate water source testing",
+    "Enforce boiling of drinking water",
+    "Notify county health officer",
+  ],
+  "chest infection": [
+    "Check for damp/dusty classroom conditions",
+    "Ensure proper ventilation",
+    "Refer severe cases to hospital",
+  ],
+  headache: [
+    "Check for dehydration — ensure water access",
+    "Monitor for stress or vision issues",
+    "Review classroom lighting and ventilation",
+  ],
+};
 
-export default function ActionableAlerts({ outbreaks, records }) {
-  const alerts = useMemo(
-    () => getActionableAlertData(outbreaks, records),
-    [outbreaks, records]
-  );
+const DEFAULT_ACTIONS = [
+  "Monitor affected students closely",
+  "Inform school administration",
+  "Consider a health education session",
+];
+
+export default function ActionableAlerts({ outbreaks }) {
+  const alerts = useMemo(() => {
+    if (!outbreaks) return [];
+    return outbreaks.map((outbreak) => {
+      const ailmentLower = outbreak.ailment.toLowerCase();
+      const matchedKey = Object.keys(DISEASE_ACTIONS).find((k) =>
+        ailmentLower.includes(k)
+      );
+      const actions = DISEASE_ACTIONS[matchedKey] || DEFAULT_ACTIONS;
+      return {
+        ...outbreak,
+        actions,
+        classBreakdown: outbreak.classBreakdown || {},
+      };
+    });
+  }, [outbreaks]);
   const [expanded, setExpanded] = useState({});
 
   const toggle = (ailment) =>

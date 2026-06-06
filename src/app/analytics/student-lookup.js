@@ -15,8 +15,46 @@ import {
   Pill,
   ExternalLink,
 } from "lucide-react";
-import { fetchStudentData, fetchStudentHistory } from "./services";
-import { computeStudentLookupStats } from "./utils";
+import { fetchStudentData, fetchStudentHistory } from "@/app/students/services";
+
+function computeStudentLookupStats(history) {
+  if (!history?.length)
+    return {
+      totalVisits: 0,
+      avgTemp: null,
+      feverCount: 0,
+      commonAilments: [],
+    };
+
+  const getTemp = (record) => {
+    const temp = parseFloat(record.tempreading ?? record.tempReading);
+    return isNaN(temp) ? null : temp;
+  };
+
+  const validTemps = history.map(getTemp).filter((t) => t !== null);
+  const avgTemp =
+    validTemps.length > 0
+      ? (validTemps.reduce((sum, t) => sum + t, 0) / validTemps.length).toFixed(
+          1
+        )
+      : null;
+
+  const commonAilments = Object.entries(
+    history.reduce((acc, r) => {
+      if (r.ailment) acc[r.ailment] = (acc[r.ailment] || 0) + 1;
+      return acc;
+    }, {})
+  )
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 3);
+
+  return {
+    totalVisits: history.length,
+    avgTemp,
+    feverCount: validTemps.filter((t) => t > 37).length,
+    commonAilments,
+  };
+}
 
 function formatDate(timestamp) {
   const date = new Date(timestamp);

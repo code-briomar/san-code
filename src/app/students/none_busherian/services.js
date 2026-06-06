@@ -1,4 +1,3 @@
-import { updateReport } from "@/app/services";
 import { base_api } from "@/lib/base_api";
 import { devMode } from "@/lib/dev_mode";
 
@@ -22,19 +21,6 @@ export const createNonBusherianRecord = async ({
       medication,
       going_to_hospital,
     });
-
-    // Try to update report, but don't fail if it doesn't work
-    try {
-      const updateReportResponse = await updateReport();
-      if (devMode) console.log(updateReportResponse);
-      if (updateReportResponse?.data?.status === 200) {
-        devMode && console.log("Update report sent successfully");
-      }
-    } catch (reportError) {
-      // Report update failed, but record was created - continue
-      if (devMode) console.error("Report update failed:", reportError);
-    }
-
     return response;
   } catch (error) {
     if (devMode) {

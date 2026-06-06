@@ -7,12 +7,9 @@ import React, { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import {
-  fetchReportData,
-  fetchStudentRecords,
-  fetchStudentsGoingToHospital,
+  fetchAnalyticsData,
   fetchArchivedMonths,
 } from "./services";
-import { fetchTodayStats } from "@/app/services";
 import OutbreakAlert from "./outbreak-alert";
 import SummaryCards from "./summary-cards";
 import MonthlyTrendChart from "./monthly-trend-chart";
@@ -27,18 +24,17 @@ import WeeklyComparison from "./weekly-comparison";
 import ClassBreakdown from "./class-breakdown";
 import StudentLookup from "./student-lookup";
 import AdminReportExport from "./admin-report-export";
+import MedicationInventory from "./medication-inventory";
+import NurseSettings from "./nurse-settings";
 
 const Analytics = () => {
-  const [reportData, setReportData] = useState([]);
-  const [todayStats, setTodayStats] = useState(null);
-  const [studentRecords, setStudentRecords] = useState([]);
+  const [analyticsData, setAnalyticsData] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
   // Lazy-loaded data
-  const [hospitalReferrals, setHospitalReferrals] = useState(null);
   const [archivedMonths, setArchivedMonths] = useState(null);
   const [activeTab, setActiveTab] = useState("overview");
-  const tabDataLoaded = useRef({ alerts: false, trends: false });
+  const tabDataLoaded = useRef({ trends: false });
 
   const handlePrint = () => {
     const now = new Date();
@@ -51,11 +47,6 @@ const Analytics = () => {
 
   const handleTabChange = async (value) => {
     setActiveTab(value);
-    if (value === "alerts" && !tabDataLoaded.current.alerts) {
-      tabDataLoaded.current.alerts = true;
-      const referrals = await fetchStudentsGoingToHospital();
-      setHospitalReferrals(referrals || []);
-    }
     if (value === "trends" && !tabDataLoaded.current.trends) {
       tabDataLoaded.current.trends = true;
       const months = await fetchArchivedMonths();
@@ -67,21 +58,11 @@ const Analytics = () => {
     const load = async () => {
       setIsLoading(true);
       try {
-        const [reportRes, statsRes, records] = await Promise.all([
-          fetchReportData(),
-          fetchTodayStats(),
-          fetchStudentRecords(),
-        ]);
-
+        const data = await fetchAnalyticsData();
         if (devMode) {
-          console.log("reportData", reportRes);
-          console.log("todayStats", statsRes);
-          console.log("studentRecords", records?.length);
+          console.log("analyticsData", data);
         }
-
-        setReportData(reportRes?.data ?? []);
-        setTodayStats(statsRes);
-        setStudentRecords(records);
+        setAnalyticsData(data);
       } catch (error) {
         if (devMode) {
           console.error("An error occurred while fetching analytics data:", error);
@@ -143,31 +124,33 @@ const Analytics = () => {
           <TabsTrigger value="alerts">Alerts & Follow-ups</TabsTrigger>
           <TabsTrigger value="trends">Trends</TabsTrigger>
           <TabsTrigger value="student">Student Lookup</TabsTrigger>
+          <TabsTrigger value="inventory">Inventory</TabsTrigger>
+          <TabsTrigger value="settings">Schedule & Settings</TabsTrigger>
           <TabsTrigger value="admin">Admin Report</TabsTrigger>
         </TabsList>
 
         {/* Tab 1: Overview (existing dashboard + attendance impact) */}
         <TabsContent value="overview">
           <div className="space-y-6">
-            <OutbreakAlert outbreaks={todayStats?.outbreaks} />
-            <SummaryCards reportData={reportData} todayStats={todayStats} />
-            <AttendanceImpact records={studentRecords} />
+            <OutbreakAlert outbreaks={analyticsData?.todayStats?.outbreaks} />
+            <SummaryCards computed={analyticsData?.computed} todayStats={analyticsData?.todayStats} />
+            <AttendanceImpact impact={analyticsData?.computed?.attendanceImpact} />
 
             <div className="grid gap-6 lg:grid-cols-3">
               <div className="lg:col-span-2">
-                <MonthlyTrendChart reportData={reportData} />
+                <MonthlyTrendChart reportData={analyticsData?.reportData} />
               </div>
               <div className="lg:col-span-1">
-                <DiseaseDistributionChart reportData={reportData} />
+                <DiseaseDistributionChart distribution={analyticsData?.computed?.diseaseDistribution} />
               </div>
             </div>
 
             <div className="grid gap-6 lg:grid-cols-3">
               <div className="lg:col-span-2">
-                <PeakHoursChart records={studentRecords} />
+                <PeakHoursChart peakHours={analyticsData?.computed?.peakHours} />
               </div>
               <div className="lg:col-span-1">
-                <ReadmissionTable records={studentRecords} />
+                <ReadmissionTable readmissions={analyticsData?.computed?.readmissions} />
               </div>
             </div>
           </div>
@@ -177,13 +160,12 @@ const Analytics = () => {
         <TabsContent value="alerts">
           <div className="space-y-6">
             <ActionableAlerts
-              outbreaks={todayStats?.outbreaks}
-              records={studentRecords}
+              outbreaks={analyticsData?.todayStats?.outbreaks}
             />
-            <MedicationTracker medicationDue={todayStats?.medicationDue} />
+            <MedicationTracker medicationDue={analyticsData?.todayStats?.medicationDue} />
             <FollowUpList
-              hospitalReferrals={hospitalReferrals}
-              records={studentRecords}
+              hospitalReferrals={analyticsData?.hospitalReferrals}
+              readmissions={analyticsData?.computed?.readmissions}
             />
           </div>
         </TabsContent>
@@ -192,11 +174,11 @@ const Analytics = () => {
         <TabsContent value="trends">
           <div className="space-y-6">
             <WeeklyComparison
-              records={studentRecords}
-              reportData={reportData}
+              weekly={analyticsData?.computed?.weeklyComparison}
+              reportData={analyticsData?.reportData}
               archivedMonths={archivedMonths}
             />
-            <ClassBreakdown records={studentRecords} />
+            <ClassBreakdown breakdown={analyticsData?.computed?.classBreakdown} />
           </div>
         </TabsContent>
 
@@ -208,11 +190,31 @@ const Analytics = () => {
         {/* Tab 5: Admin Report */}
         <TabsContent value="admin">
           <AdminReportExport
-            reportData={reportData}
-            todayStats={todayStats}
-            studentRecords={studentRecords}
-            hospitalReferrals={hospitalReferrals}
+            todayStats={analyticsData?.todayStats}
+            computed={analyticsData?.computed}
+            hospitalReferrals={analyticsData?.hospitalReferrals}
           />
+        </TabsContent>
+
+        {/* Tab 6: Medication Inventory */}
+        <TabsContent value="inventory">
+          <MedicationInventory
+            inventory={analyticsData?.medicationInventory}
+            logs={analyticsData?.medicationLogs}
+            onRefresh={async () => {
+              try {
+                const data = await fetchAnalyticsData();
+                setAnalyticsData(data);
+              } catch (err) {
+                console.error("Failed to refresh analytics inventory:", err);
+              }
+            }}
+          />
+        </TabsContent>
+
+        {/* Tab 7: Nurse Schedule Settings */}
+        <TabsContent value="settings">
+          <NurseSettings />
         </TabsContent>
       </Tabs>
     </div>

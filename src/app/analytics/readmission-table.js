@@ -3,21 +3,17 @@
 import { useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { computeReadmissions } from "./utils";
-
 function formatDate(ts) {
   const d = new Date(ts);
   return d.toLocaleDateString("en-GB", { day: "numeric", month: "short" });
 }
 
-export default function ReadmissionTable({ records }) {
-  const readmissions = useMemo(() => computeReadmissions(records, 7), [records]);
-
+export default function ReadmissionTable({ readmissions = [] }) {
   // Dedupe to latest per student+ailment, limit to 10
   const unique = useMemo(() => {
     const seen = new Set();
     const result = [];
-    for (const r of readmissions) {
+    for (const r of (readmissions || [])) {
       const key = `${r.admNo}__${r.ailment.toLowerCase()}`;
       if (seen.has(key)) continue;
       seen.add(key);

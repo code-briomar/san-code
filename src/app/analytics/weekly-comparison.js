@@ -11,10 +11,48 @@ import {
   Loader,
 } from "lucide-react";
 import { fetchArchivedReport } from "./services";
-import {
-  computeWeeklyComparison,
-  computeMonthComparison,
-} from "./utils";
+
+function computeMonthTotal(reportData) {
+  if (!reportData?.length) return 0;
+  return reportData.reduce((total, row) => {
+    for (let d = 1; d <= 31; d++) total += Number(row[String(d)]) || 0;
+    return total;
+  }, 0);
+}
+
+function computeTopAilment(reportData) {
+  if (!reportData?.length) return null;
+  let best = null;
+  for (const row of reportData) {
+    let sum = 0;
+    for (let d = 1; d <= 31; d++) sum += Number(row[String(d)]) || 0;
+    if (sum > 0 && (!best || sum > best.count)) {
+      best = { name: row.disease, count: sum };
+    }
+  }
+  return best;
+}
+
+function computeMonthComparison(currentReport, archivedReport) {
+  if (!currentReport?.length || !archivedReport?.length) return null;
+
+  const currentTotal = computeMonthTotal(currentReport);
+  const archivedTotal = computeMonthTotal(archivedReport);
+
+  const currentTop = computeTopAilment(currentReport);
+  const archivedTop = computeTopAilment(archivedReport);
+
+  return {
+    currentMonth: { total: currentTotal, topAilment: currentTop },
+    previousMonth: { total: archivedTotal, topAilment: archivedTop },
+    percentChange:
+      archivedTotal > 0
+        ? Math.round(
+            ((currentTotal - archivedTotal) / archivedTotal) * 100
+          )
+        : null,
+  };
+}
 
 function ChangeIndicator({ percent }) {
   if (percent === null || percent === undefined) {
@@ -57,12 +95,7 @@ function ChangeIndicator({ percent }) {
   );
 }
 
-export default function WeeklyComparison({ records, reportData, archivedMonths }) {
-  const weekly = useMemo(
-    () => computeWeeklyComparison(records),
-    [records]
-  );
-
+export default function WeeklyComparison({ weekly, reportData, archivedMonths }) {
   const [selectedMonth, setSelectedMonth] = useState("");
   const [archivedReport, setArchivedReport] = useState(null);
   const [loadingArchive, setLoadingArchive] = useState(false);

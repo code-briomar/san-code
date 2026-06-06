@@ -14,7 +14,7 @@ import React, { useEffect, useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { createNewStudentRecord } from "./services";
-import { fetchStudentData } from "../services";
+import { fetchStudentData, createStudentFollowUp } from "../services";
 import { toast } from "sonner";
 import { devMode } from "@/lib/dev_mode";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -43,6 +43,11 @@ export default function NewRecordStudents() {
   const [admNo, setAdmno] = useState();
   const [prefillData, setPrefillData] = useState(null);
   const [open, setOpen] = React.useState(false);
+
+  // Follow-up scheduling states
+  const [scheduleFollowUp, setScheduleFollowUp] = useState(false);
+  const [followUpTime, setFollowUpTime] = useState("");
+  const [followUpReason, setFollowUpReason] = useState("");
 
   useEffect(() => {
     setPageLoading(true);
@@ -108,6 +113,11 @@ export default function NewRecordStudents() {
         setLoading(false);
         formikHelpers.resetForm();
         return;
+      }
+
+      if (scheduleFollowUp && followUpTime) {
+        const followUpRes = await createStudentFollowUp(admission_number, followUpTime, followUpReason);
+        if (devMode) console.log("Follow-up response:", followUpRes);
       }
 
       if (devMode) console.log(response);
@@ -291,7 +301,7 @@ export default function NewRecordStudents() {
               </div>
 
               {/* Going to hospital */}
-              <div className="flex items-center gap-3 py-2">
+              <div className="flex items-center gap-3 py-1">
                 <Checkbox
                   id="going_to_hospital"
                   name="going_to_hospital"
@@ -303,6 +313,46 @@ export default function NewRecordStudents() {
                 <Label htmlFor="going_to_hospital" className="text-sm cursor-pointer">
                   Refer to hospital
                 </Label>
+              </div>
+
+              {/* Schedule Follow-up / Return visit */}
+              <div className="border-t border-zinc-100 dark:border-zinc-800 pt-4 space-y-3">
+                <div className="flex items-center gap-3">
+                  <Checkbox
+                    id="schedule_followup"
+                    checked={scheduleFollowUp}
+                    onCheckedChange={(value) => setScheduleFollowUp(value)}
+                  />
+                  <Label htmlFor="schedule_followup" className="text-sm cursor-pointer font-medium text-slate-800 dark:text-zinc-300">
+                    Schedule a return visit / follow-up
+                  </Label>
+                </div>
+
+                {scheduleFollowUp && (
+                  <div className="grid gap-3 sm:grid-cols-2 pt-2 animate-in fade-in duration-200">
+                    <div className="space-y-1.5">
+                      <Label htmlFor="followup_time" className="text-xs font-semibold text-slate-500">Scheduled Time *</Label>
+                      <Input
+                        id="followup_time"
+                        type="datetime-local"
+                        value={followUpTime}
+                        onChange={(e) => setFollowUpTime(e.target.value)}
+                        className="h-10 text-xs"
+                        required
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <Label htmlFor="followup_reason" className="text-xs font-semibold text-slate-500">Reason for Return</Label>
+                      <Input
+                        id="followup_reason"
+                        placeholder="e.g. Next dose, dressing"
+                        value={followUpReason}
+                        onChange={(e) => setFollowUpReason(e.target.value)}
+                        className="h-10 text-xs"
+                      />
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
 

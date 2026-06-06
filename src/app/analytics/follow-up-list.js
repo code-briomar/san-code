@@ -12,8 +12,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Loader, Hospital, RotateCcw } from "lucide-react";
-import { computeReadmissions } from "./utils";
-
 function formatDate(timestamp) {
   const date = new Date(timestamp);
   return date.toLocaleDateString("en-GB", {
@@ -22,10 +20,10 @@ function formatDate(timestamp) {
   });
 }
 
-export default function FollowUpList({ hospitalReferrals, records }) {
-  const readmissions = useMemo(
-    () => computeReadmissions(records, 7).slice(0, 15),
-    [records]
+export default function FollowUpList({ hospitalReferrals = null, readmissions = [] }) {
+  const recentReadmissions = useMemo(
+    () => (readmissions || []).slice(0, 15),
+    [readmissions]
   );
 
   const isLoadingReferrals = hospitalReferrals === null;
@@ -95,20 +93,20 @@ export default function FollowUpList({ hospitalReferrals, records }) {
             <RotateCcw className="h-5 w-5 text-amber-500" />
             Readmissions (within 7 days)
           </CardTitle>
-          {readmissions.length > 0 && (
+          {recentReadmissions.length > 0 && (
             <Badge className="border-amber-400 bg-amber-100 text-amber-800 dark:border-amber-600 dark:bg-amber-900/60 dark:text-amber-200 text-xs">
-              {readmissions.length} returning
+              {recentReadmissions.length} returning
             </Badge>
           )}
         </CardHeader>
         <CardContent>
-          {!readmissions.length ? (
+          {!recentReadmissions.length ? (
             <p className="text-sm text-slate-500 dark:text-slate-400">
               No readmissions in the last 7 days
             </p>
           ) : (
             <div className="space-y-2 max-h-80 overflow-y-auto">
-              {readmissions.map((r, i) => (
+              {recentReadmissions.map((r, i) => (
                 <div
                   key={`${r.admNo}-${r.ailment}-${i}`}
                   className="flex items-center justify-between rounded border border-slate-200 dark:border-neutral-800 px-3 py-2 text-sm"

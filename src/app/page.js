@@ -1,5 +1,5 @@
 "use client";
-import { ArrowRight, Users, UserCog, FileText, BarChart3, Upload } from "lucide-react";
+import { ArrowRight, Users, UserCog, FileText, BarChart3, Upload, GraduationCap, Heart } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -97,6 +97,38 @@ export default function Home() {
                 </div>
               </div>
             </Link>
+          </div>
+
+          {/* Portal Access */}
+          <div className="pt-4 border-t border-gray-100 dark:border-zinc-800">
+            <h3 className="text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-zinc-500 mb-3 text-center">
+              External Portals
+            </h3>
+            <div className="grid grid-cols-2 gap-3">
+              {/* Teacher Verification */}
+              <Link
+                href="/teachers"
+                className="p-4 rounded-lg border-2 border-blue-100 dark:border-blue-900/50 bg-blue-50/10 dark:bg-blue-950/10 hover:bg-blue-50 dark:hover:bg-blue-950/20 hover:border-blue-300 dark:hover:border-blue-800 transition-colors group flex items-center gap-3"
+              >
+                <GraduationCap className="w-5 h-5 text-blue-500 dark:text-blue-400" />
+                <div>
+                  <h4 className="font-semibold text-sm text-gray-900 dark:text-white">Teacher Portal</h4>
+                  <p className="text-[11px] text-gray-500 dark:text-zinc-400">Verify visits (Passcode)</p>
+                </div>
+              </Link>
+
+              {/* Parent Access */}
+              <Link
+                href="/parents"
+                className="p-4 rounded-lg border-2 border-green-100 dark:border-green-900/50 bg-green-50/10 dark:bg-green-950/10 hover:bg-green-50 dark:hover:bg-green-950/20 hover:border-green-300 dark:hover:border-green-800 transition-colors group flex items-center gap-3"
+              >
+                <Heart className="w-5 h-5 text-green-500 dark:text-green-400" />
+                <div>
+                  <h4 className="font-semibold text-sm text-gray-900 dark:text-white">Parent Portal</h4>
+                  <p className="text-[11px] text-gray-500 dark:text-zinc-400">M-Pesa clinical lookup</p>
+                </div>
+              </Link>
+            </div>
           </div>
         </div>
       </main>

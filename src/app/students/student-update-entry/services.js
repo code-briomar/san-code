@@ -3,7 +3,6 @@
 // studentAdmNo : testAdmissionNumber,
 // tempReading : 45.8,
 
-import { updateReport } from "@/app/services";
 import { base_api } from "@/lib/base_api";
 import { devMode } from "@/lib/dev_mode";
 

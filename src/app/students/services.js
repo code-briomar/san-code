@@ -1,5 +1,4 @@
 // Function : Fetch student data with the provided admission number
-import { updateReport } from "@/app/services";
 import { base_api } from "@/lib/base_api";
 import { devMode } from "@/lib/dev_mode";
 
@@ -74,17 +73,26 @@ export const updateStudentDetails = async (
       ailment,
       going_to_hospital,
     });
-
-    const updateReportResponse = await updateReport();
-    if (updateReportResponse.data.status === 200) {
-      devMode && console.log("Update report sent successfully");
-      return response;
-    } else {
-      throw new Error("Update report failed");
-    }
+    return response;
   } catch (error) {
     if (devMode) {
       console.log(error);
+    }
+    return null;
+  }
+};
+
+export const createStudentFollowUp = async (admNo, scheduledTime, reason) => {
+  try {
+    const response = await base_api.post("/nurse/followup", {
+      admNo: Number(admNo),
+      scheduledTime,
+      reason,
+    });
+    return response.data;
+  } catch (error) {
+    if (devMode) {
+      console.error("createStudentFollowUp error:", error);
     }
     return null;
   }

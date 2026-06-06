@@ -10,8 +10,6 @@ import {
 } from "echarts/components";
 import { SVGRenderer } from "echarts/renderers";
 import { useTheme } from "next-themes";
-import { computePeakHours } from "./utils";
-
 echarts.use([BarChart, GridComponent, TooltipComponent, SVGRenderer]);
 
 function formatHour(h) {
@@ -21,16 +19,14 @@ function formatHour(h) {
   return `${h - 12}pm`;
 }
 
-export default function PeakHoursChart({ records }) {
+export default function PeakHoursChart({ peakHours }) {
   const { resolvedTheme } = useTheme();
   const isDark = resolvedTheme === "dark";
 
-  const hourlyData = useMemo(() => computePeakHours(records), [records]);
-
   // Only show hours 5am–8pm (typical school operating window)
   const filtered = useMemo(
-    () => hourlyData.filter((d) => d.hour >= 5 && d.hour <= 20),
-    [hourlyData]
+    () => (peakHours || []).filter((d) => d.hour >= 5 && d.hour <= 20),
+    [peakHours]
   );
 
   const option = useMemo(() => {

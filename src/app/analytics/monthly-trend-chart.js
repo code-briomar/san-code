@@ -19,11 +19,40 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  computeDailyTotals,
-  computeDailyTotalsForDisease,
-  getActiveDiseases,
-} from "./utils";
+function computeDailyTotals(reportData) {
+  if (!reportData?.length) return [];
+  return Array.from({ length: 31 }, (_, i) => {
+    const day = i + 1;
+    const total = reportData.reduce(
+      (sum, row) => sum + (Number(row[String(day)]) || 0),
+      0
+    );
+    return { day, total };
+  });
+}
+
+function computeDailyTotalsForDisease(reportData, name) {
+  if (!reportData?.length || !name) return [];
+  const row = reportData.find((r) => r.disease === name);
+  if (!row) return [];
+  return Array.from({ length: 31 }, (_, i) => {
+    const day = i + 1;
+    return { day, total: Number(row[String(day)]) || 0 };
+  });
+}
+
+function getActiveDiseases(reportData) {
+  if (!reportData?.length) return [];
+  return reportData
+    .filter((row) => {
+      for (let d = 1; d <= 31; d++) {
+        if ((Number(row[String(d)]) || 0) > 0) return true;
+      }
+      return false;
+    })
+    .map((row) => row.disease)
+    .sort((a, b) => a.localeCompare(b));
+}
 
 echarts.use([LineChart, GridComponent, TooltipComponent, LegendComponent, SVGRenderer]);
 

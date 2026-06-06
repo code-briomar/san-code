@@ -10,18 +10,11 @@ import {
 } from "echarts/components";
 import { SVGRenderer } from "echarts/renderers";
 import { useTheme } from "next-themes";
-import { computeDiseaseDistribution } from "./utils";
-
 echarts.use([PieChart, TooltipComponent, LegendComponent, SVGRenderer]);
 
-export default function DiseaseDistributionChart({ reportData }) {
+export default function DiseaseDistributionChart({ distribution = [] }) {
   const { resolvedTheme } = useTheme();
   const isDark = resolvedTheme === "dark";
-
-  const distribution = useMemo(
-    () => computeDiseaseDistribution(reportData),
-    [reportData]
-  );
 
   const option = useMemo(() => {
     const textColor = isDark ? "#d4d4d8" : "#3f3f46";

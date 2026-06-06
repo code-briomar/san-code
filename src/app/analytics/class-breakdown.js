@@ -13,14 +13,11 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { School } from "lucide-react";
-import { computeClassBreakdown } from "./utils";
-
-export default function ClassBreakdown({ records }) {
+export default function ClassBreakdown({ breakdown }) {
   const { resolvedTheme } = useTheme();
   const isDark = resolvedTheme === "dark";
-  const breakdown = useMemo(() => computeClassBreakdown(records), [records]);
 
-  if (!breakdown.length) {
+  if (!breakdown || !breakdown.length) {
     return (
       <Card>
         <CardHeader>
