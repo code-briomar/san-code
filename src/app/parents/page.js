@@ -23,6 +23,9 @@ export default function ParentPortal() {
   const [mpesaPhoneNumber, setMpesaPhoneNumber] = useState("");
   const [paymentLoading, setPaymentLoading] = useState(false);
   const [manualMpesaCode, setManualMpesaCode] = useState("");
+  const [isMock, setIsMock] = useState(false);
+  const [isPolling, setIsPolling] = useState(false);
+  const [pollAttempts, setPollAttempts] = useState(0);
   
   // Data states
   const [records, setRecords] = useState([]);
@@ -131,19 +134,87 @@ export default function ParentPortal() {
 
     try {
       const currentAdm = admNo || localStorage.getItem("parent_child_adm");
-      const res = await initiateMpeskPush(currentAdm); // Helper mapping
-      
-      // Call actual service
       const response = await initiateMpesaStkPush(currentAdm, mpesaPhoneNumber);
       if (response.status === "success") {
         setCheckoutRequestId(response.checkoutRequestId);
         setSuccessMsg(response.message || "STK Push sent! Please check your phone for a PIN prompt.");
+        
+        if (response.isMock) {
+          setIsMock(true);
+          setIsPolling(false);
+        } else {
+          setIsMock(false);
+          startPolling(response.checkoutRequestId);
+        }
       }
     } catch (err) {
       setErrorMsg(err.response?.data?.error || "Failed to initiate M-Pesa payment. Please try again.");
     } finally {
       setPaymentLoading(false);
     }
+  };
+
+  const startPolling = (checkoutId) => {
+    setIsPolling(true);
+    setPaymentLoading(true);
+    let attempts = 0;
+    
+    if (window.mpesaPollInterval) {
+      clearInterval(window.mpesaPollInterval);
+    }
+
+    window.mpesaPollInterval = setInterval(async () => {
+      attempts += 1;
+      setPollAttempts(attempts);
+
+      try {
+        const res = await verifyMpesaPayment(checkoutId);
+        
+        if (res.status === "success" && res.token) {
+          clearInterval(window.mpesaPollInterval);
+          window.mpesaPollInterval = null;
+          setIsPolling(false);
+          setPaymentLoading(false);
+          localStorage.setItem("parent_token", res.token);
+          setToken(res.token);
+          setPaymentRequired(false);
+          setSuccessMsg("Payment verified! Fetching student records...");
+          await loadRecords(res.token);
+        } else if (res.status === "failed") {
+          clearInterval(window.mpesaPollInterval);
+          window.mpesaPollInterval = null;
+          setIsPolling(false);
+          setPaymentLoading(false);
+          setErrorMsg("Payment transaction was cancelled or failed.");
+        } else if (attempts >= 24) { // 24 attempts * 2.5s = 60s
+          clearInterval(window.mpesaPollInterval);
+          window.mpesaPollInterval = null;
+          setIsPolling(false);
+          setPaymentLoading(false);
+          setIsMock(true);
+          setErrorMsg("Verification timed out. If you paid, please enter your transaction code manually below.");
+        }
+      } catch (err) {
+        if (attempts >= 24) {
+          clearInterval(window.mpesaPollInterval);
+          window.mpesaPollInterval = null;
+          setIsPolling(false);
+          setPaymentLoading(false);
+          setIsMock(true);
+          setErrorMsg("Error verifying payment. Please verify manually or try again.");
+        }
+      }
+    }, 2500);
+  };
+
+  const stopPollingAndFallback = () => {
+    if (window.mpesaPollInterval) {
+      clearInterval(window.mpesaPollInterval);
+      window.mpesaPollInterval = null;
+    }
+    setIsPolling(false);
+    setPaymentLoading(false);
+    setIsMock(true);
   };
 
   const handleMpesaVerifySubmit = async (e) => {
@@ -160,6 +231,10 @@ export default function ParentPortal() {
         setPaymentRequired(false);
         setSuccessMsg("Payment verified! Fetching student records...");
         await loadRecords(res.token);
+      } else if (res.status === "pending") {
+        setErrorMsg("Payment confirmation is still pending. Please wait a moment and try again.");
+      } else if (res.status === "failed") {
+        setErrorMsg("Payment failed or was cancelled.");
       }
     } catch (err) {
       setErrorMsg(err.response?.data?.error || "Payment verification failed. If you paid, please try again.");
@@ -168,12 +243,13 @@ export default function ParentPortal() {
     }
   };
 
-  // Dummy fallback helper mapping for unused inline function parameter
-  const initiateMpeskPush = (adm) => {
-    return { status: "success" };
-  };
-
   const handleLogout = () => {
+    if (window.mpesaPollInterval) {
+      clearInterval(window.mpesaPollInterval);
+      window.mpesaPollInterval = null;
+    }
+    setIsPolling(false);
+    setIsMock(false);
     localStorage.removeItem("parent_token");
     localStorage.removeItem("parent_child_adm");
     setToken(null);
@@ -188,6 +264,15 @@ export default function ParentPortal() {
     setErrorMsg("");
     setSuccessMsg("");
   };
+
+  // Clean up interval on unmount
+  useEffect(() => {
+    return () => {
+      if (window.mpesaPollInterval) {
+        clearInterval(window.mpesaPollInterval);
+      }
+    };
+  }, []);
 
   const formatDate = (timestamp) => {
     if (!timestamp) return "—";
@@ -412,13 +497,45 @@ export default function ParentPortal() {
                       </Button>
                     </div>
                   </form>
+                ) : isPolling ? (
+                  <div className="text-center py-6 space-y-4">
+                    <div className="relative flex justify-center items-center">
+                      <Loader2 className="h-12 w-12 animate-spin text-blue-600 dark:text-blue-500" />
+                      <span className="absolute text-xs font-bold text-blue-600 dark:text-blue-500">M</span>
+                    </div>
+                    <div className="space-y-1">
+                      <h4 className="font-semibold text-slate-900 dark:text-slate-50">Awaiting Payment PIN...</h4>
+                      <p className="text-xs text-slate-500 dark:text-zinc-400 px-4">
+                        Please check your phone for the M-Pesa PIN prompt to complete your transaction of KES 50.00.
+                      </p>
+                    </div>
+                    <div className="p-3 bg-blue-50/50 dark:bg-zinc-900/30 border border-blue-100 dark:border-zinc-800 rounded-lg text-xs space-y-1 max-w-xs mx-auto">
+                      <p className="text-slate-600 dark:text-zinc-300 font-medium animate-pulse">Waiting for M-Pesa callback confirmation...</p>
+                      <p className="text-slate-400">Attempt {pollAttempts} of 24. Do not refresh this page.</p>
+                    </div>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={stopPollingAndFallback}
+                      className="text-xs text-slate-500 hover:text-slate-800 hover:bg-slate-100 dark:hover:bg-zinc-900"
+                    >
+                      Verify Manually / Enter Code
+                    </Button>
+                  </div>
                 ) : (
                   <form onSubmit={handleMpesaVerifySubmit} className="space-y-4">
-                    <div className="p-3 bg-amber-50 border border-amber-200 text-amber-900 rounded-lg text-xs dark:bg-amber-950/20 dark:border-amber-900 dark:text-amber-200 space-y-1">
-                      <p className="font-semibold">Simulated STK Push Sent!</p>
-                      <p>1. Check the server backend console to retrieve/simulate the confirmation.</p>
-                      <p>2. Enter a mock M-Pesa receipt code below (or leave blank to auto-generate one) and click verify.</p>
-                    </div>
+                    {isMock ? (
+                      <div className="p-3 bg-amber-50 border border-amber-200 text-amber-900 rounded-lg text-xs dark:bg-amber-950/20 dark:border-amber-900 dark:text-amber-200 space-y-1">
+                        <p className="font-semibold">Simulated STK Push Sent!</p>
+                        <p>1. Check the server backend console to retrieve/simulate the confirmation.</p>
+                        <p>2. Enter a mock M-Pesa receipt code below (or leave blank to auto-generate one) and click verify.</p>
+                      </div>
+                    ) : (
+                      <div className="p-3 bg-amber-50 border border-amber-200 text-amber-900 rounded-lg text-xs dark:bg-amber-950/20 dark:border-amber-900 dark:text-amber-200 space-y-1">
+                        <p className="font-semibold">M-Pesa Verification</p>
+                        <p>Enter your transaction receipt code below once you have completed the M-Pesa payment prompt on your phone.</p>
+                      </div>
+                    )}
                     <div className="space-y-2">
                       <label className="text-xs font-semibold uppercase text-slate-500">M-Pesa Transaction Code (Optional)</label>
                       <Input
@@ -433,7 +550,11 @@ export default function ParentPortal() {
                       <Button
                         type="button"
                         variant="outline"
-                        onClick={() => setCheckoutRequestId("")}
+                        onClick={() => {
+                          setCheckoutRequestId("");
+                          setIsMock(false);
+                          setIsPolling(false);
+                        }}
                         disabled={paymentLoading}
                         className="w-1/3"
                       >
