@@ -302,12 +302,6 @@ export default function TeacherPortal() {
                                   <span className="text-zinc-400 font-semibold">Clinic Managed</span>
                                 )}
                               </div>
-                              <p className="font-medium text-zinc-200 mt-0.5">
-                                Ailment: {visit.ailment}
-                              </p>
-                              <p className="text-xs text-zinc-400">
-                                Complain: "{visit.complain}" &middot; Meds: {visit.medication}
-                              </p>
                             </div>
                           </div>
                         ))}
