@@ -3,9 +3,10 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { devMode } from "@/lib/dev_mode";
 import { base_api } from "@/lib/base_api";
-import Link from "next/link";
-import { Loader } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Loader, Printer, FileDown, FileSpreadsheet, ArrowLeft } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 
 import { updateReport } from "../services";
 import { ailments } from "../staff/ailments";
@@ -22,6 +23,7 @@ import {
 } from "./components/PDFGenerator";
 
 const Report = () => {
+  const router = useRouter();
   const [reportData, setReportData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("moh705");
@@ -49,7 +51,7 @@ const Report = () => {
         console.error("An error occurred while fetching the data: ", error);
       }
     } finally {
-      setTimeout(() => setIsLoading(false), 1000);
+      setTimeout(() => setIsLoading(false), 500);
     }
   };
 
@@ -90,62 +92,89 @@ const Report = () => {
   };
 
   return (
-    <div className="m-4 md:m-10">
+    <div className="max-w-7xl mx-auto p-4 md:p-8 space-y-6">
       {/* Action bar */}
-      <div className="flex items-center justify-between mb-4 no-print">
-        <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight dark:text-gray-100">
-          Official Report
-        </h3>
-        <div className="flex items-center space-x-3">
-          <Link href="/" className="text-blue-500 dark:text-blue-400 underline text-sm">
-            Home
-          </Link>
-          <button
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-zinc-200 dark:border-zinc-800 pb-4 no-print">
+        <div className="flex items-center gap-3">
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={() => router.push("/")}
+            className="rounded-full shadow-sm hover:scale-105 transition-transform border-zinc-300 dark:border-zinc-800"
+          >
+            <ArrowLeft className="w-4 h-4" />
+          </Button>
+          <div>
+            <h3 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
+              Official Report
+            </h3>
+            <p className="text-xs text-slate-500 dark:text-slate-450">
+              Generate, print, and export MOH report forms
+            </p>
+          </div>
+        </div>
+
+        <div className="flex flex-wrap items-center gap-2 w-full md:w-auto">
+          <Button
+            variant="outline"
+            size="sm"
             onClick={handleDownloadPDF}
-            className="text-blue-500 dark:text-blue-400 underline text-sm"
+            className="flex items-center gap-1.5 border-zinc-300 dark:border-zinc-800 shadow-sm hover:bg-slate-100 dark:hover:bg-zinc-900 text-xs font-medium text-slate-800 dark:text-slate-200"
           >
-            Download PDF
-          </button>
-          <button
+            <FileDown className="h-3.5 w-3.5" />
+            <span>Download PDF</span>
+          </Button>
+
+          <Button
+            variant="outline"
+            size="sm"
             onClick={handleExcelDownload}
-            className="text-blue-500 dark:text-blue-400 underline text-sm"
+            className="flex items-center gap-1.5 border-zinc-300 dark:border-zinc-800 shadow-sm hover:bg-slate-100 dark:hover:bg-zinc-900 text-xs font-medium text-slate-800 dark:text-slate-200"
           >
-            Excel
-          </button>
-          <button
+            <FileSpreadsheet className="h-3.5 w-3.5" />
+            <span>Export Excel</span>
+          </Button>
+
+          <Button
+            variant="outline"
+            size="sm"
             onClick={handlePrint}
-            className="text-blue-500 dark:text-blue-400 underline text-sm"
+            className="flex items-center gap-1.5 border-zinc-350 dark:border-zinc-850 shadow-sm hover:bg-slate-100 dark:hover:bg-zinc-900 text-xs font-medium text-slate-800 dark:text-slate-200"
           >
-            Print
-          </button>
-          <label className="flex items-center gap-1.5 text-sm cursor-pointer select-none dark:text-gray-300">
+            <Printer className="h-3.5 w-3.5" />
+            <span>Print Report</span>
+          </Button>
+
+          <div className="border-l border-zinc-200 dark:border-zinc-800 h-6 mx-1 hidden sm:block"></div>
+
+          <label className="flex items-center gap-2 text-xs font-medium cursor-pointer select-none text-slate-600 dark:text-slate-350 hover:text-slate-900 dark:hover:text-slate-150">
             <input
               type="checkbox"
               checked={showZeros}
               onChange={(e) => setShowZeros(e.target.checked)}
-              className="accent-blue-500"
+              className="accent-slate-900 dark:accent-slate-100 w-3.5 h-3.5 rounded border-zinc-300 dark:border-zinc-800 cursor-pointer"
             />
-            Show zeros
+            <span>Show zeros</span>
           </label>
         </div>
       </div>
 
       {isLoading && (
-        <div className="flex items-center justify-center h-64 no-print">
-          <Loader className="w-6 h-6 animate-spin" />
+        <div className="flex items-center justify-center py-20 no-print">
+          <Loader className="w-8 h-8 animate-spin text-slate-900 dark:text-slate-100" />
         </div>
       )}
 
       {!isLoading && (
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="no-print mb-4">
-            <TabsTrigger value="moh705">MOH 705</TabsTrigger>
-            <TabsTrigger value="extended">Extended Report</TabsTrigger>
-            <TabsTrigger value="moh717">MOH 717</TabsTrigger>
-            <TabsTrigger value="archive">Archive</TabsTrigger>
+          <TabsList className="no-print flex w-full md:w-auto overflow-x-auto bg-slate-100 dark:bg-zinc-900/80 p-1 rounded-lg border border-slate-200 dark:border-zinc-800/80 mb-6">
+            <TabsTrigger value="moh705" className="px-5 py-1.5 text-xs font-medium">MOH 705</TabsTrigger>
+            <TabsTrigger value="extended" className="px-5 py-1.5 text-xs font-medium">Extended Report</TabsTrigger>
+            <TabsTrigger value="moh717" className="px-5 py-1.5 text-xs font-medium">MOH 717</TabsTrigger>
+            <TabsTrigger value="archive" className="px-5 py-1.5 text-xs font-medium">Archive</TabsTrigger>
           </TabsList>
 
-          <TabsContent value="moh705">
+          <TabsContent value="moh705" className="outline-none">
             <div className="overflow-x-auto print-overflow-visible">
               <MOH705Table
                 reportData={reportData}
@@ -162,13 +191,13 @@ const Report = () => {
             </div>
           </TabsContent>
 
-          <TabsContent value="extended">
+          <TabsContent value="extended" className="outline-none">
             <div className="overflow-x-auto print-overflow-visible">
               <ExtendedReportTable reportData={reportData} showZeros={showZeros} />
             </div>
           </TabsContent>
 
-          <TabsContent value="moh717">
+          <TabsContent value="moh717" className="outline-none">
             <MOH717Form
               reportData={reportData}
               facilityName={facilityName}
@@ -178,7 +207,7 @@ const Report = () => {
             />
           </TabsContent>
 
-          <TabsContent value="archive">
+          <TabsContent value="archive" className="outline-none">
             <div className="overflow-x-auto print-overflow-visible">
               <ArchiveReportTable showZeros={showZeros} archiveRef={archiveRef} />
             </div>
