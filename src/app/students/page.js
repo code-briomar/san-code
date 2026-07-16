@@ -194,30 +194,48 @@ function StudentsContent() {
 
       <div className="min-h-screen flex flex-col">
         {/* Compact Header */}
-        <header className="border-b border-gray-200 dark:border-neutral-800 bg-white dark:bg-zinc-900">
+        <header className="border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-black no-print">
           <div className="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
-            <div className="flex items-center gap-6">
-              <h1 className="font-mono font-bold text-lg">Students</h1>
-              <nav className="hidden sm:flex items-center gap-4 text-sm">
-                <Link href="/" className="text-gray-600 dark:text-gray-400 hover:text-blue-500">
+            <div className="flex items-center gap-4">
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => router.push("/")}
+                className="w-8 h-8 rounded-full shadow-sm hover:scale-105 transition-transform border-zinc-300 dark:border-zinc-850"
+              >
+                <ArrowLeft className="w-3.5 h-3.5" />
+              </Button>
+              <h1 className="font-bold text-lg text-slate-900 dark:text-white">Students</h1>
+              <span className="text-zinc-300 dark:text-zinc-700">|</span>
+              <nav className="hidden sm:flex items-center gap-4 text-xs font-medium">
+                <Link
+                  href="/"
+                  className="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
+                >
                   Home
                 </Link>
-                <Link href="/students/student-create-entry" className="text-gray-600 dark:text-gray-400 hover:text-blue-500">
+                <Link
+                  href="/students/student-create-entry"
+                  className="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
+                >
                   Add New Student
                 </Link>
-                <Link href="/students/none_busherian" className="text-gray-600 dark:text-gray-400 hover:text-blue-500">
+                <Link
+                  href="/students/none_busherian"
+                  className="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors"
+                >
                   Non-Busherian
                 </Link>
               </nav>
             </div>
-            <div className="flex items-center gap-3 text-sm">
+            <div className="flex items-center gap-3 text-xs font-medium">
               <Link
                 href="/view_summary"
                 target="_blank"
-                className="text-gray-500 hover:text-blue-500 flex items-center gap-1"
+                className="text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors flex items-center gap-1 hover:underline underline-offset-4"
               >
-                Summary
-                <ArrowUpRightFromSquare className="w-3 h-3" />
+                <span>Summary</span>
+                <ArrowUpRightFromSquare className="w-3.5 h-3.5 text-slate-400" />
               </Link>
             </div>
           </div>
@@ -227,11 +245,11 @@ function StudentsContent() {
         <main className="flex-1 flex flex-col items-center justify-center px-4 py-8">
           <div className="w-full max-w-xl">
             {/* Hero Search */}
-            <div className="text-center mb-6">
-              <h2 className="text-2xl font-semibold text-gray-800 dark:text-gray-200 mb-2">
+            <div className="text-center mb-8">
+              <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">
                 Search Student
               </h2>
-              <p className="text-gray-500 dark:text-gray-400 text-sm">
+              <p className="text-slate-500 dark:text-slate-450 text-xs">
                 Enter admission number to view or update records
               </p>
             </div>
@@ -243,8 +261,8 @@ function StudentsContent() {
                 type="text"
                 autoComplete="off"
                 autoFocus
-                placeholder="e.g 13256"
-                className="flex-1 h-14 text-xl font-mono text-center bg-white dark:bg-zinc-900 border-2 border-gray-300 dark:border-neutral-600 focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-blue-500 dark:focus-visible:border-blue-500"
+                placeholder="e.g. 13256"
+                className="flex-1 h-14 text-xl font-mono text-center bg-white dark:bg-black border-2 border-zinc-300 dark:border-zinc-800 focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-slate-900 dark:focus-visible:border-slate-100"
                 onChange={formik.handleChange}
                 onKeyDown={handleKeyPressed}
                 disabled={searchLoading}

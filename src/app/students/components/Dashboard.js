@@ -7,7 +7,7 @@ export default function Dashboard({ stats, onPatientClick, loading }) {
 
   if (loading || !stats) {
     return (
-      <div className="flex items-center justify-center gap-1 text-sm text-gray-400 dark:text-gray-500">
+      <div className="flex items-center justify-center gap-1 text-sm text-slate-400 dark:text-slate-500">
         <span>Loading stats</span>
         <span className="flex gap-0.5">
           <span className="animate-bounce" style={{ animationDelay: "0ms" }}>.</span>
@@ -26,7 +26,7 @@ export default function Dashboard({ stats, onPatientClick, loading }) {
   // Show "No activity" message if nothing to display
   if (!hasAlerts && !hasMedicationDue && !hasActivity) {
     return (
-      <div className="text-center text-sm text-gray-400 dark:text-gray-500">
+      <div className="text-center text-sm text-slate-450 dark:text-slate-500 font-medium">
         No activity since yesterday
       </div>
     );
@@ -39,17 +39,15 @@ export default function Dashboard({ stats, onPatientClick, loading }) {
   const totalAffected = sortedOutbreaks.reduce((sum, o) => sum + o.count, 0);
   const alertCount = sortedOutbreaks.length;
 
-  // Severity: red for count >= 10, yellow for count >= 5, gray for less
+  // Severity style helper in greyscale
   const getSeverityClasses = (count) => {
-    if (count >= 10) return "bg-red-100 dark:bg-red-900/30 border-red-300 dark:border-red-700 text-red-700 dark:text-red-300";
-    if (count >= 5) return "bg-yellow-100 dark:bg-yellow-900/30 border-yellow-400 dark:border-yellow-600 text-yellow-700 dark:text-yellow-300";
-    return "bg-gray-100 dark:bg-gray-800/50 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300";
+    if (count >= 10) return "bg-slate-900 dark:bg-zinc-800 text-white dark:text-slate-100 border-slate-900 dark:border-zinc-700";
+    if (count >= 5) return "bg-zinc-100 dark:bg-zinc-900 border-zinc-300 dark:border-zinc-800 text-slate-800 dark:text-slate-200";
+    return "bg-transparent border-zinc-200 dark:border-zinc-850 text-slate-650 dark:text-slate-400";
   };
 
   const getSeverityIcon = (count) => {
-    if (count >= 10) return "text-red-600 dark:text-red-400";
-    if (count >= 5) return "text-yellow-600 dark:text-yellow-400";
-    return "text-gray-500 dark:text-gray-400";
+    return "text-slate-700 dark:text-slate-300";
   };
 
   return (
@@ -59,11 +57,11 @@ export default function Dashboard({ stats, onPatientClick, loading }) {
         {/* Students Seen */}
         {hasActivity && (
           <div className="flex items-center gap-2">
-            <Users className="w-4 h-4 text-blue-500" />
-            <span className="text-gray-600 dark:text-gray-400">
-              <strong className="text-blue-600 dark:text-blue-400">{stats.studentCount}</strong> seen recently
+            <Users className="w-4 h-4 text-slate-700 dark:text-slate-350" />
+            <span className="text-slate-650 dark:text-slate-400">
+              <strong className="text-slate-900 dark:text-white font-bold">{stats.studentCount}</strong> seen recently
               {stats.studentCountToday > 0 && (
-                <span className="text-gray-400 dark:text-gray-500"> ({stats.studentCountToday} today)</span>
+                <span className="text-slate-450 dark:text-slate-500"> ({stats.studentCountToday} today)</span>
               )}
             </span>
           </div>
@@ -71,14 +69,14 @@ export default function Dashboard({ stats, onPatientClick, loading }) {
 
         {/* Divider */}
         {hasActivity && hasMedicationDue && (
-          <div className="hidden sm:block w-px h-4 bg-gray-300 dark:bg-neutral-700" />
+          <div className="hidden sm:block w-px h-4 bg-zinc-200 dark:bg-zinc-800" />
         )}
 
         {/* Medication Due */}
         {hasMedicationDue && (
           <div className="flex items-center gap-2">
-            <Pill className="w-4 h-4 text-orange-500" />
-            <span className="text-orange-600 dark:text-orange-400">
+            <Pill className="w-4 h-4 text-slate-700 dark:text-slate-350" />
+            <span className="text-slate-800 dark:text-slate-250 font-medium">
               <strong>{stats.medicationDue.length}</strong> meds due
             </span>
             <div className="flex gap-1">
@@ -86,13 +84,13 @@ export default function Dashboard({ stats, onPatientClick, loading }) {
                 <button
                   key={index}
                   onClick={() => onPatientClick(patient.admNo)}
-                  className="px-2 py-0.5 text-xs bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 rounded-full hover:bg-orange-200 dark:hover:bg-orange-800/50 transition-colors"
+                  className="px-2 py-0.5 text-xs bg-slate-100 dark:bg-zinc-900 text-slate-800 dark:text-slate-300 rounded-full hover:bg-slate-200 dark:hover:bg-zinc-800 transition-colors border border-zinc-200 dark:border-zinc-850"
                 >
                   {patient.admNo}
                 </button>
               ))}
               {stats.medicationDue.length > 2 && (
-                <span className="text-xs text-orange-500">+{stats.medicationDue.length - 2}</span>
+                <span className="text-xs text-slate-500">+{stats.medicationDue.length - 2}</span>
               )}
             </div>
           </div>
@@ -100,23 +98,23 @@ export default function Dashboard({ stats, onPatientClick, loading }) {
 
         {/* Divider */}
         {(hasActivity || hasMedicationDue) && hasAlerts && (
-          <div className="hidden sm:block w-px h-4 bg-gray-300 dark:bg-neutral-700" />
+          <div className="hidden sm:block w-px h-4 bg-zinc-200 dark:bg-zinc-800" />
         )}
 
         {/* Alerts Toggle */}
         {hasAlerts && (
           <button
             onClick={() => setAlertsExpanded(!alertsExpanded)}
-            className="flex items-center gap-2 px-3 py-1 rounded-full bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 hover:bg-red-200 dark:hover:bg-red-900/50 transition-colors"
+            className="flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 dark:bg-zinc-900 text-slate-900 dark:text-slate-150 hover:bg-slate-200 dark:hover:bg-zinc-800 transition-colors border border-zinc-350 dark:border-zinc-750 font-medium"
           >
-            <AlertTriangle className="w-4 h-4" />
-            <span className="font-medium text-sm">
+            <AlertTriangle className="w-4 h-4 text-slate-700 dark:text-slate-300" />
+            <span className="font-semibold text-xs">
               {alertCount} {alertCount === 1 ? "alert" : "alerts"}
             </span>
             {alertsExpanded ? (
-              <ChevronDown className="w-3 h-3" />
+              <ChevronDown className="w-3 h-3 text-slate-500" />
             ) : (
-              <ChevronUp className="w-3 h-3" />
+              <ChevronUp className="w-3 h-3 text-slate-500" />
             )}
           </button>
         )}
@@ -124,12 +122,12 @@ export default function Dashboard({ stats, onPatientClick, loading }) {
 
       {/* Expanded Alerts Panel */}
       {hasAlerts && alertsExpanded && (
-        <div className="mt-1 p-3 bg-white dark:bg-zinc-800 border border-gray-200 dark:border-neutral-700 rounded-lg max-w-1xl mx-auto">
+        <div className="mt-2 p-3 bg-white dark:bg-black border border-zinc-200 dark:border-zinc-800 rounded-lg max-w-xl mx-auto shadow-sm">
           <div className="flex items-center justify-between mb-2">
-            <h4 className="font-semibold text-sm text-gray-700 dark:text-gray-300">
+            <h4 className="font-semibold text-xs text-slate-800 dark:text-slate-200">
               Health Alerts
             </h4>
-            <span className="text-xs text-gray-500">{totalAffected} students affected</span>
+            <span className="text-[10px] text-slate-500 font-mono">{totalAffected} students affected</span>
           </div>
           <div className="space-y-1.5 max-h-48 overflow-y-auto">
             {sortedOutbreaks.map((outbreak, index) => (
