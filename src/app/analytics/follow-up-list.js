@@ -12,6 +12,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Loader, Hospital, RotateCcw } from "lucide-react";
+
 function formatDate(timestamp) {
   const date = new Date(timestamp);
   return date.toLocaleDateString("en-GB", {
@@ -31,14 +32,14 @@ export default function FollowUpList({ hospitalReferrals = null, readmissions = 
   return (
     <div className="grid gap-6 lg:grid-cols-2">
       {/* Hospital Referrals */}
-      <Card>
+      <Card className="border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-black">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
-          <CardTitle className="flex items-center gap-2 text-base font-semibold">
-            <Hospital className="h-5 w-5 text-red-500" />
+          <CardTitle className="flex items-center gap-2 text-base font-semibold text-slate-900 dark:text-white">
+            <Hospital className="h-5 w-5 text-slate-800 dark:text-slate-200" />
             Hospital Referrals
           </CardTitle>
           {!isLoadingReferrals && hospitalReferrals?.length > 0 && (
-            <Badge variant="destructive" className="text-xs">
+            <Badge variant="outline" className="text-xs bg-slate-100 dark:bg-zinc-800 text-slate-900 dark:text-slate-150 border-slate-300 dark:border-zinc-700">
               {hospitalReferrals.length} referred
             </Badge>
           )}
@@ -46,7 +47,7 @@ export default function FollowUpList({ hospitalReferrals = null, readmissions = 
         <CardContent>
           {isLoadingReferrals ? (
             <div className="flex items-center gap-2 text-sm text-slate-500">
-              <Loader className="h-4 w-4 animate-spin" />
+              <Loader className="h-4 w-4 animate-spin text-slate-900 dark:text-slate-150" />
               Loading referrals...
             </div>
           ) : !hospitalReferrals?.length ? (
@@ -57,24 +58,24 @@ export default function FollowUpList({ hospitalReferrals = null, readmissions = 
             <div className="overflow-x-auto">
               <Table>
                 <TableHeader>
-                  <TableRow>
-                    <TableHead>Adm No</TableHead>
-                    <TableHead>Name</TableHead>
-                    <TableHead>Ailment</TableHead>
-                    <TableHead>Date</TableHead>
+                  <TableRow className="border-b border-zinc-200 dark:border-zinc-800">
+                    <TableHead className="text-slate-700 dark:text-slate-350">Adm No</TableHead>
+                    <TableHead className="text-slate-700 dark:text-slate-350">Name</TableHead>
+                    <TableHead className="text-slate-700 dark:text-slate-350">Ailment</TableHead>
+                    <TableHead className="text-slate-700 dark:text-slate-350">Date</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {hospitalReferrals.slice(0, 15).map((r, i) => (
-                    <TableRow key={`${r.admNo}-${i}`}>
-                      <TableCell className="font-mono font-medium">
+                    <TableRow key={`${r.admNo}-${i}`} className="border-b border-zinc-150 dark:border-zinc-800">
+                      <TableCell className="font-mono font-medium text-slate-800 dark:text-slate-250">
                         {r.admNo}
                       </TableCell>
-                      <TableCell>
+                      <TableCell className="text-slate-800 dark:text-slate-250">
                         {r.fName || ""} {r.sName || ""}
                       </TableCell>
-                      <TableCell>{r.ailment || "-"}</TableCell>
-                      <TableCell className="text-slate-500 dark:text-slate-400">
+                      <TableCell className="text-slate-800 dark:text-slate-250">{r.ailment || "-"}</TableCell>
+                      <TableCell className="text-slate-500 dark:text-slate-450">
                         {r.timestamp ? formatDate(r.timestamp) : "-"}
                       </TableCell>
                     </TableRow>
@@ -86,15 +87,15 @@ export default function FollowUpList({ hospitalReferrals = null, readmissions = 
         </CardContent>
       </Card>
 
-      {/* Readmissions (needs attention) */}
-      <Card>
+      {/* Readmissions */}
+      <Card className="border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-black">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
-          <CardTitle className="flex items-center gap-2 text-base font-semibold">
-            <RotateCcw className="h-5 w-5 text-amber-500" />
+          <CardTitle className="flex items-center gap-2 text-base font-semibold text-slate-900 dark:text-white">
+            <RotateCcw className="h-5 w-5 text-slate-800 dark:text-slate-200" />
             Readmissions (within 7 days)
           </CardTitle>
           {recentReadmissions.length > 0 && (
-            <Badge className="border-amber-400 bg-amber-100 text-amber-800 dark:border-amber-600 dark:bg-amber-900/60 dark:text-amber-200 text-xs">
+            <Badge variant="outline" className="border-slate-300 dark:border-zinc-800 bg-slate-100 dark:bg-zinc-900 text-slate-900 dark:text-slate-200 text-xs">
               {recentReadmissions.length} returning
             </Badge>
           )}
@@ -109,21 +110,21 @@ export default function FollowUpList({ hospitalReferrals = null, readmissions = 
               {recentReadmissions.map((r, i) => (
                 <div
                   key={`${r.admNo}-${r.ailment}-${i}`}
-                  className="flex items-center justify-between rounded border border-slate-200 dark:border-neutral-800 px-3 py-2 text-sm"
+                  className="flex items-center justify-between rounded border border-zinc-200 dark:border-zinc-800 px-3 py-2 text-sm"
                 >
                   <div className="min-w-0">
-                    <span className="font-mono font-medium">{r.admNo}</span>
-                    <span className="mx-2 text-slate-300 dark:text-slate-600">
+                    <span className="font-mono font-medium text-slate-800 dark:text-slate-250">{r.admNo}</span>
+                    <span className="mx-2 text-slate-300 dark:text-slate-650">
                       &middot;
                     </span>
-                    <span className="text-slate-600 dark:text-slate-400">
+                    <span className="text-slate-600 dark:text-slate-400 font-medium">
                       {r.ailment}
                     </span>
                   </div>
-                  <div className="shrink-0 text-xs text-slate-500 dark:text-slate-400">
+                  <div className="shrink-0 text-xs text-slate-500 dark:text-slate-450 font-medium">
                     {formatDate(r.firstVisit)} &rarr; {formatDate(r.returnVisit)}
-                    <span className="ml-1 font-medium text-amber-600 dark:text-amber-400">
-                      ({r.daysBetween}d)
+                    <span className="ml-1.5 font-mono text-[10px] bg-slate-100 dark:bg-zinc-850 px-1 py-0.5 rounded text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-zinc-800">
+                      {r.daysBetween}d
                     </span>
                   </div>
                 </div>
