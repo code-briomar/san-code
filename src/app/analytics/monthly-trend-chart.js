@@ -73,14 +73,15 @@ export default function MonthlyTrendChart({ reportData }) {
   const option = useMemo(() => {
     const textColor = isDark ? "#d4d4d8" : "#3f3f46";
     const borderColor = isDark ? "#3f3f46" : "#e4e4e7";
+    const lineColor = isDark ? "#ffffff" : "#18181b";
     const areaColor = isDark
       ? new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-          { offset: 0, color: "rgba(59,130,246,0.35)" },
-          { offset: 1, color: "rgba(59,130,246,0.02)" },
+          { offset: 0, color: "rgba(255,255,255,0.15)" },
+          { offset: 1, color: "rgba(255,255,255,0.01)" },
         ])
       : new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-          { offset: 0, color: "rgba(59,130,246,0.25)" },
-          { offset: 1, color: "rgba(59,130,246,0.02)" },
+          { offset: 0, color: "rgba(0,0,0,0.12)" },
+          { offset: 1, color: "rgba(0,0,0,0.01)" },
         ]);
 
     return {
@@ -113,8 +114,8 @@ export default function MonthlyTrendChart({ reportData }) {
           smooth: true,
           symbol: "circle",
           symbolSize: 6,
-          lineStyle: { width: 2.5, color: "#3b82f6" },
-          itemStyle: { color: "#3b82f6" },
+          lineStyle: { width: 2.5, color: lineColor },
+          itemStyle: { color: lineColor },
           areaStyle: { color: areaColor },
           data: dailyData.map((d) => d.total),
         },

@@ -19,9 +19,13 @@ export default function DiseaseDistributionChart({ distribution = [] }) {
   const option = useMemo(() => {
     const textColor = isDark ? "#d4d4d8" : "#3f3f46";
     const borderColor = isDark ? "#09090b" : "#ffffff";
+    const greyscalePalette = isDark
+      ? ['#fafafa', '#e4e4e7', '#d4d4d8', '#a1a1aa', '#71717a', '#52525b', '#3f3f46', '#27272a']
+      : ['#18181b', '#27272a', '#3f3f46', '#52525b', '#71717a', '#a1a1aa', '#d4d4d8', '#e4e4e7'];
 
     return {
       backgroundColor: "transparent",
+      color: greyscalePalette,
       tooltip: {
         trigger: "item",
         backgroundColor: isDark ? "#27272a" : "#fff",
