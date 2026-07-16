@@ -62,7 +62,7 @@ export default function Dashboard({ stats, onPatientClick, loading }) {
             <Users className="w-4 h-4 text-blue-500" />
             <span className="text-gray-600 dark:text-gray-400">
               <strong className="text-blue-600 dark:text-blue-400">{stats.studentCount}</strong> seen recently
-              {stats.studentCountToday > 0 && stats.studentCountToday < stats.studentCount && (
+              {stats.studentCountToday > 0 && (
                 <span className="text-gray-400 dark:text-gray-500"> ({stats.studentCountToday} today)</span>
               )}
             </span>
