@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { fetchStaffData, fetchStudentData } from "./services";
+import CalendarLog from "./components/CalendarLog";
 import { base_api } from "@/lib/base_api";
 import { Button } from "@/components/ui/button";
 import { DataTable } from "@/components/ui/data_table";
@@ -9,38 +10,56 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
+import Link from "next/link";
 import {
   ArrowLeft,
-  ArrowUpRight,
+  ArrowRight,
   Loader,
   FileSpreadsheet,
-  Clock
+  Clock,
+  ChevronLeft,
+  ChevronRight
 } from "lucide-react";
 
 const ViewSummary = () => {
   const router = useRouter();
   const [summaryStudents, setSummaryStudents] = useState([]);
   const [summaryStaff, setSummaryStaff] = useState([]);
-  const [pageLoading, setPageLoading] = useState(false);
   const [timeFilter, setTimeFilter] = useState("");
+  const [activeTab, setActiveTab] = useState(null);
+  const [dataLoading, setDataLoading] = useState(false);
+  const [dataLoaded, setDataLoaded] = useState(false);
 
+  // Parse tab from URL
   useEffect(() => {
-    setPageLoading(true);
-    const loadData = async () => {
-      try {
-        const response_staff_fetch = await fetchStaffData();
-        const response_student_fetch = await fetchStudentData();
-
-        setSummaryStudents(response_student_fetch?.data || []);
-        setSummaryStaff(response_staff_fetch?.data || []);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      } finally {
-        setPageLoading(false);
-      }
-    };
-    loadData();
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const tab = params.get("tab") || "feed";
+      setActiveTab(tab);
+    }
   }, []);
+
+  // Fetch student/staff data when switching to tabs that need it
+  useEffect(() => {
+    if (activeTab && activeTab !== "calendar" && !dataLoaded && !dataLoading) {
+      const loadData = async () => {
+        setDataLoading(true);
+        try {
+          const response_staff_fetch = await fetchStaffData();
+          const response_student_fetch = await fetchStudentData();
+
+          setSummaryStudents(response_student_fetch?.data || []);
+          setSummaryStaff(response_staff_fetch?.data || []);
+          setDataLoaded(true);
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        } finally {
+          setDataLoading(false);
+        }
+      };
+      loadData();
+    }
+  }, [activeTab, dataLoaded, dataLoading]);
 
   // Excel download handler
   const handleExcelDownload = () => {
@@ -72,6 +91,19 @@ const ViewSummary = () => {
     });
     return timestamp.toLowerCase().includes(timeFilter.toLowerCase());
   });
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const ITEMS_PER_PAGE = 20;
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [timeFilter]);
+
+  const totalItems = filteredFeed.length;
+  const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const endIndex = Math.min(startIndex + ITEMS_PER_PAGE, totalItems);
+  const paginatedFeed = filteredFeed.slice(startIndex, startIndex + ITEMS_PER_PAGE);
 
   // Columns for student table
   const summary_columns_students = [
@@ -300,46 +332,42 @@ const ViewSummary = () => {
               <span>Export Excel</span>
             </Button>
 
-            <a
+            <Link
               href="/report"
-              target="_blank"
-              rel="noopener noreferrer"
               className="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-white bg-slate-900 hover:bg-slate-800 dark:bg-slate-100 dark:hover:bg-slate-200 dark:text-slate-900 rounded-md shadow-sm transition-all"
             >
               <span>View Official Report</span>
-              <ArrowUpRight className="w-3.5 h-3.5" />
-            </a>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
           </div>
         </div>
 
-        {/* Loading Indicator */}
-        {pageLoading && (
-          <div className="flex flex-col items-center justify-center py-20 space-y-4">
-            <Loader className="w-10 h-10 animate-spin text-slate-900 dark:text-slate-100" />
-            <p className="text-sm text-slate-500 dark:text-slate-400">Fetching records...</p>
-          </div>
-        )}
-
-        {/* Content Section */}
-        {!pageLoading && (
-          <>
             {/* Workspace Directories with Tabs */}
-            <Tabs defaultValue="feed" className="w-full">
-              <TabsList className="w-full md:w-auto grid grid-cols-3 md:inline-flex bg-slate-100 dark:bg-zinc-900/80 p-1 rounded-lg border border-slate-200 dark:border-zinc-800/80 mb-4">
+            <Tabs value={activeTab || "feed"} onValueChange={setActiveTab} className="w-full">
+              <TabsList className="w-full md:w-auto flex flex-wrap bg-slate-100 dark:bg-zinc-900/80 p-1 rounded-lg border border-slate-200 dark:border-zinc-800/80 mb-4">
                 <TabsTrigger value="feed" className="px-5 py-1.5 text-xs font-medium">
                   Activity Feed
                 </TabsTrigger>
+                <TabsTrigger value="calendar" className="px-5 py-1.5 text-xs font-medium">
+                  Calendar Log
+                </TabsTrigger>
                 <TabsTrigger value="students" className="px-5 py-1.5 text-xs font-medium">
-                  Students ({totalStudents})
+                  Students {dataLoaded ? `(${totalStudents})` : ""}
                 </TabsTrigger>
                 <TabsTrigger value="staff" className="px-5 py-1.5 text-xs font-medium">
-                  Staff ({totalStaff})
+                  Staff {dataLoaded ? `(${totalStaff})` : ""}
                 </TabsTrigger>
               </TabsList>
 
               {/* Tab 1: Overview Feed */}
               <TabsContent value="feed" className="space-y-4 outline-none">
-                <Card className="border border-slate-200 dark:border-zinc-800/80 shadow-sm bg-white dark:bg-zinc-950">
+                {dataLoading ? (
+                  <div className="flex flex-col items-center justify-center py-20 space-y-4">
+                    <Loader className="w-10 h-10 animate-spin text-slate-900 dark:text-slate-100" />
+                    <p className="text-sm text-slate-500 dark:text-slate-400">Loading activity feed...</p>
+                  </div>
+                ) : (
+                  <Card className="border border-slate-200 dark:border-zinc-800/80 shadow-sm bg-white dark:bg-zinc-950">
                   <CardHeader className="pb-3">
                     <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
                       <div>
@@ -366,8 +394,9 @@ const ViewSummary = () => {
                         {timeFilter ? "No matches found for that time/date." : "No activity recorded in the last 7 days."}
                       </div>
                     ) : (
-                      <div className="relative border-l border-slate-250 dark:border-zinc-800 ml-3 md:ml-4 space-y-4 py-1">
-                        {filteredFeed.map((record, index) => {
+                      <>
+                        <div className="relative border-l border-slate-250 dark:border-zinc-800 ml-3 md:ml-4 space-y-4 py-1">
+                          {paginatedFeed.map((record, index) => {
                           const tempVal = parseFloat(record.tempReading);
                           const dateStr = new Date(record.timestamp).toLocaleString(undefined, {
                             dateStyle: "medium",
@@ -447,14 +476,61 @@ const ViewSummary = () => {
                           );
                         })}
                       </div>
+
+                      {/* Pagination Controls */}
+                      {totalPages > 1 && (
+                        <div className="flex items-center justify-between pt-4 border-t border-slate-100 dark:border-zinc-900/60 text-xs">
+                          <p className="text-slate-500 dark:text-slate-400">
+                            Showing <span className="font-semibold text-slate-800 dark:text-slate-200">{startIndex + 1}</span> to{" "}
+                            <span className="font-semibold text-slate-800 dark:text-slate-200">{endIndex}</span> of{" "}
+                            <span className="font-semibold text-slate-800 dark:text-slate-200">{totalItems}</span> visits
+                          </p>
+                          <div className="flex items-center gap-2">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              disabled={currentPage === 1}
+                              onClick={() => setCurrentPage((prev) => prev - 1)}
+                              className="h-8 w-8 p-0 border-slate-200 dark:border-zinc-850 hover:bg-slate-50 dark:hover:bg-zinc-900"
+                            >
+                              <ChevronLeft className="w-4.5 h-4.5" />
+                            </Button>
+                            <span className="text-slate-650 dark:text-slate-350 font-medium">
+                              Page {currentPage} of {totalPages}
+                            </span>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              disabled={currentPage === totalPages}
+                              onClick={() => setCurrentPage((prev) => prev + 1)}
+                              className="h-8 w-8 p-0 border-slate-200 dark:border-zinc-850 hover:bg-slate-50 dark:hover:bg-zinc-900"
+                            >
+                              <ChevronRight className="w-4.5 h-4.5" />
+                            </Button>
+                          </div>
+                        </div>
+                      )}
+                      </>
                     )}
                   </CardContent>
                 </Card>
+                )}
+              </TabsContent>
+
+              {/* Tab: Calendar Log */}
+              <TabsContent value="calendar" className="space-y-4 outline-none">
+                <CalendarLog />
               </TabsContent>
 
               {/* Tab 2: Students Directory */}
               <TabsContent value="students" className="space-y-4 outline-none">
-                <Card className="border border-slate-200 dark:border-zinc-800/80 shadow-sm bg-white dark:bg-zinc-950">
+                {dataLoading ? (
+                  <div className="flex flex-col items-center justify-center py-20 space-y-4">
+                    <Loader className="w-10 h-10 animate-spin text-slate-900 dark:text-slate-100" />
+                    <p className="text-sm text-slate-500 dark:text-slate-400">Loading student directory...</p>
+                  </div>
+                ) : (
+                  <Card className="border border-slate-200 dark:border-zinc-800/80 shadow-sm bg-white dark:bg-zinc-950">
                   <CardHeader>
                     <CardTitle className="text-lg text-slate-900 dark:text-white">Students Directory</CardTitle>
                     <CardDescription className="text-xs">
@@ -477,11 +553,18 @@ const ViewSummary = () => {
                     </div>
                   </CardContent>
                 </Card>
+                )}
               </TabsContent>
 
               {/* Tab 3: Staff Directory */}
               <TabsContent value="staff" className="space-y-4 outline-none">
-                <Card className="border border-slate-200 dark:border-zinc-800/80 shadow-sm bg-white dark:bg-zinc-950">
+                {dataLoading ? (
+                  <div className="flex flex-col items-center justify-center py-20 space-y-4">
+                    <Loader className="w-10 h-10 animate-spin text-slate-900 dark:text-slate-100" />
+                    <p className="text-sm text-slate-500 dark:text-slate-400">Loading staff directory...</p>
+                  </div>
+                ) : (
+                  <Card className="border border-slate-200 dark:border-zinc-800/80 shadow-sm bg-white dark:bg-zinc-950">
                   <CardHeader>
                     <CardTitle className="text-lg text-slate-900 dark:text-white">Staff Directory</CardTitle>
                     <CardDescription className="text-xs">
@@ -504,10 +587,9 @@ const ViewSummary = () => {
                     </div>
                   </CardContent>
                 </Card>
+                )}
               </TabsContent>
             </Tabs>
-          </>
-        )}
       </div>
     </div>
   );

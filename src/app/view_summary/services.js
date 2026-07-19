@@ -26,3 +26,17 @@ export const fetchStaffData = async () => {
     return null;
   }
 };
+
+// Function : Fetch daily attendance log for a specific month
+// Route : /analytics/daily-attendance-log
+export const fetchDailyAttendanceLog = async (month) => {
+  try {
+    const response = await base_api.get("/analytics/daily-attendance-log", {
+      params: { month },
+    });
+    return response;
+  } catch (error) {
+    if (devMode) console.error(error);
+    return null;
+  }
+};

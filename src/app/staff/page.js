@@ -265,11 +265,10 @@ function StaffContent() {
             <div className="flex items-center gap-3 text-sm">
               <Link
                 href="/view_summary"
-                target="_blank"
                 className="text-gray-500 hover:text-blue-500 flex items-center gap-1"
               >
                 Summary
-                <ArrowUpRightFromSquare className="w-3 h-3" />
+                <ArrowRight className="w-3 h-3" />
               </Link>
             </div>
           </div>

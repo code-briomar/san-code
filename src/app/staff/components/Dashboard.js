@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
-import { AlertTriangle, ChevronDown, ChevronUp, Users } from "lucide-react";
+import { AlertTriangle, ChevronDown, ChevronUp, Users, Calendar } from "lucide-react";
+import Link from "next/link";
 
 export default function Dashboard({ stats, onStaffClick, loading }) {
   const [alertsExpanded, setAlertsExpanded] = useState(false);
@@ -90,6 +91,16 @@ export default function Dashboard({ stats, onStaffClick, loading }) {
             )}
           </button>
         )}
+
+        {/* Calendar Link */}
+        <div className="hidden sm:block w-px h-4 bg-gray-300 dark:bg-neutral-700" />
+        <Link
+          href="/view_summary?tab=calendar"
+          className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 hover:bg-slate-200 dark:bg-zinc-900 dark:hover:bg-zinc-800 border border-gray-350 dark:border-zinc-750 text-gray-800 dark:text-gray-250 font-semibold text-xs transition-colors"
+        >
+          <Calendar className="w-3.5 h-3.5 text-blue-500" />
+          <span>Calendar Log</span>
+        </Link>
       </div>
 
       {/* Expanded Alerts Panel */}

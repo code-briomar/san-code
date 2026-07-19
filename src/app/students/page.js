@@ -232,11 +232,10 @@ function StudentsContent() {
             <div className="flex items-center gap-3 text-xs font-medium">
               <Link
                 href="/view_summary"
-                target="_blank"
                 className="text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors flex items-center gap-1 hover:underline underline-offset-4"
               >
                 <span>Summary</span>
-                <ArrowUpRightFromSquare className="w-3.5 h-3.5 text-slate-400" />
+                <ArrowRight className="w-3.5 h-3.5 text-slate-400" />
               </Link>
             </div>
           </div>
