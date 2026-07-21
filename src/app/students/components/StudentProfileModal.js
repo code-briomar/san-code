@@ -291,11 +291,11 @@ export default function StudentProfileModal({
                         {record.medication || "-"}
                       </span>
                       <span className={`ml-auto flex-shrink-0 ${
-                        record.tempreading > 37
+                        (record.tempReading ?? record.tempreading) > 37
                           ? "text-rose-500"
                           : "text-gray-400 dark:text-gray-500"
                       }`}>
-                        {record.tempreading}°
+                        {record.tempReading ?? record.tempreading}°
                       </span>
                     </div>
                   ))}
