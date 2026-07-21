@@ -83,7 +83,8 @@ export default function ParentPortal() {
       const res = await requestOTP(admNo, parentContact);
       if (res.status === "success") {
         setOtpSent(true);
-        setSuccessMsg(res.message || "Verification code sent to parent phone/email.");
+        const otpDisplay = res.otp ? ` (Test OTP: ${res.otp})` : "";
+        setSuccessMsg((res.message || "Verification code sent to parent phone/email.") + otpDisplay);
         
         // Pre-populate M-Pesa phone number if they input a phone number
         if (/^\+?\d{9,15}$/.test(parentContact.trim())) {
