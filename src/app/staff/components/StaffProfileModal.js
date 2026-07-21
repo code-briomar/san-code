@@ -58,8 +58,18 @@ export default function StaffProfileModal({
     return "tonight";
   };
 
-  const daysOnMedication =
-    new Date().getDate() - new Date(staffData?.timestamp).getDate() + 1;
+  const getDaysOnMedication = (timestamp) => {
+    if (!timestamp) return 1;
+    const startDate = new Date(timestamp);
+    startDate.setHours(0, 0, 0, 0);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const diffTime = today.getTime() - startDate.getTime();
+    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24)) + 1;
+    return diffDays >= 1 ? diffDays : 1;
+  };
+
+  const daysOnMedication = getDaysOnMedication(staffData?.timestamp);
 
   const formatDate = (timestamp) => {
     const date = new Date(timestamp);
