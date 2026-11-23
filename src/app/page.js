@@ -1,5 +1,5 @@
 "use client";
-import { ArrowRight, Users, UserCog, FileText, BarChart3, Upload, GraduationCap, Heart } from "lucide-react";
+import { ArrowRight, Users, UserCog, FileText, BarChart3, Upload, GraduationCap, Heart, Activity } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -127,6 +127,26 @@ export default function Home() {
                   <h4 className="font-semibold text-sm text-gray-900 dark:text-white">Parent Portal</h4>
                   <p className="text-[11px] text-gray-500 dark:text-zinc-400">M-Pesa clinical lookup</p>
                 </div>
+              </Link>
+
+              {/* System & Clinic Monitor */}
+              <Link
+                href="/monitor"
+                className="col-span-2 p-3.5 rounded-lg border-2 border-emerald-100 dark:border-emerald-900/50 bg-emerald-50/10 dark:bg-emerald-950/10 hover:bg-emerald-50 dark:hover:bg-emerald-950/20 hover:border-emerald-300 dark:hover:border-emerald-800 transition-colors group flex items-center justify-between"
+              >
+                <div className="flex items-center gap-3">
+                  <Activity className="w-5 h-5 text-emerald-500 dark:text-emerald-400" />
+                  <div>
+                    <h4 className="font-semibold text-sm text-gray-900 dark:text-white flex items-center gap-2">
+                      System & Clinic Monitor
+                      <span className="text-[10px] font-mono font-normal px-1.5 py-0.5 rounded bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                        PROTECTED
+                      </span>
+                    </h4>
+                    <p className="text-[11px] text-gray-500 dark:text-zinc-400">Live nurse activity, dispensary throughput & system telemetry</p>
+                  </div>
+                </div>
+                <ArrowRight className="w-4 h-4 text-emerald-400 group-hover:translate-x-1 transition-transform" />
               </Link>
             </div>
           </div>
